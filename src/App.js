@@ -6,6 +6,7 @@ import Home from "./Pages/Home";
 import Login from "./Pages/Login";
 import UserContext from "./Contexts/UserContext";
 import { useState } from "react";
+import Timeline from "./pages/Timeline";
 
 export default function App() {
   const [user, setUser] = useState();
