@@ -1,5 +1,5 @@
 import { styled } from "styled-components";
-import CreatePost from "../styles/components/CreatePost";
+import CreatePost from "../Components/CreatePost";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { useEffect, useState } from "react";
 import axios from "axios";
