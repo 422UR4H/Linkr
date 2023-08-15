@@ -38,7 +38,7 @@ const LogoutContainer = styled.div`
     right: 0;
     top: 71px;
     background: #151515;
-    width: 120px;
+    width: 119px;
     height: 47px;
     display: flex;
     flex-direction: column;
