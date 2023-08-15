@@ -3,10 +3,11 @@ import config from "./config.js";
 
 
 function signin(body) {
-    return axios.post(`${import.meta.env.VITE_API_URL}/sign-in`, body);
+    console.log(`${process.env.REACT_APP_API_URL}/sign-in`)
+    return axios.post(`${process.env.REACT_APP_API_URL}/sign-in`, body);
 }
 function signup(body) {
-    return axios.post(`${import.meta.env.VITE_API_URL}/sign-up`, body);
+    return axios.post(`${process.env.REACT_APP_API_URL}/sign-up`, body);
 }
 
 const api = {

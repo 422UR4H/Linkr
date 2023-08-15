@@ -66,11 +66,7 @@ html, body, span, applet, object, iframe,
         cursor: pointer;
     }
 
-    a{
-        text-decoration: none;
-    }
-
-    *{
+    * {
         font-family: 'Lato';
         transition: all 200ms;
         box-sizing: border-box;
