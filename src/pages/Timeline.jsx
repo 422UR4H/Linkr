@@ -1,10 +1,23 @@
 import { styled } from "styled-components";
 import CreatePost from "../styles/components/CreatePost";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 export default function Timeline() {
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(1);
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_API_URL}/timeline`)
+      .then((response) => {
+        setPosts(response.data);
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+      });
+  }, []);
 
   const handleLikeClick = () => {
     if (!liked) {
@@ -55,6 +68,37 @@ export default function Timeline() {
           </div>
         </div>
       </ContainerPost>
+      {posts.map((post) => (
+        <ContainerPost key={post.id}>
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <ContainerImage>
+              <img src="" alt="User" />
+            </ContainerImage>
+            <Likes>
+              {liked ? (
+                <AiFillHeart
+                  style={{ color: "red", cursor: "pointer" }}
+                  onClick={handleLikeClick}
+                />
+              ) : (
+                <AiOutlineHeart
+                  style={{ color: "white", cursor: "pointer" }}
+                  onClick={handleLikeClick}
+                />
+              )}
+              <p>
+                {likesCount} like{likesCount !== 1 ? "s" : ""}
+              </p>
+            </Likes>
+          </div>
+          <div>
+            <div>
+              <h3>Ronaldo</h3>
+              <h4>{post.description}</h4>
+            </div>
+          </div>
+        </ContainerPost>
+      ))}
     </>
   );
 }
