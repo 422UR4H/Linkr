@@ -22,7 +22,7 @@ export default function Header() {
             </div>
             <UserAvatar>
                 <AiOutlineDown className='icon' onClick={() => setShowLogout(!showLogout)} />
-                <img src="" alt="" />
+                <img src={user ? user.photo : "https://i.kym-cdn.com/entries/icons/facebook/000/016/546/hidethepainharold.jpg"} alt={user ? user.name : "Juvenal"} />
                 {showLogout &&
                     <LogoutContainer>
                         <button onClick={logout}>Logout</button>
