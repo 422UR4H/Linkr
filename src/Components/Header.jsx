@@ -1,15 +1,13 @@
-import React, { useContext, useRef, useState } from 'react'
-import { AiOutlineDown, AiOutlineSearch } from 'react-icons/ai';
+import React, { useContext, useState } from 'react'
+import { AiOutlineDown } from 'react-icons/ai';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import UserContext from '../Contexts/UserContext';
-import UserSearchSuggestion from './UserSearchSuggestion';
-import axios from 'axios';
 import SearchBar from './SearchBar';
 import { useWindowSize } from '@uidotdev/usehooks';
 
 export default function Header() {
-    const placeholderImage = "https://i.kym-cdn.com/entries/icons/facebook/000/016/546/hidethepainharold.jpg";
+    const placeholderImage = "/placeholder.jpg";
     const [showLogout, setShowLogout] = useState(false);
     const size = useWindowSize();
     const { user, setUser } = useContext(UserContext);
@@ -31,7 +29,7 @@ export default function Header() {
                     {size.width > 500 && <SearchBar/>}
                     <UserAvatar>
                         <AiOutlineDown className='icon' onClick={() => setShowLogout(!showLogout)} />
-                        <img src={user ? user.photo : placeholderImage} alt={user ? user.name : "Juvenal"} />
+                        <img src={user ? user.photo : placeholderImage} alt={user ? user.name : "Loading.."} />
                         {showLogout &&
                             <LogoutContainer>
                                 <button onClick={logout}>Logout</button>
