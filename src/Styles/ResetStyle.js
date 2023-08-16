@@ -23,6 +23,7 @@ html, body, span, applet, object, iframe,
 	article, aside, details, figcaption, figure, 
 	footer, header, hgroup, menu, nav, section {
 		display: block;
+        user-select: none;
 	}
 	body {
 		line-height: 1;
@@ -45,7 +46,7 @@ html, body, span, applet, object, iframe,
     body,html{
         min-height: 100% !important;
 		height: 100% !important;
-        background: #333;;
+        background: #333;
     }
 	body.swal2-height-auto {
 		height: 100% !important
@@ -64,6 +65,7 @@ html, body, span, applet, object, iframe,
 
     button{
         cursor: pointer;
+        user-select: none;
     }
 
     * {
