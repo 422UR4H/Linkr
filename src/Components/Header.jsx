@@ -1,23 +1,46 @@
-import React, { useContext, useState } from 'react'
-import { AiOutlineDown, AiOutlineSearch } from 'react-icons/ai';
+import { DEFAULT_USER_NAME, URL_DEFAULT_PHOTO } from '../Utils/constants.js';
+import { AiOutlineDown, AiOutlineUp, AiOutlineSearch } from 'react-icons/ai';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { styled } from 'styled-components';
 import UserContext from '../Contexts/UserContext';
+import useToken from '../Hooks/useToken.js';
+
 
 export default function Header() {
     const [showLogout, setShowLogout] = useState(false);
     const { user, setUser } = useContext(UserContext);
-    const navigate = useNavigate();
+    const { logout } = useToken();
+    const logoutRef = useRef(null);
     const location = useLocation();
-    function logout() {
-        localStorage.removeItem('token');
-        setUser(null);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        window.addEventListener('click', listenerOutsiteClick);
+        return () => {
+            window.removeEventListener('click', listenerOutsiteClick);
+        };
+    }, []);
+
+    function toggleShowLogout() {
+        setShowLogout(!showLogout);
+    }
+
+    function listenerOutsiteClick(event) {
+        if (logoutRef.current && !event.target.classList.contains('menu')) {
+            setShowLogout((prevShowLogout) => !prevShowLogout);
+        }
+    }
+
+    function signOut() {
+        toggleShowLogout();
+        logout();
         navigate('/');
     }
+
     return (
         <>
-            {
-                location.pathname !== '/' && location.pathname !== '/sign-up' &&
+            {location.pathname !== '/' && location.pathname !== '/sign-up' && (
 
                 <HeaderContainer>
                     <h1>Linkr</h1>
@@ -26,22 +49,31 @@ export default function Header() {
                         <input name='search' id='search' required type="text" placeholder='Search for people' />
                     </div>
                     <UserAvatar>
-                        <AiOutlineDown className='icon' onClick={() => setShowLogout(!showLogout)} />
-                        <img src={user ? user.photo : "https://i.kym-cdn.com/entries/icons/facebook/000/016/546/hidethepainharold.jpg"} alt={user ? user.name : "Juvenal"} />
-                        {showLogout &&
-                            <LogoutContainer>
-                                <button onClick={logout}>Logout</button>
-                            </LogoutContainer>
+                        {showLogout ?
+                            <AiOutlineUp className='menu' onClick={toggleShowLogout} />
+                            :
+                            <AiOutlineDown className='menu' onClick={toggleShowLogout} />
                         }
+                        <img
+                            className='menu'
+                            ref={logoutRef}
+                            onClick={toggleShowLogout}
+                            src={user ? user.photo : URL_DEFAULT_PHOTO}
+                            alt={user ? user.name : DEFAULT_USER_NAME}
+                        />
+                        {showLogout && (
+                            <LogoutContainer ref={logoutRef}>
+                                <button onClick={signOut}>Logout</button>
+                            </LogoutContainer>
+                        )}
                     </UserAvatar>
                 </HeaderContainer>
-            }
+            )}
         </>
-
     )
 }
 
-const LogoutContainer = styled.div`
+const LogoutContainer = styled.nav`
     position: absolute;
     right: 0;
     top: 71px;
@@ -64,6 +96,10 @@ const LogoutContainer = styled.div`
         letter-spacing: 0.85px;
         background-color: transparent;
         border: 0;
+
+        width: inherit;
+        height: inherit;
+        border-bottom-left-radius: inherit;
     }
 `;
 
@@ -76,6 +112,10 @@ const UserAvatar = styled.div`
     font-size: 20px;
 
     .icon{
+        cursor: pointer;
+    }
+
+    .menu{
         cursor: pointer;
     }
 
@@ -122,7 +162,6 @@ const HeaderContainer = styled.header`
     }
 
     input{
-       
         width: 100%;
         height: 45px;
         flex-shrink: 0;

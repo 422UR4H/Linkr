@@ -81,7 +81,7 @@ export default function Register() {
         <Input
           name="photo"
           type="url"
-          placeholder="pircute url"
+          placeholder="picture url"
           value={form.photo}
           onChange={handleForm}
           required
