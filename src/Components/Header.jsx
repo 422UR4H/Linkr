@@ -90,6 +90,7 @@ const LogoutContainer = styled.nav`
     align-items: center;
     justify-content: center;
     border-bottom-left-radius: 20px;
+    z-index: 4;
 
     button {
         color: #FFF;

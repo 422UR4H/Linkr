@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { AiFillHeart, AiOutlineHeart, AiFillEdit } from "react-icons/ai";
 import { BiSolidTrashAlt } from "react-icons/bi";
@@ -21,12 +21,17 @@ export default function Post({
   metadata_title,
   metadata_description,
 }) {
-  const placeholderImage = "./placeholder.jpg";
+  const placeholderImage = "/placeholder.jpg";
   const [liked, setLiked] = useState(default_liked);
+  const [usePlaceholderImage, setUsePlaceholderImage] = useState(false);
   const [inEditMode, setInEditMode] = useState(false);
   const [descriptionEditValue, setDescriptionEditValue] = useState(description);
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
+
+  useEffect(()=>{
+    validateMetadataImage();
+  },[])
 
   function goToUser() {
     if (!owner_id) return alert("This post doenst have an owner_id prop");
@@ -85,6 +90,29 @@ export default function Post({
     // })
   }
 
+  async function validateMetadataImage() {
+    if (!metadata_image) return;
+    try {
+        await validateUrl(metadata_image);
+    } catch (error) {
+      setUsePlaceholderImage(true);
+    }
+      
+}
+
+async function validateUrl(url) {
+  return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = function () {
+          resolve(true);
+      };
+      img.onerror = function () {
+          reject(false);
+      };
+      img.src = url;
+  });
+}
+
   function createdLinkTitle(link) {
     if (link.includes("instagram.com")) {
       return "Instagram";
@@ -111,14 +139,14 @@ export default function Post({
 
   function extractDomain(link) {
     if (typeof link !== "string" || link.trim() === "") {
-      return "Title"; // Retorna um valor padrão ou gera um erro, dependendo do caso
+      return "Title";
     }
 
-    const domainParts = link.replace("https://www.", "").split(".");
+    const domainParts = link.toLowerCase().replace("https://www.", "").split(".");
     if (domainParts.length >= 1) {
       return capitalizeFirstLetter(domainParts[0]);
     } else {
-      return "Title"; // Retorna um valor padrão ou gera um erro, dependendo do caso
+      return "Title";
     }
   }
 
@@ -172,7 +200,7 @@ export default function Post({
             />
           </PostForm>
         )}
-        <Metadata href={link} target="_blank" rel="noreferrer">
+        <Metadata>
           <MetadataInfo>
             <h1 className="metadata-title">
               {metadata_title && metadata_title !== ""
@@ -186,15 +214,17 @@ export default function Post({
               {link}
             </a>
           </MetadataInfo>
+         <div className="metadata-image">
           <img
-            onClick={goToUser}
-            src={
-              metadata_image && metadata_image !== ""
-                ? metadata_image
-                : placeholderImage
-            }
-            alt=""
-          />
+              onClick={goToUser}
+              src={
+               ( metadata_image && metadata_image !== "" && !usePlaceholderImage)
+                  ? metadata_image
+                  : placeholderImage
+              }
+              alt=""
+            />
+         </div>
         </Metadata>
       </PostInfo>
     </PostContainer>
@@ -202,6 +232,7 @@ export default function Post({
 }
 
 const PostContainer = styled.div`
+
   width: 100%;
   max-width: 611px;
   background-color: #171717;
@@ -211,6 +242,11 @@ const PostContainer = styled.div`
   padding: 20px;
   position: relative;
   margin-bottom: 10px;
+
+  @media (max-width:500px) {
+    max-width: 100%;
+    border-radius: 0;
+  }
 `;
 
 const PostForm = styled.form`
@@ -329,12 +365,12 @@ const PostInfo = styled.div`
   }
 
   p {
-    color: #b7b7b7;
-    font-family: Lato;
-    font-size: 17px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
+    color: #b7b7b7 !important;
+    font-family: Lato !important;
+    font-size: 17px !important;
+    font-style: normal !important;
+    font-weight: 400 !important;
+    line-height: normal !important;
 
     span {
       color: #fff;
@@ -358,15 +394,24 @@ const Metadata = styled.div`
   overflow: hidden;
   justify-content: space-between;
   text-decoration: none !important;
+  @media (max-width:500px) {
+      height: fit-content;
+      max-height: fit-content;
+  }
 
-  img {
+  .metadata-image{
     width: 100%;
     max-width: 153.44px;
-    height: 155px;
-    flex-shrink: 0;
     border-radius: 0px 12px 13px 0px;
-    object-fit: cover;
+    overflow: hidden;
+      img {
+        width: 100%;
+        height: 100%;
+        border-radius: 0px 12px 13px 0px;
+        object-fit: cover;
+    }
   }
+  
 `;
 
 const MetadataInfo = styled.div`
@@ -375,6 +420,11 @@ const MetadataInfo = styled.div`
   padding: 20px;
   gap: 10px;
 
+  @media (max-width:500px) {
+      padding: 7px;
+      height: fit-content;
+  }
+
   a {
     color: #cecece;
     font-family: Lato;
@@ -382,6 +432,9 @@ const MetadataInfo = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+    @media (max-width:500px) {
+      font-size: 9px;
+    }
   }
 
   h1 {
@@ -392,6 +445,10 @@ const MetadataInfo = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+    @media (max-width:500px) {
+      font-size: 11px;
+    }
+    
   }
 
   h2 {
@@ -402,5 +459,8 @@ const MetadataInfo = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+    @media (max-width:500px) {
+      font-size: 9px;
+    }
   }
 `;
