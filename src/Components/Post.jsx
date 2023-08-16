@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { AiFillHeart, AiOutlineHeart, AiFillEdit } from "react-icons/ai";
 import { BiSolidTrashAlt } from "react-icons/bi";
@@ -26,13 +26,21 @@ export default function Post({
   const [usePlaceholderImage, setUsePlaceholderImage] = useState(false);
   const [inEditMode, setInEditMode] = useState(false);
   const [descriptionEditValue, setDescriptionEditValue] = useState(description);
+  const editRef = useRef();
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
 
   useEffect(()=>{
     validateMetadataImage();
+    window.addEventListener('click', endEdit);
   },[])
 
+  function endEdit(event) {
+    if (editRef.current && !event.target.classList.contains('edit-post')) {
+      setInEditMode(false);
+      console.log("edit")
+    }
+}
   function goToUser() {
     if (!owner_id) return alert("This post doenst have an owner_id prop");
 
@@ -199,10 +207,12 @@ async function validateUrl(url) {
         {inEditMode && (
           <PostForm onBlur={finishEdit} onSubmit={(e) => finishEdit(e)}>
             <input
+              ref={editRef}
               onBlur={finishEdit}
               value={descriptionEditValue}
               type="text"
               placeholder="Description"
+              className="edit-post"
               onChange={(e) => setDescriptionEditValue(e.target.value)}
             />
           </PostForm>

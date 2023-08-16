@@ -94,6 +94,12 @@ const Content = styled.div`
   align-items: center;
   width: 100%;
   max-width: 940px;
+  @media (max-width: 1000px) {
+      max-width: calc(100% - 30px) !important;
+  }
+  @media (max-width: 500px) {
+      max-width:100% !important;
+  }
   .search-bar{
     @media (max-width: 500px) {
       max-width: calc(100% - 20px) !important;
