@@ -19,6 +19,7 @@ export default function Timeline() {
     axios
       .get(`${process.env.REACT_APP_API_URL}/timeline`)
       .then((response) => {
+        console.log(response.data);
         setPosts(response.data);
         setLoading(false);
       })
@@ -63,9 +64,9 @@ export default function Timeline() {
               owner_id={post.owner_id}
               post_id={post.post_id}
               default_liked={post.default_liked}
-              metadata_title={post.metadata_title}
-              metadata_description={post.metadata_description}
-              metadata_image={post.metadata_image}
+              metadata_title={post.metadata.title}
+              metadata_description={post.metadata.description}
+              metadata_image={post.metadata.image}
             />
           ))
         )}
