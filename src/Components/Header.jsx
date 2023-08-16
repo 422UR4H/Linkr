@@ -30,7 +30,7 @@ export default function Header() {
         setShowLogout(!showLogout);
     }
 
-    console.log(logoutRef.current)
+    // console.log(logoutRef.current)
     function listenerOutsiteClick(event) {
         if (logoutRef.current && !event.target.classList.contains('menu')) {
             setShowLogout((prevShowLogout) => !prevShowLogout);
