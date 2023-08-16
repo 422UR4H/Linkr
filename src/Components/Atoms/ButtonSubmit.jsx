@@ -42,4 +42,9 @@ const StyledButtonSubmit = styled.button`
         justify-content: center;
         align-items: center;
     }
+
+    @media (max-width: 767px) {
+        width: calc(100vw - 45px);
+        height: 55px;
+    }
 `;

@@ -14,4 +14,8 @@ const StyledForm = styled.form`
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    @madia (max-width: 767px) {
+        gap: 11px;
+    }
 `;
