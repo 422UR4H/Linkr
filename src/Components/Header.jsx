@@ -30,7 +30,7 @@ export default function Header() {
         setShowLogout(!showLogout);
     }
 
-    console.log(logoutRef.current)
+    // console.log(logoutRef.current)
     function listenerOutsiteClick(event) {
         if (logoutRef.current && !event.target.classList.contains('menu')) {
             setShowLogout((prevShowLogout) => !prevShowLogout);
@@ -90,6 +90,7 @@ const LogoutContainer = styled.nav`
     align-items: center;
     justify-content: center;
     border-bottom-left-radius: 20px;
+    z-index: 4;
 
     button {
         color: #FFF;
