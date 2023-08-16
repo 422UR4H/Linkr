@@ -8,6 +8,7 @@ import api from '../Services/api.js';
 import useToken from '../Hooks/useToken.js';
 import { Link, useNavigate } from 'react-router-dom';
 import UserContext from '../Contexts/UserContext.js';
+import { styled } from 'styled-components';
 
 
 export default function Login() {
@@ -42,7 +43,7 @@ export default function Login() {
   }
 
   return (
-    <SignPagesTemplate>
+    <SignPagesTemplate margin="317px">
       <Form onSubmit={handleSubmit}>
         <Input
           name="email"

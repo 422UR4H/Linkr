@@ -47,7 +47,7 @@ export default function Register() {
   }
 
   return (
-    <SignPagesTemplate>
+    <SignPagesTemplate margin="274px">
       <Form onSubmit={handleSubmit}>
         <Input
           name="email"
