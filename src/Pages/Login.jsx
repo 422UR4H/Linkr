@@ -31,7 +31,7 @@ export default function Login() {
     api.signin(form)
       .then(({ data }) => {
         login(data);
-        //SETAR USUARIO AQUI setUser(informaçõe do usuario: foto nome email id etc..)
+        //SETAR USUARIO AQUI setUser(informaçõe do usuario: foto nome email id)
         navigate("/timeline");
       })
       .catch((err) => {

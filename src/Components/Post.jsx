@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styled from "styled-components";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-export default function Post({ user_name, avatar_photo_url, like_count, name, description, link, default_liked = false }) {
+export default function Post({ name, avatar_photo_url, like_count, description, link, default_liked = false }) {
 
     const [liked, setLiked] = useState(default_liked);
     
@@ -16,7 +16,7 @@ export default function Post({ user_name, avatar_photo_url, like_count, name, de
     return (
         <PostContainer>
             <AvatarAndLikes>
-                <img src={avatar_photo_url ? avatar_photo_url : "https://i.kym-cdn.com/entries/icons/facebook/000/016/546/hidethepainharold.jpg"} alt={user_name} />
+                <img src={avatar_photo_url ? avatar_photo_url : "https://i.kym-cdn.com/entries/icons/facebook/000/016/546/hidethepainharold.jpg"} alt={name} />
                 <Likes>
                     {liked ? <AiFillHeart onClick={dislike} className='like-btn full' /> : <AiOutlineHeart onClick={like} className='like-btn empty' />}
 
