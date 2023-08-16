@@ -4,12 +4,16 @@ import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Post from "../Components/Post";
+import SearchBar from "../Components/SearchBar";
+import { useWindowSize } from "@uidotdev/usehooks";
+
 export default function Timeline() {
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(1);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const size = useWindowSize();
 
   useEffect(() => {
     axios
@@ -36,6 +40,7 @@ export default function Timeline() {
   return (
     <>
       <ContainerTimeline>
+        {size.width <= 500 && <SearchBar className={"search-bar"} />}
         <CreatePost />
         {loading ? (
           <p>Loading...</p>
@@ -76,5 +81,9 @@ const ContainerTimeline = styled.div`
   p {
     color: #707070;
     font-size: 40px;
+  }
+  .search-bar {
+    margin-top: 10px;
+    max-width: calc(100% - 20px) !important;
   }
 `;
