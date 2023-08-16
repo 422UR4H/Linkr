@@ -4,7 +4,7 @@ export default function CreatePost() {
   return (
     <>
       <Title>
-        <h1>Timeline</h1>
+        <h1>timeline</h1>
       </Title>
       <Container>
         <ContainerCreatePost>
@@ -32,17 +32,19 @@ export default function CreatePost() {
 }
 
 const Container = styled.div`
-max-width: 611px;
+  max-width: 611px;
   width: 100%;
 
-  .container2{
+  .container2 {
     width: 100%;
   }
 `;
 
 const Title = styled.div`
-  width: 611px;
+  max-width: 611px;
+  width: 100%;
   text-align: start;
+  padding: 15px;
   h1 {
     font-family: "Oswald", sans-serif;
     color: #ffffff;
@@ -88,22 +90,32 @@ const ContainerCreatePost = styled.div`
     font-size: 15px;
     font-weight: 300;
     line-height: 18px;
-    &:focus{
+    &:focus {
       outline: none;
     }
   }
-  textarea{
+  textarea {
     height: 66px;
     resize: none;
-    width:100%;
+    width: 100%;
     font-size: 15px;
     font-weight: 300;
     border-radius: 5px;
     background-color: #efefef;
     border: none;
     padding: 10px;
-    &:focus{
+    &:focus {
       outline: none;
+    }
+  }
+
+  @media (max-width: 720px) {
+    border-radius: 0;
+    img {
+      display: none;
+    }
+    h2 {
+      text-align: center;
     }
   }
 `;
