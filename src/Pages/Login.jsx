@@ -12,7 +12,7 @@ import UserContext from '../Contexts/UserContext.js';
 
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
-  const {user,setUser} = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const { form, handleForm } = useForm({ email: "", password: "" });
   const { login } = useToken();
   const navigate = useNavigate();
@@ -31,7 +31,7 @@ export default function Login() {
     api.signin(form)
       .then(({ data }) => {
         login(data);
-        //SETAR USUARIO AQUI setUser(informaçõe do usuario: foto nome email id)
+        setUser(data.user);
         navigate("/timeline");
       })
       .catch((err) => {
