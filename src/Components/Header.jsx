@@ -8,6 +8,7 @@ import useToken from '../Hooks/useToken.js';
 import SearchBar from "./SearchBar";
 import { useWindowSize } from "@uidotdev/usehooks";
 
+
 export default function Header() {
     const [showLogout, setShowLogout] = useState(false);
     const { user, setUser } = useContext(UserContext);
@@ -61,10 +62,8 @@ export default function Header() {
                             className='menu'
                             ref={logoutRef}
                             onClick={toggleShowLogout}
-                            /* src={user ? user.photo : placeholderImage} */
                             src={user ? user.photo : URL_DEFAULT_PHOTO}
-                            // alt={user ? user.name : "Loading.."}
-                            alt={user ? user.name : DEFAULT_USER_NAME}
+                            alt={user ? user.name : "Loading..."}
                         />
                         {showLogout && (
                             <LogoutContainer ref={logoutRef}>
@@ -91,7 +90,7 @@ const LogoutContainer = styled.nav`
     justify-content: center;
     border-bottom-left-radius: 20px;
 
-    button{
+    button {
         color: #FFF;
         font-family: 'Lato', 'sans-serif';
         font-size: 17px;
@@ -109,28 +108,28 @@ const LogoutContainer = styled.nav`
 `;
 
 const UserAvatar = styled.div`
-display: flex;
-align-items: center;
-justify-content: center;
-gap: 10px;
-color: white;
-font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: white;
+    font-size: 20px;
 
-  .icon {
-    cursor: pointer;
-}
-    .menu{
-    cursor: pointer;
-}
-
-img {
-    width: 50px;
-    height: 50px;
-    flex-shrink: 0;
-    border-radius: 26.5px;
-    object-fit: cover;
-    cursor: pointer;
-  }
+    .icon {
+        cursor: pointer;
+    }
+    .menu {
+        cursor: pointer;
+    }
+    img {
+        width: 50px;
+        height: 50px;
+        flex-shrink: 0;
+        border-radius: 26.5px;
+        object-fit: cover;
+        cursor: pointer;
+    }
+`;
 
 const HeaderContainer = styled.header`
     width: 100%;
@@ -167,7 +166,6 @@ const HeaderContainer = styled.header`
     }
 
     input{
-       
         width: 100%;
         height: 45px;
         flex-shrink: 0;
