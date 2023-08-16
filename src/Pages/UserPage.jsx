@@ -3,12 +3,15 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router';
 import { styled } from 'styled-components'
 import Post from '../Components/Post';
+import { useNavigate } from 'react-router-dom';
 
 export default function UserPage() {
   const [thisUser,setThisUser] = useState(null);
   const params = useParams();
+  const navigate = useNavigate();
 
   useEffect(()=>{
+    if(!localStorage.getItem("token")) return navigate('/');
     const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
     axios.get(`${process.env.REACT_APP_API_URL}/user/${params.id}`,{ headers: { Authorization: token } })
     .then(res=>{
@@ -22,10 +25,11 @@ export default function UserPage() {
     <PageContainer>
       <Content>
         <AvatarAndTitle>
-          <img src={thisUser ? thisUser.photo : ""} alt={thisUser ? thisUser.name : "Loading.."} />
+          <img src={thisUser ? thisUser.photo : "/placeholder.jpg"} alt={thisUser ? thisUser.name : "Loading.."} />
           <h1>{thisUser ? thisUser.user_name+"’s posts" : "Loading..."}</h1>
         </AvatarAndTitle>
         <Posts>
+          {thisUser && thisUser.user_posts.length == 0 && <h1 className='no-posts'>This user has no posts</h1>}
           {
             thisUser && thisUser.user_posts.map(post => (
               <Post 
@@ -56,6 +60,11 @@ const Posts = styled.div`
   flex-direction: column;
   gap: 16px;
   margin-top: 40px;
+
+  .no-posts{
+    color: #a1a1a1;
+    font-size: 15px;
+  }
 `;
 
 const Content = styled.div`

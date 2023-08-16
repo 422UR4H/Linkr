@@ -6,7 +6,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import UserContext from '../Contexts/UserContext';
 export default function Post({ post_id, owner_id, name, avatar_photo_url, like_count, description, link, default_liked = false, metadata_image, metadata_title, metadata_description }) {
-    const placeholderImage = "https://i.kym-cdn.com/entries/icons/facebook/000/016/546/hidethepainharold.jpg";
+    const placeholderImage = "./placeholder.jpg";
     const [liked, setLiked] = useState(default_liked);
     const [inEditMode, setInEditMode] = useState(false);
     const [descriptionEditValue, setDescriptionEditValue] = useState(description);
@@ -145,7 +145,7 @@ export default function Post({ post_id, owner_id, name, avatar_photo_url, like_c
                         <h2 className='metadata-description'>{metadata_description ? metadata_description : "Description"}</h2>
                         <a href={link} target='_blank'>{link}</a>
                     </MetadataInfo>
-                    <img onClick={goToUser} src={metadata_image ? metadata_image : placeholderImage} alt="" />
+                    <img onClick={goToUser} src={metadata_image && metadata_image !== "" ? metadata_image : placeholderImage} alt="" />
                 </Metadata>
             </PostInfo>
         </PostContainer>
