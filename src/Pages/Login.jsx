@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import SignPagesTemplate from '../Components/Templates/SignPagesTemplate.jsx';
 import Form from '../Components/Atoms/Form.jsx';
 import Input from '../Styles/Input.js';
@@ -7,10 +7,12 @@ import ButtonSubmit from '../Components/Atoms/ButtonSubmit.jsx';
 import api from '../Services/api.js';
 import useToken from '../Hooks/useToken.js';
 import { Link, useNavigate } from 'react-router-dom';
+import UserContext from '../Contexts/UserContext.js';
 
 
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
+  const { user, setUser } = useContext(UserContext);
   const { form, handleForm } = useForm({ email: "", password: "" });
   const { login } = useToken();
   const navigate = useNavigate();
@@ -29,6 +31,7 @@ export default function Login() {
     api.signin(form)
       .then(({ data }) => {
         login(data);
+        setUser(data.user);
         navigate("/timeline");
       })
       .catch((err) => {

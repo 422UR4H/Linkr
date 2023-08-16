@@ -18,7 +18,7 @@ export default function App() {
   return (
     <UserContext.Provider value={{ user, setUser }}>
         <BrowserRouter>
-          {!!token && <Header />}
+          <Header />
           {/* <Post /> */}
           <Routes>
             <Route path="/" element={<Login />} />

@@ -8,7 +8,6 @@ export default function UserPage() {
   const params = useParams();
 
   useEffect(()=>{
-    return;
     axios.get(`${process.env.REACT_APP_API_URL}/user/${params.id}`)
     .then(res=>{
         setThisUser(res.data);
