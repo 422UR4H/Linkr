@@ -56,13 +56,13 @@ export default function Timeline() {
           posts.map((post) => (
             <Post
               key={post.id}
-              avatar_photo_url={post.avatar_photo_url}
-              name={post.name}
+              avatar_photo_url={post.user_photo}
+              name={post.user_name}
               description={post.description}
-              like_count={post.like_count}
+              like_count={post.likes_count}
               link={post.link}
               owner_id={post.owner_id}
-              post_id={post.post_id}
+              post_id={post.id}
               default_liked={post.default_liked}
               metadata_title={post.metadata.title}
               metadata_description={post.metadata.description}
