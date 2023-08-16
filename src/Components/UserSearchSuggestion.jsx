@@ -28,6 +28,10 @@ const SCUserSearchSuggestion = styled.div`
     padding-right: 18px;
     gap: 12px;
     cursor: pointer;
+    &:last-child{
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+    }
 
     &:hover{
         background-color: lightgray;
