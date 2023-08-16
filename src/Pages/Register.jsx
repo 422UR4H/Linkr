@@ -16,7 +16,6 @@ function isAnyFieldEmpty({ email, password, user_name, photo }) {
 export default function Register() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useToken();
   const { form, handleForm } = useForm({
     email: "",
     password: "",
@@ -37,8 +36,8 @@ export default function Register() {
 
     api.signup(form)
       .then(({ data }) => {
-        login(data);
-        navigate("/timeline");
+        console.log(data)
+        navigate("/");
       })
       .catch((err) => {
         console.log(err.response);
@@ -69,20 +68,8 @@ export default function Register() {
           maxLength={32}
           required
         />
-        {/* <Input
-          name="confirmPassword"
-          type="password"
-          placeholder="Confirmar senha"
-          value={form.confirmPassword}
-          onChange={handleForm}
-          onBlur={validatePassword}
-          ref={confirmInputRef}
-          minLength={3}
-          maxLength={32}
-          required
-        /> */}
         <Input
-          name="name"
+          name="user_name"
           type="text"
           placeholder="username"
           value={form.user_name}
@@ -103,7 +90,7 @@ export default function Register() {
           Sign Up
         </ButtonSubmit>
       </Form>
-      <Link to="/sign-up">Switch back to log in</Link>
+      <Link to="/">Switch back to log in</Link>
     </SignPagesTemplate>
   );
 }
