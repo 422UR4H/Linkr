@@ -34,9 +34,11 @@ export default function CreatePost() {
 const Container = styled.div``;
 
 const Title = styled.div`
+  width: 611px;
+  text-align: start;
   h1 {
     font-family: "Oswald", sans-serif;
-    color: #000000;
+    color: #ffffff;
     font-size: 43px;
     font-weight: 700;
     line-height: 64px;
@@ -45,11 +47,14 @@ const Title = styled.div`
 
 const ContainerCreatePost = styled.div`
   display: flex;
-  border: 2px solid black;
   width: 611px;
   height: 209px;
   border-radius: 16px;
-  padding-bottom: 15px;
+  padding: 10px;
+  background-color: #ffffff;
+  box-shadow: 0px 4px 4px 0px #00000040;
+  margin-bottom: 10px;
+
   img {
     width: 50px;
     height: 50px;
@@ -58,14 +63,14 @@ const ContainerCreatePost = styled.div`
   }
   h2 {
     font-family: "Lato", sans-serif;
-    padding: 20px 0 15px 0;
+    padding: 10px 0 15px 0;
     color: #707070;
     font-size: 20px;
     font-weight: 300;
     line-height: 24px;
   }
   input {
-    width: 463px;
+    width: 503px;
     height: 13px;
     padding: 15px;
     margin-bottom: 5px;
@@ -79,7 +84,7 @@ const ContainerCreatePost = styled.div`
   }
   input:last-of-type {
     position: relative;
-    height: 46px;
+    height: 66px;
     display: flex;
     vertical-align: text-top;
     &::placeholder {

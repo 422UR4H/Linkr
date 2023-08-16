@@ -5,6 +5,9 @@ import { BiSolidTrashAlt } from "react-icons/bi";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import UserContext from "../Contexts/UserContext";
+import "react-tooltip/dist/react-tooltip.css";
+import { Tooltip } from "react-tooltip";
+
 export default function Post({
   post_id,
   owner_id,
@@ -131,6 +134,7 @@ export default function Post({
           <BiSolidTrashAlt className="icon" />
         </Actions>
       )}
+      <Tooltip id="tooltip likes" />
       <AvatarAndLikes>
         <img
           src={avatar_photo_url ? avatar_photo_url : placeholderImage}
@@ -142,7 +146,14 @@ export default function Post({
           ) : (
             <AiOutlineHeart onClick={like} className="like-btn empty" />
           )}
-          <span>{like_count ? like_count : 0} likes</span>
+          <span
+            data-tooltip-id="tooltip likes"
+            data-tooltip-content={`Você, ${like_count - 1} e ${
+              like_count - 1 === 1 ? "outra pessoa" : "outras pessoas"
+            } curtiram isso`}
+          >
+            {like_count ? like_count : 0} likes
+          </span>
         </Likes>
       </AvatarAndLikes>
       <PostInfo>
@@ -171,7 +182,7 @@ export default function Post({
             <h2 className="metadata-description">
               {metadata_description ? metadata_description : "Description"}
             </h2>
-            <a href={link} target="_blank">
+            <a onClick={() => window.open(link)} href={link} target="_blank">
               {link}
             </a>
           </MetadataInfo>
@@ -199,6 +210,7 @@ const PostContainer = styled.div`
   gap: 18px;
   padding: 20px;
   position: relative;
+  margin-bottom: 10px;
 `;
 
 const PostForm = styled.form`
