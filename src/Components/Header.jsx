@@ -19,6 +19,7 @@ export default function Header() {
     const size = useWindowSize();
 
     useEffect(() => {
+        // logoutRef.current = 0;
         window.addEventListener('click', listenerOutsiteClick);
         return () => {
             window.removeEventListener('click', listenerOutsiteClick);
@@ -29,6 +30,7 @@ export default function Header() {
         setShowLogout(!showLogout);
     }
 
+    console.log(logoutRef.current)
     function listenerOutsiteClick(event) {
         if (logoutRef.current && !event.target.classList.contains('menu')) {
             setShowLogout((prevShowLogout) => !prevShowLogout);
@@ -60,7 +62,6 @@ export default function Header() {
                         }
                         <img
                             className='menu'
-                            ref={logoutRef}
                             onClick={toggleShowLogout}
                             src={user ? user.photo : URL_DEFAULT_PHOTO}
                             alt={user ? user.name : "Loading..."}
