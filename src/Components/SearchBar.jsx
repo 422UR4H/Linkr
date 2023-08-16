@@ -1,39 +1,62 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components';
 import UserSearchSuggestion from './UserSearchSuggestion';
 import axios from 'axios';
 import { AiOutlineSearch } from 'react-icons/ai';
 
 export default function SearchBar() {
-   
+
     const [searchValue, setSearchValue] = useState("");
     const searchRef = useRef();
     const [searching, setSearching] = useState(false);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [suggestions, setSuggestions] = useState([]);
+    const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
+
+    useEffect(() => {
+        const delay = setTimeout(() => {
+            if (debouncedSearchValue.length >= 3) {
+                performSearch(debouncedSearchValue);
+            }
+        }, 300);
+        return () => clearTimeout(delay);
+    }, [debouncedSearchValue]);
+
     function cancelSearch() {
         setSearching(false);
         setShowSuggestions(false);
     }
 
-    function handleSearchChanged(e) {
+    function performSearch(query) {
         const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
-        setSearchValue(e.target.value);
-        setSearching(true);
-        if (searchValue == "") return;
-        axios.get(`${process.env.REACT_APP_API_URL}/users/${searchValue}`, { headers: { Authorization: token } })
+
+        axios.get(`${process.env.REACT_APP_API_URL}/users/${query}`, { headers: { Authorization: token } })
             .then(res => {
-                //console.log(res.data);
                 setShowSuggestions(true);
                 setSuggestions(res.data);
                 setSearching(false);
             })
             .catch(err => {
-                //console.log(err);
                 setSuggestions([]);
                 setShowSuggestions(false);
                 setSearching(false);
-            })
+            });
+    }
+
+    useEffect(() => {
+        const delay = setTimeout(() => {
+            setDebouncedSearchValue(searchValue);
+        }, 300);
+
+        return () => clearTimeout(delay);
+    }, [searchValue]);
+
+    function handleSearchChanged(e) {
+        setSearchValue(e.target.value);
+        setSearching(e.target.value.length >= 3);
+        if (e.target.value === "") {
+            setShowSuggestions(false);
+        }
     }
 
     return (
@@ -70,45 +93,45 @@ export default function SearchBar() {
 
 
 const SCSearchBar = styled.div`
-max-width: 563px;
+    max-width: 563px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    
+    .icon{
+        font-size: 30px;
+        color: #C6C6C6;
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+    }
+
+    input{
+    
         width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-        
-        .icon{
-            font-size: 30px;
+        height: 45px;
+        flex-shrink: 0;
+        border-radius: 8px;
+        background: #FFF;
+        border: 0;
+        padding-left: 14px;
+
+        &:focus{
+            outline: none;
+        }
+        &::placeholder{
             color: #C6C6C6;
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
+            font-family: Lato;
+            font-size: 19px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
         }
-
-        input{
-       
-            width: 100%;
-            height: 45px;
-            flex-shrink: 0;
-            border-radius: 8px;
-            background: #FFF;
-            border: 0;
-            padding-left: 14px;
-
-            &:focus{
-                outline: none;
-            }
-            &::placeholder{
-                color: #C6C6C6;
-                font-family: Lato;
-                font-size: 19px;
-                font-style: normal;
-                font-weight: 400;
-                line-height: normal;
-            }
-        }
+    }
 `;
 
 const SearchDefaultSuggestion = styled.div`

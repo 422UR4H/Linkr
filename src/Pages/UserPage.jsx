@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router';
 import { styled } from 'styled-components'
+import Post from '../Components/Post';
 
 export default function UserPage() {
   const [thisUser,setThisUser] = useState(null);
@@ -21,13 +22,41 @@ export default function UserPage() {
     <PageContainer>
       <Content>
         <AvatarAndTitle>
-          <img src={thisUser ? thisUser.photo : "https://i.kym-cdn.com/entries/icons/facebook/000/016/546/hidethepainharold.jpg"} alt={thisUser ? thisUser.name : "Juvenal"} />
-          <h1>{thisUser ? thisUser.user_name : "Juvenal Juvêncio’s posts"}</h1>
+          <img src={thisUser ? thisUser.photo : ""} alt={thisUser ? thisUser.name : "Loading.."} />
+          <h1>{thisUser ? thisUser.user_name+"’s posts" : "Loading..."}</h1>
         </AvatarAndTitle>
+        <Posts>
+          {
+            thisUser && thisUser.user_posts.map(post => (
+              <Post 
+                  key={post.post_id} 
+                  owner_id={thisUser.user_id} 
+                  post_id={post.post_id} 
+                  description={post.description} 
+                  like_count={post.likes_count} 
+                  link={post.link}
+                  avatar_photo_url={thisUser.photo}
+                  name={thisUser.user_name}
+                  default_liked={false}
+                  metadata_description={post.metadata.description}
+                  metadata_image={post.metadata.image}
+                  metadata_title={post.metadata.title}
+              />
+          ))
+          }
+        </Posts>
       </Content>
     </PageContainer>
   )
 }
+
+const Posts = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 40px;
+`;
 
 const Content = styled.div`
 
@@ -68,10 +97,9 @@ const AvatarAndTitle = styled.div`
 `;
 
 const PageContainer = styled.main`
-
-width: 100%;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: flex-start;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
 `;
