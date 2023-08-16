@@ -9,6 +9,7 @@ const Input = styled.input`
 
     width: 429px;
     height: 65px;
+    border: none;
     border-radius: 6px;
     padding-inline: 17px;
     padding-bottom: 5px;
@@ -18,6 +19,11 @@ const Input = styled.input`
     }
     &:focus {
         outline: none;
+    }
+
+    @media (max-width: 767px) {
+        width: calc(100vw - 45px);
+        height: 55px;
     }
 `;
 
