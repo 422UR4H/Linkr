@@ -48,7 +48,14 @@ export default function Post({
   }
 
   function startEdit() {
-    setInEditMode(true);
+    if(inEditMode)
+    {
+      setInEditMode(false);
+    }
+    else
+    {
+      setInEditMode(true);
+    }
   }
 
   function askDelete() {
@@ -199,8 +206,8 @@ async function validateUrl(url) {
         {!inEditMode && <p>{description ? description : "Description"}</p>}
         {inEditMode && (
           <PostForm onBlur={finishEdit} onSubmit={(e) => finishEdit(e)}>
-            <textarea
-            ref={editRef}
+            <input
+              ref={editRef}
               onBlur={finishEdit}
               value={descriptionEditValue}
               type="text"
@@ -265,7 +272,7 @@ const PostForm = styled.form`
   align-items: center;
   justify-content: center;
 
-  textarea {
+  input {
     width: 100%;
     padding: 10px;
     border-radius: 7px;
