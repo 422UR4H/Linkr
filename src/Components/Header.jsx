@@ -5,37 +5,21 @@ import { styled } from 'styled-components';
 import UserContext from '../Contexts/UserContext';
 import UserSearchSuggestion from './UserSearchSuggestion';
 import axios from 'axios';
+import SearchBar from './SearchBar';
+import { useWindowSize } from '@uidotdev/usehooks';
 
 export default function Header() {
     const placeholderImage = "https://i.kym-cdn.com/entries/icons/facebook/000/016/546/hidethepainharold.jpg";
     const [showLogout, setShowLogout] = useState(false);
-    const [searching, setSearching] = useState(false);
-    const [suggestions, setSuggestions] = useState([]);
+    const size = useWindowSize();
     const { user, setUser } = useContext(UserContext);
     const navigate = useNavigate();
     const location = useLocation();
-    const [searchValue, setSearchValue] = useState("");
-    const searchRef = useRef();
+   
     function logout() {
         localStorage.removeItem('token');
         setUser(null);
         navigate('/');
-    }
-
-    function handleSearchChanged(e) {
-        setSearchValue(e.target.value);
-        setSearching(true);
-        axios.get(`${process.env.REACT_APP_API_URL}/users/${searchValue}`)
-            .then(res => {
-                //console.log(res);
-                setSuggestions(res.data);
-                setSearching(false);
-            })
-            .catch(err => {
-                console.log(err);
-                setSuggestions([]);
-                setSearching(false);
-            })
     }
     return (
         <>
@@ -44,34 +28,7 @@ export default function Header() {
 
                 <HeaderContainer>
                     <h1>Linkr</h1>
-                    <div className='search-bar'>
-                        <AiOutlineSearch className='icon' />
-                        <input ref={searchRef} value={searchValue} onChange={(e) => handleSearchChanged(e)} name='search' id='search' required type="text" placeholder='Search for people' />
-                        {
-                            searchValue.length > 0 &&
-                            <SearchSuggestions>
-                                {
-                                    searching &&
-
-                                    <SearchDefaultSuggestion>
-                                        <p>{searching ? "Searching.." : suggestions?.length > 0 ? "" : "No results found"}</p>
-                                    </SearchDefaultSuggestion>
-                                }
-                                {
-                                    suggestions?.map(user_suggestion => {
-                                        return (
-                                            <UserSearchSuggestion
-                                                key={user_suggestion.id}
-                                                user_id={user_suggestion.id}
-                                                photo={user_suggestion.photo}
-                                                username={user_suggestion.name}
-                                            />
-                                        )
-                                    })
-                                }
-                            </SearchSuggestions>
-                        }
-                    </div>
+                    {size.width > 500 && <SearchBar/>}
                     <UserAvatar>
                         <AiOutlineDown className='icon' onClick={() => setShowLogout(!showLogout)} />
                         <img src={user ? user.photo : placeholderImage} alt={user ? user.name : "Juvenal"} />
@@ -88,35 +45,7 @@ export default function Header() {
     )
 }
 
-const SearchDefaultSuggestion = styled.div`
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 40px;
-    padding: 8px;
-    p{
-        color: #515151;
-        font-family: Lato;
-        font-size: 15px;
-        font-style: normal;
-        font-weight: 400;
-        line-height: normal;
-    }
-`;
 
-const SearchSuggestions = styled.nav`
-    position: absolute;
-    left: 0;
-    top: 40px;
-    width: 100%;
-    height: fit-content;
-    border-radius: 8px;
-    background: #E7E7E7;
-    border-top-right-radius: 0;
-    border-top-left-radius: 0;
-    z-index: 3;
-`;
 
 const LogoutContainer = styled.div`
     position: absolute;
@@ -179,48 +108,7 @@ const HeaderContainer = styled.header`
     padding-right: 17px;
     padding-left: 17px;
     z-index: 4;
-
-    .search-bar{
-        max-width: 563px;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-        
-        .icon{
-            font-size: 30px;
-            color: #C6C6C6;
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-        }
-    }
-
-    input{
-       
-        width: 100%;
-        height: 45px;
-        flex-shrink: 0;
-        border-radius: 8px;
-        background: #FFF;
-        border: 0;
-        padding-left: 14px;
-
-        &:focus{
-            outline: none;
-        }
-        &::placeholder{
-            color: #C6C6C6;
-            font-family: Lato;
-            font-size: 19px;
-            font-style: normal;
-            font-weight: 400;
-            line-height: normal;
-        }
-    }
+    gap: 30px;
 
     h1{
         color: #FFF;

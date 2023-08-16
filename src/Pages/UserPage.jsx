@@ -8,7 +8,8 @@ export default function UserPage() {
   const params = useParams();
 
   useEffect(()=>{
-    axios.get(`${process.env.REACT_APP_API_URL}/user/${params.id}`)
+    const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
+    axios.get(`${process.env.REACT_APP_API_URL}/user/${params.id}`,{ headers: { Authorization: token } })
     .then(res=>{
         setThisUser(res.data);
       }).catch((error) =>{
@@ -21,7 +22,7 @@ export default function UserPage() {
       <Content>
         <AvatarAndTitle>
           <img src={thisUser ? thisUser.photo : "https://i.kym-cdn.com/entries/icons/facebook/000/016/546/hidethepainharold.jpg"} alt={thisUser ? thisUser.name : "Juvenal"} />
-          <h1>{thisUser ? thisUser.name : "Juvenal Juvêncio’s posts"}</h1>
+          <h1>{thisUser ? thisUser.user_name : "Juvenal Juvêncio’s posts"}</h1>
         </AvatarAndTitle>
       </Content>
     </PageContainer>
