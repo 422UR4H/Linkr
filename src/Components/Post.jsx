@@ -6,7 +6,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import UserContext from '../Contexts/UserContext';
 export default function Post({ post_id, owner_id, name, avatar_photo_url, like_count, description, link, default_liked = false, metadata_image, metadata_title, metadata_description }) {
-    const placeholderImage = "https://i.kym-cdn.com/entries/icons/facebook/000/016/546/hidethepainharold.jpg";
+    const placeholderImage = "./placeholder.jpg";
     const [liked, setLiked] = useState(default_liked);
     const [inEditMode, setInEditMode] = useState(false);
     const [descriptionEditValue, setDescriptionEditValue] = useState(description);
@@ -70,6 +70,47 @@ export default function Post({ post_id, owner_id, name, avatar_photo_url, like_c
         // })
     }
 
+    function createdLinkTitle(link) {
+        if (link.includes("instagram.com")) {
+            return "Instagram";
+        } else if (link.includes("twitter.com")) {
+            return "Twitter";
+        } else if (link.includes("facebook.com")) {
+            return "Facebook";
+        } else if (link.includes("youtube.com")) {
+            return "Youtube";
+        } else if (link.includes("tiktok.com")) {
+            return "Tiktok";
+        } else if (link.includes("pinterest.com")) {
+            return "Pinterest";
+        } else if (link.includes("linkedin.com")) {
+            return "Linkedin";
+        } else if (link.includes("reddit.com")) {
+            return "Reddit";
+        } else if (link.includes("tumblr.com")) {
+            return "Tumblr";
+        }
+
+        return extractDomain(link);
+    }
+
+    function extractDomain(link) {
+        if (typeof link !== 'string' || link.trim() === '') {
+            return "Title"; // Retorna um valor padrão ou gera um erro, dependendo do caso
+        }
+    
+        const domainParts = link.replace('https://www.', '').split('.');
+        if (domainParts.length >= 1) {
+            return capitalizeFirstLetter(domainParts[0]);
+        } else {
+            return "Title"; // Retorna um valor padrão ou gera um erro, dependendo do caso
+        }
+    }
+
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
     return (
         <PostContainer>
             {
@@ -100,11 +141,11 @@ export default function Post({ post_id, owner_id, name, avatar_photo_url, like_c
                 }
                 <Metadata href={link} target="_blank" rel="noreferrer">
                     <MetadataInfo>
-                        <h1 className='metadata-title'>{metadata_title ? metadata_title : "Title"}</h1>
+                        <h1 className='metadata-title'>{metadata_title && metadata_title !== "" ? metadata_title :createdLinkTitle(link) }</h1>
                         <h2 className='metadata-description'>{metadata_description ? metadata_description : "Description"}</h2>
                         <a href={link} target='_blank'>{link}</a>
                     </MetadataInfo>
-                    <img onClick={goToUser} src={metadata_image ? metadata_image : placeholderImage} alt="" />
+                    <img onClick={goToUser} src={metadata_image && metadata_image !== "" ? metadata_image : placeholderImage} alt="" />
                 </Metadata>
             </PostInfo>
         </PostContainer>
@@ -257,7 +298,7 @@ const PostInfo = styled.div`
     }
 `;
 
-const Metadata = styled.a`
+const Metadata = styled.div`
 
     display: flex;
     width: 100%;
