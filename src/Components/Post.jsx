@@ -30,44 +30,44 @@ export default function Post({ post_id, owner_id, name, avatar_photo_url, like_c
     }
 
     function deleteThis() {
-        axios.delete(`${process.env.REACT_APP_API_URL}/posts/${post_id}`)
-        .then(res => {
-            console.log(res);
-        })
-        .catch(err => {
-            console.log(err);
-        })
+        // axios.delete(`${process.env.REACT_APP_API_URL}/posts/${post_id}`)
+        // .then(res => {
+        //     console.log(res);
+        // })
+        // .catch(err => {
+        //     console.log(err);
+        // })
     }
 
     function finishEdit(e) {
         e?.preventDefault();
-        axios.patch(`${process.env.REACT_APP_API_URL}/posts/${post_id}`, { description: descriptionEditValue })
-        .then(res => {
-            console.log(res.data);
-            setInEditMode(false);
-        })
+        // axios.patch(`${process.env.REACT_APP_API_URL}/posts/${post_id}`, { description: descriptionEditValue })
+        // .then(res => {
+        //     console.log(res.data);
+        //     setInEditMode(false);
+        // })
     }
 
     function like() {
-        axios.post(`${process.env.REACT_APP_API_URL}/like/${post_id}`)
-        .then(res => {
-            console.log(res);
-            setLiked(true);
-          })
-        .catch(err => {
-            console.log(err);
-        })
+        // axios.post(`${process.env.REACT_APP_API_URL}/like/${post_id}`)
+        // .then(res => {
+        //     console.log(res);
+        //     setLiked(true);
+        //   })
+        // .catch(err => {
+        //     console.log(err);
+        // })
     }
 
     function dislike() {
-        axios.post(`${process.env.REACT_APP_API_URL}/dislike/${post_id}`)
-        .then(res => {
-            console.log(res);
-            setLiked(false);
-          })
-        .catch(err => {
-            console.log(err);
-        })
+        // axios.post(`${process.env.REACT_APP_API_URL}/dislike/${post_id}`)
+        // .then(res => {
+        //     console.log(res);
+        //     setLiked(false);
+        //   })
+        // .catch(err => {
+        //     console.log(err);
+        // })
     }
 
     return (
