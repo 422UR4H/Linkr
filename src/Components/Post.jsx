@@ -30,17 +30,17 @@ export default function Post({
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
 
-  useEffect(()=>{
+  useEffect(() => {
     validateMetadataImage();
-    window.addEventListener('click', endEdit);
-  },[])
+    window.addEventListener("click", endEdit);
+  }, []);
 
   function endEdit(event) {
-    if (editRef.current && !event.target.classList.contains('edit-post')) {
+    if (editRef.current && !event.target.classList.contains("edit-post")) {
       setInEditMode(false);
-      console.log("edit")
+      console.log("edit");
     }
-}
+  }
   function goToUser() {
     if (!owner_id) return alert("This post doenst have an owner_id prop");
 
@@ -48,12 +48,9 @@ export default function Post({
   }
 
   function startEdit() {
-    if(inEditMode)
-    {
+    if (inEditMode) {
       setInEditMode(false);
-    }
-    else
-    {
+    } else {
       setInEditMode(true);
     }
   }
@@ -84,14 +81,17 @@ export default function Post({
   }
 
   function like() {
-    // axios.post(`${process.env.REACT_APP_API_URL}/like/${post_id}`)
-    // .then(res => {
-    //     console.log(res);
-    //     setLiked(true);
-    //   })
-    // .catch(err => {
-    //     console.log(err);
-    // })
+    axios
+      .post(`${process.env.REACT_APP_API_URL}/like/${post_id}`, {
+        like_owner_id: user.id,
+      })
+      .then((res) => {
+        console.log(res);
+        setLiked(true);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   function dislike() {
@@ -108,25 +108,24 @@ export default function Post({
   async function validateMetadataImage() {
     if (!metadata_image) return;
     try {
-        await validateUrl(metadata_image);
+      await validateUrl(metadata_image);
     } catch (error) {
       setUsePlaceholderImage(true);
     }
-      
-}
+  }
 
-async function validateUrl(url) {
-  return new Promise((resolve, reject) => {
+  async function validateUrl(url) {
+    return new Promise((resolve, reject) => {
       const img = new Image();
       img.onload = function () {
-          resolve(true);
+        resolve(true);
       };
       img.onerror = function () {
-          reject(false);
+        reject(false);
       };
       img.src = url;
-  });
-}
+    });
+  }
 
   function createdLinkTitle(link) {
     if (link.includes("instagram.com")) {
@@ -157,7 +156,10 @@ async function validateUrl(url) {
       return "Title";
     }
 
-    const domainParts = link.toLowerCase().replace("https://www.", "").split(".");
+    const domainParts = link
+      .toLowerCase()
+      .replace("https://www.", "")
+      .split(".");
     if (domainParts.length >= 1) {
       return capitalizeFirstLetter(domainParts[0]);
     } else {
@@ -231,17 +233,17 @@ async function validateUrl(url) {
               {link}
             </a>
           </MetadataInfo>
-         <div className="metadata-image">
-          <img
+          <div className="metadata-image">
+            <img
               onClick={goToUser}
               src={
-               ( metadata_image && metadata_image !== "" && !usePlaceholderImage)
+                metadata_image && metadata_image !== "" && !usePlaceholderImage
                   ? metadata_image
                   : placeholderImage
               }
               alt=""
             />
-         </div>
+          </div>
         </Metadata>
       </PostInfo>
     </PostContainer>
@@ -249,7 +251,6 @@ async function validateUrl(url) {
 }
 
 const PostContainer = styled.div`
-
   width: 100%;
   max-width: 611px;
   background-color: #171717;
@@ -260,7 +261,7 @@ const PostContainer = styled.div`
   position: relative;
   margin-bottom: 10px;
 
-  @media (max-width:500px) {
+  @media (max-width: 500px) {
     max-width: 100%;
     border-radius: 0;
   }
@@ -411,24 +412,23 @@ const Metadata = styled.div`
   overflow: hidden;
   justify-content: space-between;
   text-decoration: none !important;
-  @media (max-width:500px) {
-      height: fit-content;
-      max-height: fit-content;
+  @media (max-width: 500px) {
+    height: fit-content;
+    max-height: fit-content;
   }
 
-  .metadata-image{
+  .metadata-image {
     width: 100%;
     max-width: 153.44px;
     border-radius: 0px 12px 13px 0px;
     overflow: hidden;
-      img {
-        width: 100%;
-        height: 100%;
-        border-radius: 0px 12px 13px 0px;
-        object-fit: cover;
+    img {
+      width: 100%;
+      height: 100%;
+      border-radius: 0px 12px 13px 0px;
+      object-fit: cover;
     }
   }
-  
 `;
 
 const MetadataInfo = styled.div`
@@ -437,9 +437,9 @@ const MetadataInfo = styled.div`
   padding: 20px;
   gap: 10px;
 
-  @media (max-width:500px) {
-      padding: 7px;
-      height: fit-content;
+  @media (max-width: 500px) {
+    padding: 7px;
+    height: fit-content;
   }
 
   a {
@@ -449,7 +449,7 @@ const MetadataInfo = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: normal;
-    @media (max-width:500px) {
+    @media (max-width: 500px) {
       font-size: 9px;
     }
   }
@@ -462,10 +462,9 @@ const MetadataInfo = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: normal;
-    @media (max-width:500px) {
+    @media (max-width: 500px) {
       font-size: 11px;
     }
-    
   }
 
   h2 {
@@ -476,7 +475,7 @@ const MetadataInfo = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: normal;
-    @media (max-width:500px) {
+    @media (max-width: 500px) {
       font-size: 9px;
     }
   }
