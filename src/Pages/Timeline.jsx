@@ -3,6 +3,7 @@ import CreatePost from "../Components/CreatePost";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Post from "../Components/Post";
 export default function Timeline() {
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(1);
@@ -68,6 +69,7 @@ export default function Timeline() {
           </div>
         </div>
       </ContainerPost>
+      <Post like_count={10} name={"test"} description={"Description test"} default_liked={true} link={"http://example.com"}/>
       {posts.map((post) => (
         <ContainerPost key={post.id}>
           <div style={{ display: "flex", flexDirection: "column" }}>

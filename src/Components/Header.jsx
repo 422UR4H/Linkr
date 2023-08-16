@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
 import { AiOutlineDown, AiOutlineSearch } from 'react-icons/ai';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import UserContext from '../Contexts/UserContext';
 
@@ -8,28 +8,36 @@ export default function Header() {
     const [showLogout, setShowLogout] = useState(false);
     const { user, setUser } = useContext(UserContext);
     const navigate = useNavigate();
+    const location = useLocation();
     function logout() {
         localStorage.removeItem('token');
         setUser(null);
         navigate('/');
     }
     return (
-        <HeaderContainer>
-            <h1>Linkr</h1>
-            <div className='search-bar'>
-                <AiOutlineSearch className='icon' />
-                <input name='search' id='search' required type="text" placeholder='Search for people' />
-            </div>
-            <UserAvatar>
-                <AiOutlineDown className='icon' onClick={() => setShowLogout(!showLogout)} />
-                <img src={user ? user.photo : "https://i.kym-cdn.com/entries/icons/facebook/000/016/546/hidethepainharold.jpg"} alt={user ? user.name : "Juvenal"} />
-                {showLogout &&
-                    <LogoutContainer>
-                        <button onClick={logout}>Logout</button>
-                    </LogoutContainer>
-                }
-            </UserAvatar>
-        </HeaderContainer>
+        <>
+            {
+                location.pathname !== '/' && location.pathname !== '/sign-up' &&
+
+                <HeaderContainer>
+                    <h1>Linkr</h1>
+                    <div className='search-bar'>
+                        <AiOutlineSearch className='icon' />
+                        <input name='search' id='search' required type="text" placeholder='Search for people' />
+                    </div>
+                    <UserAvatar>
+                        <AiOutlineDown className='icon' onClick={() => setShowLogout(!showLogout)} />
+                        <img src={user ? user.photo : "https://i.kym-cdn.com/entries/icons/facebook/000/016/546/hidethepainharold.jpg"} alt={user ? user.name : "Juvenal"} />
+                        {showLogout &&
+                            <LogoutContainer>
+                                <button onClick={logout}>Logout</button>
+                            </LogoutContainer>
+                        }
+                    </UserAvatar>
+                </HeaderContainer>
+            }
+        </>
+
     )
 }
 
