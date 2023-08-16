@@ -5,7 +5,8 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import { styled } from 'styled-components';
 import UserContext from '../Contexts/UserContext';
 import useToken from '../Hooks/useToken.js';
-
+import SearchBar from "./SearchBar";
+import { useWindowSize } from "@uidotdev/usehooks";
 
 export default function Header() {
     const [showLogout, setShowLogout] = useState(false);
@@ -14,6 +15,7 @@ export default function Header() {
     const logoutRef = useRef(null);
     const location = useLocation();
     const navigate = useNavigate();
+    const size = useWindowSize();
 
     useEffect(() => {
         window.addEventListener('click', listenerOutsiteClick);
@@ -44,10 +46,11 @@ export default function Header() {
 
                 <HeaderContainer>
                     <h1>Linkr</h1>
-                    <div className='search-bar'>
+                    {/* <div className='search-bar'>
                         <AiOutlineSearch className='icon' />
                         <input name='search' id='search' required type="text" placeholder='Search for people' />
-                    </div>
+                    </div> */}
+                    {size.width > 500 && <SearchBar />}
                     <UserAvatar>
                         {showLogout ?
                             <AiOutlineUp className='menu' onClick={toggleShowLogout} />
@@ -58,7 +61,9 @@ export default function Header() {
                             className='menu'
                             ref={logoutRef}
                             onClick={toggleShowLogout}
+                            /* src={user ? user.photo : placeholderImage} */
                             src={user ? user.photo : URL_DEFAULT_PHOTO}
+                            // alt={user ? user.name : "Loading.."}
                             alt={user ? user.name : DEFAULT_USER_NAME}
                         />
                         {showLogout && (
@@ -88,7 +93,7 @@ const LogoutContainer = styled.nav`
 
     button{
         color: #FFF;
-        font-family: Lato;
+        font-family: 'Lato', 'sans-serif';
         font-size: 17px;
         font-style: normal;
         font-weight: 700;
@@ -104,30 +109,28 @@ const LogoutContainer = styled.nav`
 `;
 
 const UserAvatar = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    color: white;
-    font-size: 20px;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 10px;
+color: white;
+font-size: 20px;
 
-    .icon{
-        cursor: pointer;
-    }
-
+  .icon {
+    cursor: pointer;
+}
     .menu{
-        cursor: pointer;
-    }
+    cursor: pointer;
+}
 
-    img{
-        width: 50px;
-        height: 50px;
-        flex-shrink: 0;
-        border-radius: 26.5px;
-        object-fit: cover;
-        cursor: pointer;
-    }
-`;
+img {
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+    border-radius: 26.5px;
+    object-fit: cover;
+    cursor: pointer;
+  }
 
 const HeaderContainer = styled.header`
     width: 100%;
@@ -141,6 +144,8 @@ const HeaderContainer = styled.header`
     padding-bottom: 14px;
     padding-right: 17px;
     padding-left: 17px;
+    z-index: 4;
+    gap: 30px;
 
     .search-bar{
         max-width: 563px;
@@ -162,6 +167,7 @@ const HeaderContainer = styled.header`
     }
 
     input{
+       
         width: 100%;
         height: 45px;
         flex-shrink: 0;
