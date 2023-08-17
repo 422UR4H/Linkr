@@ -1,11 +1,12 @@
 import { styled } from "styled-components";
 import CreatePost from "../Components/CreatePost";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import Post from "../Components/Post";
 import SearchBar from "../Components/SearchBar";
 import { useWindowSize } from "@uidotdev/usehooks";
+import UserContext from "../Contexts/UserContext";
 
 export default function Timeline() {
   const [liked, setLiked] = useState(false);
@@ -14,10 +15,12 @@ export default function Timeline() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const size = useWindowSize();
+  const {user} = useContext(UserContext);
 
   useEffect(() => {
+    const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
     axios
-      .get(`${process.env.REACT_APP_API_URL}/timeline`)
+      .get(`${process.env.REACT_APP_API_URL}/timeline`,{ headers: { Authorization: token}} )
       .then((response) => {
         console.log(response.data);
         setPosts(response.data);
@@ -56,13 +59,13 @@ export default function Timeline() {
           posts.map((post) => (
             <Post
               key={post.id}
-              avatar_photo_url={post.avatar_photo_url}
-              name={post.name}
+              avatar_photo_url={post.user_photo}
+              name={post.user_name}
               description={post.description}
-              like_count={post.like_count}
+              like_count={post.likes_count}
               link={post.link}
               owner_id={post.owner_id}
-              post_id={post.post_id}
+              post_id={post.id}
               default_liked={post.default_liked}
               metadata_title={post.metadata.title}
               metadata_description={post.metadata.description}
