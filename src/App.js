@@ -16,16 +16,16 @@ export default function App() {
     console.log(user);
   }, []);
   return (
-    <UserContext.Provider value={{ user, setUser }}>
-      <BrowserRouter>
-        <Header />
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/sign-up" element={<Register />} />
-          <Route path="/timeline" element={<Timeline />} />
-          <Route path="/user/:id" element={<UserPage />} />
-        </Routes>
-      </BrowserRouter>
-    </UserContext.Provider>
+    // <UserContext.Provider value={{ user, setUser }}>
+        <BrowserRouter>
+          <Header />
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/sign-up" element={<Register />} />
+            <Route path="/timeline" element={<Timeline />} />
+            <Route path="/user/:id" element={<UserPage />} />
+          </Routes>
+        </BrowserRouter>
+    // </UserContext.Provider>
   );
 }
