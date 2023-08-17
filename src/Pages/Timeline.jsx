@@ -18,6 +18,10 @@ export default function Timeline() {
 
   useEffect(() => {
     if (!localStorage.getItem("token")) return navigate("/");
+    reload();
+  }, []);
+
+  const reload = () => {
     const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
     axios
       .get(`${process.env.REACT_APP_API_URL}/timeline`, {
@@ -32,7 +36,7 @@ export default function Timeline() {
       .catch((error) => {
         setError(true);
       });
-  }, []);
+  };
 
   return (
     <>
@@ -51,6 +55,7 @@ export default function Timeline() {
         ) : (
           posts.map((post) => (
             <Post
+              reload={reload}
               key={post.id}
               avatar_photo_url={post.user_photo}
               name={post.user_name}
