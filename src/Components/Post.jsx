@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import UserContext from "../Contexts/UserContext";
 import "react-tooltip/dist/react-tooltip.css";
 import { Tooltip } from "react-tooltip";
+import useToken from "../Hooks/useToken";
 
 export default function Post({
   post_id,
@@ -57,6 +58,7 @@ export default function Post({
 
   function askDelete() {
     //ask and then
+    
 
     deleteThis();
   }
@@ -81,10 +83,9 @@ export default function Post({
   }
 
   function like() {
+    const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
     axios
-      .post(`${process.env.REACT_APP_API_URL}/like/${post_id}`, {
-        like_owner_id: user.id,
-      })
+      .post(`${process.env.REACT_APP_API_URL}/like/${post_id}`, {like_owner_id: user.id,} , {headers:{Authorization:token}})
       .then((res) => {
         console.log(res);
         setLiked(true);
@@ -95,15 +96,15 @@ export default function Post({
   }
 
   function dislike() {
-    axios
-      .delete(`${process.env.REACT_APP_API_URL}/dislike/${post_id}`)
-      .then((res) => {
+    const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
+    axios.delete(`${process.env.REACT_APP_API_URL}/dislike/${post_id}`,{headers:{Authorization:token}})
+    .then(res => {
         console.log(res);
         setLiked(false);
       })
-      .catch((err) => {
+    .catch(err => {
         console.log(err);
-      });
+    })
   }
 
   async function validateMetadataImage() {
