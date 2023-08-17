@@ -49,7 +49,7 @@ export default function Timeline() {
           <SCTimeline>
             <CreatePost />
             {loading ? (
-              <p>Loading...</p>
+              <p className="loading">Loading...</p>
             ) : error ? (
               <p>
                 An error occured while trying to fetch the posts, please refresh the
@@ -88,6 +88,14 @@ const SCTimeline = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+  max-width: 611px;
+  .loading{
+    font-size: 40px;
+    color: white;
+    font-family: Oswald;
+    margin-top: 20px;
+  }
   @media (max-width: 720px) {
     width: 100%;
   }
