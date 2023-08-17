@@ -21,6 +21,8 @@ export default function Post({
   metadata_title,
   metadata_description,
   reload,
+  first_liker_name,
+  second_liker_name,
 }) {
   const placeholderImage = "/placeholder.jpg";
   const [liked, setLiked] = useState(default_liked);
@@ -80,15 +82,6 @@ export default function Post({
 
   function finishEdit(e) {
     e?.preventDefault();
-
-
-
-    //aaa
-    // axios.patch(`${process.env.REACT_APP_API_URL}/posts/${post_id}`, { description: descriptionEditValue })
-    // .then(res => {
-    //     console.log(res.data);
-    //     setInEditMode(false);
-    // })
   }
 
   function like() {
@@ -244,9 +237,7 @@ export default function Post({
           )}
           <span
             data-tooltip-id="tooltip likes"
-            data-tooltip-content={`Você, ${likeCount - 1} e ${
-              likeCount - 1 === 1 ? "outra pessoa" : "outras pessoas"
-            } curtiram isso`}
+            data-tooltip-content={`${default_liked ? "Você" + `${first_liker_name ? "," + first_liker_name : ""}` : first_liker_name + second_liker_name ? `, ${second_liker_name}` : ""}, ${likeCount - 1} e ${likeCount - 1 === 1 ? "outra pessoa" : "outras pessoas"} curtiram isso`}
           >
             {likeCount ? likeCount : 0} likes
           </span>

@@ -22,7 +22,7 @@ export default function Timeline() {
     reload();
   }, []);
 
-  const reload = () => {
+  function reload(){
     const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
     axios
       .get(`${process.env.REACT_APP_API_URL}/timeline`, {
@@ -35,7 +35,7 @@ export default function Timeline() {
       .catch((error) => {
         setError(true);
       });
-  };
+  }
 
   return (
     <PageContainer>
@@ -73,6 +73,8 @@ export default function Timeline() {
                   metadata_title={post.metadata.title}
                   metadata_description={post.metadata.description}
                   metadata_image={post.metadata.image}
+                  first_liker_name={post.first_liker_name}
+                  second_liker_name={post.second_liker_name}
                 />
               ))
             )}
