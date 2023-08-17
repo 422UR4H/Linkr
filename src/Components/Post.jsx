@@ -194,7 +194,7 @@ export default function Post({
     const splittedTextBySpaces = t.split(' ');
 
     const transformedSegments = splittedTextBySpaces.map((textSegment, index) => {
-      if (textSegment.includes('#')) return <a className="hashtag" href={`/hashtag/${textSegment}`} key={index}>{textSegment + " "}</a>
+      if (textSegment.includes('#')) return <a className="hashtag" href={`/hashtag/${textSegment.replace('#','')}`} key={index}>{textSegment + " "}</a>
       return textSegment + " ";
     });
 
