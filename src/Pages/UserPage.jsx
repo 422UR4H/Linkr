@@ -52,7 +52,7 @@ export default function UserPage() {
                     link={post.link}
                     avatar_photo_url={thisUser.photo}
                     name={thisUser.user_name}
-                    default_liked={false}
+                    default_liked={post.default_liked}
                     metadata_description={post.metadata?.description}
                     metadata_image={post.metadata?.image}
                     metadata_title={post.metadata?.title}
