@@ -4,6 +4,18 @@ import UserContext from "../Contexts/UserContext";
 
 export default function CreatePost() {
   const {user} = useContext(UserContext);
+  
+
+  function extractTextWithHashtagsSplitedByComa(text_to_extract) {
+    const splittedTextBySpaces = text_to_extract.split(' ');
+    const transformedSegments = [];
+    splittedTextBySpaces.map((textSegment, index) => {
+      if (textSegment.includes('#')) transformedSegments.push(textSegment.replace('#',''));
+    });
+    const joinedText = transformedSegments.join(',');
+    return joinedText;
+  }
+
   return (
       <Container>
         <ContainerCreatePost>
