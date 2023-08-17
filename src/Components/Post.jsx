@@ -200,6 +200,26 @@ export default function Post({
 
     return transformedSegments;
   }
+  function tooltipTextContent()
+  {
+    if(likeCount == 1 && default_liked) return "Você curtiu este post";
+    if(likeCount == 2 && default_liked) return `Você e ${first_liker_name} curtiram este post`;
+    if(likeCount == 3 && default_liked) return `Você, ${first_liker_name} e ${second_liker_name} curtiram este post`;
+    if(likeCount >= 4 && default_liked) return `Você, ${first_liker_name},${second_liker_name} e outras ${likeCount - 3} pessoas curtiram este post`;
+
+    if(likeCount == 1 && !default_liked) return `${first_liker_name} curtiu este post`;
+    if(likeCount == 2 && !default_liked) return `${first_liker_name}} e ${second_liker_name} curtiram este post`;
+    if(likeCount >= 3 && !default_liked) return `${first_liker_name} e ${second_liker_name} e outras ${likeCount - 2} pessoas curtiram este post`;
+
+    // const sum = likeCount + (default_liked ? -1 : 0);
+    // let text = default_liked ? "Você" : "";
+    // text += `${first_liker_name &&  first_liker_name !== "" ? first_liker_name : ""}`
+    // text += second_liker_name && second_liker_name !== "" ? "," + second_liker_name : "";
+    // text +=  sum !== 0 && sum == 3 ? "outra pessoa" : sum > 3 ? `outras ${likeCount} pessoas` : "";
+    // text += sum == 0 ? "" : sum > 1 ? " curtiram este post" : " curtiu este post";
+    // return text;
+  }
+
   return (
     <>
     {
@@ -237,7 +257,7 @@ export default function Post({
           )}
           <span
             data-tooltip-id="tooltip likes"
-            data-tooltip-content={`${default_liked ? "Você" + `${first_liker_name ? "," + first_liker_name : ""}` : first_liker_name + second_liker_name ? `, ${second_liker_name}` : ""}, ${likeCount - 1} e ${likeCount - 1 === 1 ? "outra pessoa" : "outras pessoas"} curtiram isso`}
+            data-tooltip-content={tooltipTextContent()}
           >
             {likeCount ? likeCount : 0} likes
           </span>
