@@ -5,10 +5,6 @@ import UserContext from "../Contexts/UserContext";
 export default function CreatePost() {
   const {user} = useContext(UserContext);
   return (
-    <>
-      <Title>
-        <h1>timeline</h1>
-      </Title>
       <Container>
         <ContainerCreatePost>
           <img
@@ -30,7 +26,6 @@ export default function CreatePost() {
           </div>
         </ContainerCreatePost>
       </Container>
-    </>
   );
 }
 
