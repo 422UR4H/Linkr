@@ -88,11 +88,14 @@ const SCTimeline = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
+  @media (max-width: 720px) {
+    width: 100%;
+  }
+  
 `;
 
 const Title = styled.div`
-  max-width: 611px;
+  max-width: 930px;
   width: 100%;
   text-align: start;
   padding: 15px;
@@ -109,6 +112,7 @@ const Content = styled.div`
   display: flex;
   width: 100%;
   gap: 25px;
+  justify-content: center;
 `;
 
 
