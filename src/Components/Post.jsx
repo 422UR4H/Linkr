@@ -21,6 +21,7 @@ export default function Post({
   metadata_image,
   metadata_title,
   metadata_description,
+  reload,
 }) {
   const placeholderImage = "/placeholder.jpg";
   const [liked, setLiked] = useState(default_liked);
@@ -81,10 +82,6 @@ export default function Post({
     // })
   }
 
-  function reloadPosts() {
-    axios.get(`${process.env.REACT_APP_API_URL}/timeline`);
-  }
-
   function like() {
     const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
     axios
@@ -96,7 +93,7 @@ export default function Post({
       .then((res) => {
         console.log(res);
         setLiked(true);
-        reloadPosts();
+        reload();
       })
       .catch((err) => {
         console.log(err);
@@ -112,7 +109,7 @@ export default function Post({
       .then((res) => {
         console.log(res);
         setLiked(false);
-        reloadPosts();
+        reload();
       })
       .catch((err) => {
         console.log(err);
