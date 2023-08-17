@@ -58,7 +58,6 @@ export default function Post({
 
   function askDelete() {
     //ask and then
-    
 
     deleteThis();
   }
@@ -82,13 +81,22 @@ export default function Post({
     // })
   }
 
+  function reloadPosts() {
+    axios.get(`${process.env.REACT_APP_API_URL}/timeline`);
+  }
+
   function like() {
     const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
     axios
-      .post(`${process.env.REACT_APP_API_URL}/like/${post_id}`, {like_owner_id: user.id,} , {headers:{Authorization:token}})
+      .post(
+        `${process.env.REACT_APP_API_URL}/like/${post_id}`,
+        { like_owner_id: user.id },
+        { headers: { Authorization: token } }
+      )
       .then((res) => {
         console.log(res);
         setLiked(true);
+        reloadPosts();
       })
       .catch((err) => {
         console.log(err);
@@ -97,14 +105,18 @@ export default function Post({
 
   function dislike() {
     const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
-    axios.delete(`${process.env.REACT_APP_API_URL}/dislike/${post_id}`,{headers:{Authorization:token}})
-    .then(res => {
+    axios
+      .delete(`${process.env.REACT_APP_API_URL}/dislike/${post_id}`, {
+        headers: { Authorization: token },
+      })
+      .then((res) => {
         console.log(res);
         setLiked(false);
+        reloadPosts();
       })
-    .catch(err => {
+      .catch((err) => {
         console.log(err);
-    })
+      });
   }
 
   async function validateMetadataImage() {
