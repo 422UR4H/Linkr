@@ -114,7 +114,7 @@ export default function Post({
         headers: { Authorization: token },
       })
       .then((res) => {
-        //console.log(res.data);
+        //console.log(res.data); 
         reload();
       })
       .catch((err) => {
