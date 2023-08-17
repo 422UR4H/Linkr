@@ -73,6 +73,10 @@ export default function Post({
     // })
   }
 
+  function updatePost(e){
+    e.preventDefault();
+  }
+
   function finishEdit(e) {
     e?.preventDefault();
     // axios.patch(`${process.env.REACT_APP_API_URL}/posts/${post_id}`, { description: descriptionEditValue })
@@ -232,7 +236,7 @@ export default function Post({
         </h1>
         {!inEditMode && <p>{description ? description : "Description"}</p>}
         {inEditMode && (
-          <PostForm onBlur={finishEdit} onSubmit={(e) => finishEdit(e)}>
+          <PostForm onBlur={finishEdit} onSubmit={(e) => updatePost(e)}>
             <input
               ref={editRef}
               onBlur={finishEdit}
