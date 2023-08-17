@@ -1,5 +1,5 @@
-import { DEFAULT_USER_NAME, URL_DEFAULT_PHOTO } from '../Utils/constants.js';
-import { AiOutlineDown, AiOutlineUp, AiOutlineSearch } from 'react-icons/ai';
+import { URL_DEFAULT_PHOTO } from '../Utils/constants.js';
+import { AiOutlineDown, AiOutlineUp } from 'react-icons/ai';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { styled } from 'styled-components';
@@ -19,7 +19,6 @@ export default function Header() {
     const size = useWindowSize();
 
     useEffect(() => {
-        // logoutRef.current = 0;
         window.addEventListener('click', listenerOutsiteClick);
         return () => {
             window.removeEventListener('click', listenerOutsiteClick);
@@ -30,7 +29,6 @@ export default function Header() {
         setShowLogout(!showLogout);
     }
 
-    console.log(logoutRef.current)
     function listenerOutsiteClick(event) {
         if (logoutRef.current && !event.target.classList.contains('menu')) {
             setShowLogout((prevShowLogout) => !prevShowLogout);
@@ -49,10 +47,6 @@ export default function Header() {
 
                 <HeaderContainer>
                     <h1>Linkr</h1>
-                    {/* <div className='search-bar'>
-                        <AiOutlineSearch className='icon' />
-                        <input name='search' id='search' required type="text" placeholder='Search for people' />
-                    </div> */}
                     {size.width > 500 && <SearchBar />}
                     <UserAvatar>
                         {showLogout ?

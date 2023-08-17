@@ -16,10 +16,9 @@ export default function App() {
   const [user, setUser] = useState();
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    // <UserContext.Provider value={{ user, setUser }}>
         <BrowserRouter>
           <Header />
-          {/* <Post /> */}
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/sign-up" element={<Register />} />
@@ -27,6 +26,6 @@ export default function App() {
             <Route path="/user/:id" element={<UserPage />} />
           </Routes>
         </BrowserRouter>
-    </UserContext.Provider>
+    // </UserContext.Provider>
   );
 }

@@ -44,6 +44,7 @@ export const StyledSignTemplates = styled.div`
             flex-direction: column;
             width: 100vw;
             height: 175px;
+            margin-top: 0px;
             padding-top: 40px;
             padding-inline: 23px;
         }
