@@ -22,7 +22,7 @@ export default function Timeline() {
     reload();
   }, []);
 
-  const reload = () => {
+  function reload(){
     const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
     axios
       .get(`${process.env.REACT_APP_API_URL}/timeline`, {
@@ -35,7 +35,7 @@ export default function Timeline() {
       .catch((error) => {
         setError(true);
       });
-  };
+  }
 
   return (
     <PageContainer>
@@ -49,7 +49,7 @@ export default function Timeline() {
           <SCTimeline>
             <CreatePost />
             {loading ? (
-              <p>Loading...</p>
+              <p className="loading">Loading...</p>
             ) : error ? (
               <p>
                 An error occured while trying to fetch the posts, please refresh the
@@ -73,6 +73,8 @@ export default function Timeline() {
                   metadata_title={post.metadata.title}
                   metadata_description={post.metadata.description}
                   metadata_image={post.metadata.image}
+                  first_liker_name={post.first_liker_name}
+                  second_liker_name={post.second_liker_name}
                 />
               ))
             )}
@@ -88,6 +90,14 @@ const SCTimeline = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+  max-width: 611px;
+  .loading{
+    font-size: 40px;
+    color: white;
+    font-family: Oswald;
+    margin-top: 20px;
+  }
   @media (max-width: 720px) {
     width: 100%;
   }

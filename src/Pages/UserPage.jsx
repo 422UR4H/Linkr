@@ -15,16 +15,21 @@ export default function UserPage() {
   const navigate = useNavigate();
   const size = useWindowSize();
 
-  useEffect(()=>{
-    if(!localStorage.getItem("token")) return navigate('/');
+  function reload(){
     const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
     axios.get(`${process.env.REACT_APP_API_URL}/user/${params.id}`,{ headers: { Authorization: token } })
     .then(res=>{
         setThisUser(res.data);
+        console.log(res.data);
       }).catch((error) =>{
         setUserNotFound(true);
         //console.log(error);
       });
+  }
+
+  useEffect(()=>{
+    if(!localStorage.getItem("token")) return navigate('/');
+    reload();
   },[]);
 
   return (
@@ -60,6 +65,9 @@ export default function UserPage() {
                     metadata_description={post.metadata?.description}
                     metadata_image={post.metadata?.image}
                     metadata_title={post.metadata?.title}
+                    first_liker_name={post.first_liker_name}
+                    second_liker_name={post.second_liker_name}
+                    reload={reload}
                 />
             ))
             }
