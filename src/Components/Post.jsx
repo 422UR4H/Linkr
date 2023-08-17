@@ -232,6 +232,7 @@ export default function Post({
       <Tooltip id="tooltip likes" />
       <AvatarAndLikes>
         <img
+          onClick={goToUser}
           src={avatar_photo_url ? avatar_photo_url : placeholderImage}
           alt={name}
         />
@@ -285,7 +286,6 @@ export default function Post({
           </MetadataInfo>
           <div className="metadata-image">
             <img
-              onClick={goToUser}
               src={
                 metadata_image && metadata_image !== "" && !usePlaceholderImage
                   ? metadata_image
