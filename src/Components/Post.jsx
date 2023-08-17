@@ -31,6 +31,7 @@ export default function Post({
   const editRef = useRef();
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
+  const [showModal,setShowModal] = useState(false);
 
   useEffect(() => {
     validateMetadataImage();
@@ -59,8 +60,7 @@ export default function Post({
 
   function askDelete() {
     //ask and then
-
-    deleteThis();
+    setShowModal(true);
   }
 
   function deleteThis() {
@@ -183,11 +183,25 @@ export default function Post({
   }
 
   return (
+    <>
+    {
+      showModal &&
+
+      <ModalAskDelete onClick={()=> setShowModal(false)}>
+          <QuestionBox  onClick={(e)=> {e.stopPropagation();}}>
+            <h1>Are you sure you want to delete this post?</h1>
+            <div className="actions">
+              <button onClick={(e)=> {e.stopPropagation(); setShowModal(false);}}>No, go back</button>
+              <button onClick={(e)=> {e.stopPropagation(); deleteThis();}}>Yes, delete it</button>
+            </div>
+          </QuestionBox>
+      </ModalAskDelete>
+    }
     <PostContainer>
       {user && owner_id && user.id == owner_id && (
         <Actions>
           <AiFillEdit onClick={startEdit} className="icon" />
-          <BiSolidTrashAlt className="icon" />
+          <BiSolidTrashAlt onClick={askDelete} className="icon" />
         </Actions>
       )}
       <Tooltip id="tooltip likes" />
@@ -258,8 +272,72 @@ export default function Post({
         </Metadata>
       </PostInfo>
     </PostContainer>
+    </>
   );
 }
+
+const QuestionBox = styled.div`
+  width: 100%;
+  max-width: 597px;
+  height: 100%;
+  max-height: 262px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #333333;
+  flex-direction: column;
+  border-radius: 50px;
+  gap:20px;
+  padding:20px;
+
+  h1{
+    color: #FFF;
+    text-align: center;
+    font-family: Lato;
+    font-size: 34px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+  }
+
+  .actions{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+
+    button{
+      width: 100%;
+      max-width:134px;
+      height: 37px;
+      color: white;
+      border: 0;
+      border-radius: 5px;
+      background: #1877F2;
+
+      &:hover{
+        background: #FFF;
+        color: #1877F2;
+      }
+    }
+  }
+
+`;
+
+const ModalAskDelete = styled.main`
+
+  width: 100%;
+  height:100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  background: rgba(255, 255, 255, 0.90);
+  display: flex;
+  align-items:center;
+  justify-content: center;
+`;
 
 const PostContainer = styled.div`
   width: 100%;
