@@ -7,6 +7,7 @@ import Post from "../Components/Post";
 import SearchBar from "../Components/SearchBar";
 import { useWindowSize } from "@uidotdev/usehooks";
 import UserContext from "../Contexts/UserContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Timeline() {
   const [liked, setLiked] = useState(false);
@@ -16,8 +17,10 @@ export default function Timeline() {
   const [error, setError] = useState(false);
   const size = useWindowSize();
   const {user} = useContext(UserContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    if(!localStorage.getItem("token")) return navigate('/');
     const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
     axios
       .get(`${process.env.REACT_APP_API_URL}/timeline`,{ headers: { Authorization: token}} )
