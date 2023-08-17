@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 import UserContext from "../Contexts/UserContext";
 import "react-tooltip/dist/react-tooltip.css";
 import { Tooltip } from "react-tooltip";
-import useToken from "../Hooks/useToken";
 
 export default function Post({
   post_id,
@@ -198,6 +197,16 @@ export default function Post({
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
+  function transformTextWithHashtags(t) {
+    const splittedTextBySpaces = t.split(' ');
+
+    const transformedSegments = splittedTextBySpaces.map((textSegment, index) => {
+      if (textSegment.includes('#')) return <a className="hashtag" href={`/hashtag/${textSegment}`} key={index}>{textSegment + " "}</a>
+      return textSegment + " ";
+    });
+
+    return transformedSegments;
+  }
   return (
     <>
     {
@@ -246,7 +255,7 @@ export default function Post({
         <h1 className="user-name" onClick={goToUser}>
           {name ? name : "Username"}
         </h1>
-        {!inEditMode && <p>{description ? description : "Description"}</p>}
+        {!inEditMode && <p>{description ? transformTextWithHashtags(description) : "Description"}</p>}
         {inEditMode && (
           <PostForm onBlur={finishEdit} onSubmit={(e) => updatePost(e)}>
             <input
@@ -495,13 +504,14 @@ const PostInfo = styled.div`
     font-weight: 400 !important;
     line-height: normal !important;
 
-    span {
+    a {
       color: #fff;
       font-family: Lato;
       font-size: 17px;
       font-style: normal;
       font-weight: 700;
       line-height: normal;
+      text-decoration: none;
     }
   }
 `;
