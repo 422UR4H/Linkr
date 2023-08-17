@@ -34,9 +34,9 @@ export default function CreatePost() {
 const Container = styled.div`
   max-width: 611px;
   width: 100%;
-
   .container2 {
     width: 100%;
+    height: fit-content;
   }
 `;
 
@@ -57,12 +57,12 @@ const Title = styled.div`
 const ContainerCreatePost = styled.div`
   display: flex;
   width: 100%;
-  height: 209px;
+  min-height: 209px;
   border-radius: 16px;
   padding: 10px;
   background-color: #ffffff;
   box-shadow: 0px 4px 4px 0px #00000040;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 
   img {
     width: 50px;
