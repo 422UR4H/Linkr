@@ -562,6 +562,7 @@ const MetadataInfo = styled.div`
   flex-direction: column;
   padding: 20px;
   gap: 10px;
+  max-width: 327px;
 
   @media (max-width: 500px) {
     padding: 7px;
