@@ -46,7 +46,7 @@ export default function Header() {
             {location.pathname !== '/' && location.pathname !== '/sign-up' && (
 
                 <HeaderContainer>
-                    <h1>Linkr</h1>
+                    <h1 onClick={()=> navigate('/timeline')}>Linkr</h1>
                     {size.width > 500 && <SearchBar />}
                     <UserAvatar>
                         {showLogout ?
@@ -191,5 +191,6 @@ const HeaderContainer = styled.header`
         font-weight: 700;
         line-height: normal;
         letter-spacing: 2.45px;
+        cursor: pointer;
     }
 `;

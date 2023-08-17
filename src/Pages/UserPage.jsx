@@ -6,6 +6,7 @@ import Post from '../Components/Post';
 import { useNavigate } from 'react-router-dom';
 import { useWindowSize } from '@uidotdev/usehooks';
 import SearchBar from '../Components/SearchBar';
+import Trending from '../Components/Trending';
 
 export default function UserPage() {
   const [thisUser,setThisUser] = useState(null);
@@ -32,6 +33,7 @@ export default function UserPage() {
         !userNotFound &&
 
         <Content>
+          <SCTimeline>
           {
             size.width <= 500 && <SearchBar className={'search-bar'}/>
           }
@@ -39,7 +41,9 @@ export default function UserPage() {
             <img src={thisUser ? thisUser.photo : "/placeholder.jpg"} alt={thisUser ? thisUser.name : "Loading.."} />
             <h1>{thisUser ? thisUser.user_name+"’s posts" : "Loading..."}</h1>
           </AvatarAndTitle>
+          <PostsAndTrending>
           <Posts>
+            
             {thisUser && thisUser.user_posts.length == 0 && <h1 className='no-posts'>This user has no posts</h1>}
             {
               thisUser && thisUser.user_posts.map(post => (
@@ -60,6 +64,9 @@ export default function UserPage() {
             ))
             }
           </Posts>
+          {size.width > 720 && thisUser && <Trending/>}
+          </PostsAndTrending>
+          </SCTimeline>
         </Content>
       }
       {
@@ -69,16 +76,33 @@ export default function UserPage() {
           <button onClick={()=>navigate('/timeline')}>Go back</button>
         </div>
       }
+       
     </PageContainer>
   )
 }
+
+const PostsAndTrending = styled.div`
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  max-width: calc(100% - 30px);
+  @media (max-width: 720px) {
+      max-width:100% !important;
+  }
+`;
+
+const SCTimeline = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+`;
 
 const Posts = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin-top: 40px;
 
   .no-posts{
     color: #a1a1a1;
@@ -89,14 +113,9 @@ const Posts = styled.div`
 const Content = styled.div`
 
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   width: 100%;
   max-width: 940px;
-  @media (max-width: 1000px) {
-      max-width: calc(100% - 30px) !important;
-  }
+  
   @media (max-width: 500px) {
       max-width:100% !important;
   }
@@ -117,11 +136,15 @@ const AvatarAndTitle = styled.div`
   gap: 18px;
   width: 100%;
   margin-top: 53px;
-
-  @media (max-width: 500px) {
-      max-width: calc(100% - 20px) !important;
-  }
+  margin-bottom: 40px;
+  padding-left: 20px;
+  padding-right: 20px;
   font-size: 33px;
+
+
+  @media (max-width: 720px) {
+    margin-top: 20px;
+  }
   h1{
     color: #FFF;
     font-family: Oswald;
@@ -142,13 +165,13 @@ const AvatarAndTitle = styled.div`
     object-fit: cover;
   }
 `;
-
+/*@media (max-width: 1000px) {
+      max-width: calc(100% - 30px) !important;
+  }*/
 const PageContainer = styled.main`
   width: 100%;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
 
   .not-found{
     color: white;
