@@ -28,6 +28,7 @@ export default function Post({
   const [usePlaceholderImage, setUsePlaceholderImage] = useState(false);
   const [inEditMode, setInEditMode] = useState(false);
   const [descriptionEditValue, setDescriptionEditValue] = useState(description);
+  const [likeCount, setLikeCount] = useState(Number(like_count));
   const editRef = useRef();
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
@@ -94,6 +95,7 @@ export default function Post({
   function like() {
     const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
     setLiked(true);
+    setLikeCount(likeCount+1);
     axios
       .post(
         `${process.env.REACT_APP_API_URL}/like/${post_id}`,
@@ -105,6 +107,7 @@ export default function Post({
         reload();
       })
       .catch((err) => {
+        setLikeCount(likeCount-1);
         setLiked(false);
         console.log(err);
       });
@@ -113,6 +116,7 @@ export default function Post({
   function dislike() {
     const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
     setLiked(false);
+    setLikeCount(likeCount-1);
     axios
       .delete(`${process.env.REACT_APP_API_URL}/dislike/${post_id}`, {
         headers: { Authorization: token },
@@ -123,6 +127,7 @@ export default function Post({
       })
       .catch((err) => {
         setLiked(true);
+        setLikeCount(likeCount+1);
         console.log(err);
       });
   }
@@ -229,11 +234,11 @@ export default function Post({
           )}
           <span
             data-tooltip-id="tooltip likes"
-            data-tooltip-content={`Você, ${like_count - 1} e ${
-              like_count - 1 === 1 ? "outra pessoa" : "outras pessoas"
+            data-tooltip-content={`Você, ${likeCount - 1} e ${
+              likeCount - 1 === 1 ? "outra pessoa" : "outras pessoas"
             } curtiram isso`}
           >
-            {like_count ? like_count : 0} likes
+            {likeCount ? likeCount : 0} likes
           </span>
         </Likes>
       </AvatarAndLikes>
