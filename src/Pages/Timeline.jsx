@@ -28,8 +28,6 @@ export default function Timeline() {
         headers: { Authorization: token },
       })
       .then((response) => {
-        console.log(response.data);
-
         setPosts(response.data);
         setLoading(false);
       })

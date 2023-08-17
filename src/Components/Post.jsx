@@ -28,6 +28,7 @@ export default function Post({
   const [usePlaceholderImage, setUsePlaceholderImage] = useState(false);
   const [inEditMode, setInEditMode] = useState(false);
   const [descriptionEditValue, setDescriptionEditValue] = useState(description);
+  const [likeCount, setLikeCount] = useState(Number(like_count));
   const editRef = useRef();
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
@@ -41,7 +42,6 @@ export default function Post({
   function endEdit(event) {
     if (editRef.current && !event.target.classList.contains("edit-post")) {
       setInEditMode(false);
-      console.log("edit");
     }
   }
   function goToUser() {
@@ -64,6 +64,7 @@ export default function Post({
   }
 
   function deleteThis() {
+    alert("Implemente o axios do deletar post!");
     // axios.delete(`${process.env.REACT_APP_API_URL}/posts/${post_id}`)
     // .then(res => {
     //     console.log(res);
@@ -75,10 +76,15 @@ export default function Post({
 
   function updatePost(e){
     e.preventDefault();
+    alert("Implemente o axios do edit post!");
   }
 
   function finishEdit(e) {
     e?.preventDefault();
+
+
+
+    //aaa
     // axios.patch(`${process.env.REACT_APP_API_URL}/posts/${post_id}`, { description: descriptionEditValue })
     // .then(res => {
     //     console.log(res.data);
@@ -88,6 +94,8 @@ export default function Post({
 
   function like() {
     const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
+    setLiked(true);
+    setLikeCount(likeCount+1);
     axios
       .post(
         `${process.env.REACT_APP_API_URL}/like/${post_id}`,
@@ -95,27 +103,31 @@ export default function Post({
         { headers: { Authorization: token } }
       )
       .then((res) => {
-        console.log(res);
-        setLiked(true);
+        //console.log(res.data);
         reload();
       })
       .catch((err) => {
+        setLikeCount(likeCount-1);
+        setLiked(false);
         console.log(err);
       });
   }
 
   function dislike() {
     const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
+    setLiked(false);
+    setLikeCount(likeCount-1);
     axios
       .delete(`${process.env.REACT_APP_API_URL}/dislike/${post_id}`, {
         headers: { Authorization: token },
       })
       .then((res) => {
-        console.log(res);
-        setLiked(false);
+        //console.log(res.data); 
         reload();
       })
       .catch((err) => {
+        setLiked(true);
+        setLikeCount(likeCount+1);
         console.log(err);
       });
   }
@@ -204,7 +216,7 @@ export default function Post({
     <PostContainer>
       {user && owner_id && user.id == owner_id && (
         <Actions>
-          <AiFillEdit onClick={startEdit} className="icon" />
+          <AiFillEdit onClick={(e) => {startEdit(e); e.stopPropagation();}} className="icon" />
           <BiSolidTrashAlt onClick={askDelete} className="icon" />
         </Actions>
       )}
@@ -222,11 +234,11 @@ export default function Post({
           )}
           <span
             data-tooltip-id="tooltip likes"
-            data-tooltip-content={`Você, ${like_count - 1} e ${
-              like_count - 1 === 1 ? "outra pessoa" : "outras pessoas"
+            data-tooltip-content={`Você, ${likeCount - 1} e ${
+              likeCount - 1 === 1 ? "outra pessoa" : "outras pessoas"
             } curtiram isso`}
           >
-            {like_count ? like_count : 0} likes
+            {likeCount ? likeCount : 0} likes
           </span>
         </Likes>
       </AvatarAndLikes>
@@ -354,7 +366,7 @@ const PostContainer = styled.div`
   position: relative;
   margin-bottom: 10px;
 
-  @media (max-width: 500px) {
+  @media (max-width: 720px) {
     max-width: 100%;
     border-radius: 0;
   }
