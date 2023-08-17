@@ -1,6 +1,9 @@
+import { useContext } from "react";
 import { styled } from "styled-components";
+import UserContext from "../Contexts/UserContext";
 
 export default function CreatePost() {
+  const {user} = useContext(UserContext);
   return (
     <>
       <Title>
@@ -9,8 +12,8 @@ export default function CreatePost() {
       <Container>
         <ContainerCreatePost>
           <img
-            src="https://a.espncdn.com/combiner/i?img=/i/teamlogos/soccer/500/2022.png"
-            alt=""
+            src={user ? user.photo : "/placeholder.jpg"}
+            alt={user ? user.name : "loading"}
           />
           <div className="container2">
             <div>
@@ -34,6 +37,9 @@ export default function CreatePost() {
 const Container = styled.div`
   max-width: 611px;
   width: 100%;
+  @media (max-width: 720px) {
+    max-width: 100%;
+  }
   .container2 {
     width: 100%;
     height: fit-content;
@@ -63,12 +69,14 @@ const ContainerCreatePost = styled.div`
   background-color: #ffffff;
   box-shadow: 0px 4px 4px 0px #00000040;
   margin-bottom: 20px;
+  padding-right: 22px;
 
   img {
     width: 50px;
     height: 50px;
     border-radius: 27px;
     padding: 10px;
+    object-fit: cover;
   }
   h2 {
     font-family: "Lato", sans-serif;
@@ -111,8 +119,11 @@ const ContainerCreatePost = styled.div`
 
   @media (max-width: 720px) {
     border-radius: 0;
+    padding-right: 10px;
+    
     img {
       display: none;
+      
     }
     h2 {
       text-align: center;

@@ -41,7 +41,6 @@ export default function Post({
   function endEdit(event) {
     if (editRef.current && !event.target.classList.contains("edit-post")) {
       setInEditMode(false);
-      console.log("edit");
     }
   }
   function goToUser() {
@@ -64,6 +63,7 @@ export default function Post({
   }
 
   function deleteThis() {
+    alert("Implemente o axios do deletar post!");
     // axios.delete(`${process.env.REACT_APP_API_URL}/posts/${post_id}`)
     // .then(res => {
     //     console.log(res);
@@ -75,6 +75,7 @@ export default function Post({
 
   function updatePost(e){
     e.preventDefault();
+    alert("Implemente o axios do edit post!");
   }
 
   function finishEdit(e) {
@@ -88,6 +89,7 @@ export default function Post({
 
   function like() {
     const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
+    setLiked(true);
     axios
       .post(
         `${process.env.REACT_APP_API_URL}/like/${post_id}`,
@@ -95,27 +97,28 @@ export default function Post({
         { headers: { Authorization: token } }
       )
       .then((res) => {
-        console.log(res);
-        setLiked(true);
+        //console.log(res.data);
         reload();
       })
       .catch((err) => {
+        setLiked(false);
         console.log(err);
       });
   }
 
   function dislike() {
     const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
+    setLiked(false);
     axios
       .delete(`${process.env.REACT_APP_API_URL}/dislike/${post_id}`, {
         headers: { Authorization: token },
       })
       .then((res) => {
-        console.log(res);
-        setLiked(false);
+        //console.log(res.data);
         reload();
       })
       .catch((err) => {
+        setLiked(true);
         console.log(err);
       });
   }
@@ -204,7 +207,7 @@ export default function Post({
     <PostContainer>
       {user && owner_id && user.id == owner_id && (
         <Actions>
-          <AiFillEdit onClick={startEdit} className="icon" />
+          <AiFillEdit onClick={(e) => {startEdit(e); e.stopPropagation();}} className="icon" />
           <BiSolidTrashAlt onClick={askDelete} className="icon" />
         </Actions>
       )}
@@ -354,7 +357,7 @@ const PostContainer = styled.div`
   position: relative;
   margin-bottom: 10px;
 
-  @media (max-width: 500px) {
+  @media (max-width: 720px) {
     max-width: 100%;
     border-radius: 0;
   }
