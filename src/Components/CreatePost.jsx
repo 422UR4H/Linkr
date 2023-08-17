@@ -4,7 +4,7 @@ import UserContext from "../Contexts/UserContext";
 
 export default function CreatePost() {
   const {user} = useContext(UserContext);
-  
+
 
   function extractTextWithHashtagsSplitedByComa(text_to_extract) {
     const splittedTextBySpaces = text_to_extract.split(' ');
@@ -50,20 +50,6 @@ const Container = styled.div`
   .container2 {
     width: 100%;
     height: fit-content;
-  }
-`;
-
-const Title = styled.div`
-  max-width: 611px;
-  width: 100%;
-  text-align: start;
-  padding: 15px;
-  h1 {
-    font-family: "Oswald", sans-serif;
-    color: #ffffff;
-    font-size: 43px;
-    font-weight: 700;
-    line-height: 64px;
   }
 `;
 
