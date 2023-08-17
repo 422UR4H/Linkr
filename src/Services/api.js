@@ -14,13 +14,10 @@ function signup(body) {
   return axios.post(`${process.env.REACT_APP_API_URL}/sign-in`, body);
 }
 
-function timeline(body) {
-  return axios.post(`${process.env.REACT_APP_API_URL}/sign-up`, body);
-}
 
 const api = {
   signin,
-  signup,
-  timeline
+  signup
 };
+
 export default api;
