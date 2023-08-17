@@ -95,14 +95,15 @@ export default function Post({
   }
 
   function dislike() {
-    // axios.post(`${process.env.REACT_APP_API_URL}/dislike/${post_id}`)
-    // .then(res => {
-    //     console.log(res);
-    //     setLiked(false);
-    //   })
-    // .catch(err => {
-    //     console.log(err);
-    // })
+    axios
+      .delete(`${process.env.REACT_APP_API_URL}/dislike/${post_id}`)
+      .then((res) => {
+        console.log(res);
+        setLiked(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   async function validateMetadataImage() {
