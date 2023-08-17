@@ -23,6 +23,7 @@ export default function Timeline() {
       .get(`${process.env.REACT_APP_API_URL}/timeline`,{ headers: { Authorization: token}} )
       .then((response) => {
         console.log(response.data);
+
         setPosts(response.data);
         setLoading(false);
       })
