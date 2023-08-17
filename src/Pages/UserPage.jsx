@@ -4,12 +4,15 @@ import { useParams } from 'react-router';
 import { styled } from 'styled-components'
 import Post from '../Components/Post';
 import { useNavigate } from 'react-router-dom';
+import { useWindowSize } from '@uidotdev/usehooks';
+import SearchBar from '../Components/SearchBar';
 
 export default function UserPage() {
   const [thisUser,setThisUser] = useState(null);
   const [userNotFound,setUserNotFound] = useState(false);
   const params = useParams();
   const navigate = useNavigate();
+  const size = useWindowSize();
 
   useEffect(()=>{
     if(!localStorage.getItem("token")) return navigate('/');
@@ -29,6 +32,9 @@ export default function UserPage() {
         !userNotFound &&
 
         <Content>
+          {
+            size.width <= 500 && <SearchBar className={'search-bar'}/>
+          }
           <AvatarAndTitle>
             <img src={thisUser ? thisUser.photo : "/placeholder.jpg"} alt={thisUser ? thisUser.name : "Loading.."} />
             <h1>{thisUser ? thisUser.user_name+"’s posts" : "Loading..."}</h1>
@@ -46,10 +52,10 @@ export default function UserPage() {
                     link={post.link}
                     avatar_photo_url={thisUser.photo}
                     name={thisUser.user_name}
-                    default_liked={false}
-                    metadata_description={post.metadata.description}
-                    metadata_image={post.metadata.image}
-                    metadata_title={post.metadata.title}
+                    default_liked={post.default_liked}
+                    metadata_description={post.metadata?.description}
+                    metadata_image={post.metadata?.image}
+                    metadata_title={post.metadata?.title}
                 />
             ))
             }
@@ -88,7 +94,19 @@ const Content = styled.div`
   align-items: center;
   width: 100%;
   max-width: 940px;
-
+  @media (max-width: 1000px) {
+      max-width: calc(100% - 30px) !important;
+  }
+  @media (max-width: 500px) {
+      max-width:100% !important;
+  }
+  .search-bar{
+    @media (max-width: 500px) {
+      max-width: calc(100% - 20px) !important;
+      margin-top: 10px !important;
+    }
+  }
+ 
 `;
 
 const AvatarAndTitle = styled.div`
@@ -100,6 +118,10 @@ const AvatarAndTitle = styled.div`
   width: 100%;
   margin-top: 53px;
 
+  @media (max-width: 500px) {
+      max-width: calc(100% - 20px) !important;
+  }
+  font-size: 33px;
   h1{
     color: #FFF;
     font-family: Oswald;
@@ -107,6 +129,9 @@ const AvatarAndTitle = styled.div`
     font-style: normal;
     font-weight: 700;
     line-height: normal;
+    @media (max-width: 500px) {
+      font-size: 33px;
+    }
   }
 
   img{

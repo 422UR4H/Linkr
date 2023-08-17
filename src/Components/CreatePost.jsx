@@ -4,7 +4,7 @@ export default function CreatePost() {
   return (
     <>
       <Title>
-        <h1>Timeline</h1>
+        <h1>timeline</h1>
       </Title>
       <Container>
         <ContainerCreatePost>
@@ -12,14 +12,14 @@ export default function CreatePost() {
             src="https://a.espncdn.com/combiner/i?img=/i/teamlogos/soccer/500/2022.png"
             alt=""
           />
-          <div>
+          <div className="container2">
             <div>
               <h2>What are you going to share today?</h2>
               <input type="text" placeholder="http://..."></input>
-              <input
+              <textarea
                 type="text"
                 placeholder="Awesome article about #javascript"
-              ></input>
+              ></textarea>
             </div>
             <StyledButton>
               <button>Publish</button>
@@ -31,11 +31,20 @@ export default function CreatePost() {
   );
 }
 
-const Container = styled.div``;
+const Container = styled.div`
+  max-width: 611px;
+  width: 100%;
+
+  .container2 {
+    width: 100%;
+  }
+`;
 
 const Title = styled.div`
-  width: 611px;
+  max-width: 611px;
+  width: 100%;
   text-align: start;
+  padding: 15px;
   h1 {
     font-family: "Oswald", sans-serif;
     color: #ffffff;
@@ -47,7 +56,7 @@ const Title = styled.div`
 
 const ContainerCreatePost = styled.div`
   display: flex;
-  width: 611px;
+  width: 100%;
   height: 209px;
   border-radius: 16px;
   padding: 10px;
@@ -70,7 +79,7 @@ const ContainerCreatePost = styled.div`
     line-height: 24px;
   }
   input {
-    width: 503px;
+    width: 100%;
     height: 13px;
     padding: 15px;
     margin-bottom: 5px;
@@ -81,14 +90,32 @@ const ContainerCreatePost = styled.div`
     font-size: 15px;
     font-weight: 300;
     line-height: 18px;
+    &:focus {
+      outline: none;
+    }
   }
-  input:last-of-type {
-    position: relative;
+  textarea {
     height: 66px;
-    display: flex;
-    vertical-align: text-top;
-    &::placeholder {
-      transform: translateY(-20px);
+    resize: none;
+    width: 100%;
+    font-size: 15px;
+    font-weight: 300;
+    border-radius: 5px;
+    background-color: #efefef;
+    border: none;
+    padding: 10px;
+    &:focus {
+      outline: none;
+    }
+  }
+
+  @media (max-width: 720px) {
+    border-radius: 0;
+    img {
+      display: none;
+    }
+    h2 {
+      text-align: center;
     }
   }
 `;
@@ -96,6 +123,7 @@ const ContainerCreatePost = styled.div`
 const StyledButton = styled.div`
   display: flex;
   justify-content: flex-end;
+  padding-top: 5px;
   button {
     width: 112px;
     height: 31px;
