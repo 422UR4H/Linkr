@@ -211,7 +211,7 @@ export default function Post({
     if (likeCount >= 4 && default_liked) return `Você, ${first_liker_name},${second_liker_name} e outras ${likeCount - 3} pessoas curtiram este post`;
 
     if (likeCount == 1 && !default_liked) return `${first_liker_name} curtiu este post`;
-    if (likeCount == 2 && !default_liked) return `${first_liker_name}} e ${second_liker_name} curtiram este post`;
+    if (likeCount == 2 && !default_liked) return `${first_liker_name} e ${second_liker_name} curtiram este post`;
     if (likeCount >= 3 && !default_liked) return `${first_liker_name} e ${second_liker_name} e outras ${likeCount - 2} pessoas curtiram este post`;
 
     // const sum = likeCount + (default_liked ? -1 : 0);
