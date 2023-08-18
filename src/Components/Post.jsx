@@ -79,9 +79,33 @@ export default function Post({
       })
   }
 
+  function extractTextWithHashtagsSplitedByComa(text_to_extract) {
+    const splittedTextBySpaces = text_to_extract.split(' ');
+    const transformedSegments = [];
+    splittedTextBySpaces.map((textSegment, index) => {
+      if (textSegment.includes('#')) transformedSegments.push(textSegment.replace('#', ''));
+    });
+    const joinedText = transformedSegments.join(',');
+    return joinedText;
+  }
+
   function updatePost(e) {
     e.preventDefault();
-    alert("Implemente o axios do edit post!");
+    //alert("Implemente o axios do edit post!");
+    const hashtags = extractTextWithHashtagsSplitedByComa(descriptionEditValue);
+    const body = {"description" : descriptionEditValue, "id" : post_id, "hash_tags" : hashtags};
+    const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
+    axios.put(`http://localhost:5000/post/`,body,{ headers: { Authorization: token }})
+    .then(res => {
+      console.log(res);
+      setShowModal(false);
+      reload();
+    })
+    .catch(err => {
+      setShowModal(false);
+      console.log(err);
+      alert("Error editing your post!");
+    })
   }
 
   function finishEdit(e) {
