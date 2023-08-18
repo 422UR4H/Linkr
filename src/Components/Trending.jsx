@@ -76,6 +76,9 @@ const Container = styled.div`
         font-weight: 700;
         line-height: normal;
         letter-spacing: 0.95px;
+        &:hover{
+          cursor:pointer;
+        }
     }
   }
 `;

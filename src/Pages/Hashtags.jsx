@@ -19,22 +19,25 @@ export default function Hashtags() {
   useEffect(() => {
     if (!localStorage.getItem("token")) return navigate("/");
     reload();
-  }, []);
+  }, [params.hashtag]);
 
   function reload(){
     const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
     axios
-      .get(`http://localhost:5000/hashtags/${params}`, {
+      .get(`http://localhost:5000/hashtags/${params.hashtag}`, {
         headers: { Authorization: token },
-      })
+      },
+      setLoading(true)
+      )
       .then((response) => {
         setPosts(response.data);
-        setLoading(false);
+        setLoading(false);  
       })
       .catch((error) => {
         setError(true);
       });
   }
+
 
   return (
     <PageContainer>
@@ -46,7 +49,7 @@ export default function Hashtags() {
         
         <Content>
           <SCTimeline>
-            {loading ? (
+            {loading  ? (
               <p className="loading">Loading...</p>
             ) : error ? (
               <p>
