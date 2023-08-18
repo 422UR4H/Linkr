@@ -66,7 +66,7 @@ export default function Post({
 
   function deleteThis() {
     const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
-    axios.delete(`http://localhost:5000/post/${post_id}`,{ headers: { Authorization: token }})
+    axios.delete(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/post/${post_id}`,{ headers: { Authorization: token }})
     .then(res => {
       console.log(res);
       setShowModal(false);

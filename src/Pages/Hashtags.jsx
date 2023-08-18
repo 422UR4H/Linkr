@@ -1,11 +1,9 @@
 import { styled } from "styled-components";
-import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
-import { useContext, useEffect, useState } from "react";
+import {useEffect, useState } from "react";
 import axios from "axios";
 import Post from "../Components/Post";
 import SearchBar from "../Components/SearchBar";
 import { useWindowSize } from "@uidotdev/usehooks";
-import UserContext from "../Contexts/UserContext";
 import { useNavigate } from "react-router-dom";
 import Trending from "../Components/Trending";
 import { useParams } from "react-router-dom";

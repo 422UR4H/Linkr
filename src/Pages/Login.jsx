@@ -7,13 +7,11 @@ import ButtonSubmit from '../Components/Atoms/ButtonSubmit.jsx';
 import api from '../Services/api.js';
 import useToken from '../Hooks/useToken.js';
 import { Link, useNavigate } from 'react-router-dom';
-import UserContext from '../Contexts/UserContext.jsx';
 import useUser from '../Hooks/useUser.js';
 
 
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
-  // const { user, setUser } = useContext(UserContext);
   const { putUser } = useUser();
   const { form, handleForm } = useForm({ email: "", password: "" });
   const { login } = useToken();
