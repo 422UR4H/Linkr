@@ -1,5 +1,5 @@
 import { styled } from "styled-components";
-import {useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import Post from "../Components/Post";
 import SearchBar from "../Components/SearchBar";
@@ -21,17 +21,17 @@ export default function Hashtags() {
     reload();
   }, [params.hashtag]);
 
-  function reload(){
+  function reload() {
     const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
     axios
       .get(`http://localhost:5000/hashtags/${params.hashtag}`, {
         headers: { Authorization: token },
       },
-      setLoading(true)
+        setLoading(true)
       )
       .then((response) => {
         setPosts(response.data);
-        setLoading(false);  
+        setLoading(false);
       })
       .catch((error) => {
         setError(true);
@@ -42,14 +42,14 @@ export default function Hashtags() {
   return (
     <PageContainer>
       <ContainerTimeline>
-      {size.width <= 720 && <SearchBar className={"search-bar"} />}
-        <Title>
+        {size.width <= 720 && <SearchBar className={"search-bar"} />}
+        <Title data-test="hashtag-title">
           <h1>#{params.hashtag}</h1>
         </Title>
-        
+
         <Content>
           <SCTimeline>
-            {loading  ? (
+            {loading ? (
               <p className="loading">Loading...</p>
             ) : error ? (
               <p>
@@ -80,7 +80,7 @@ export default function Hashtags() {
               ))
             )}
           </SCTimeline>
-         {size.width > 720 &&  <Trending/>}
+          {size.width > 720 && <Trending />}
         </Content>
       </ContainerTimeline>
     </PageContainer>

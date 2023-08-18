@@ -52,6 +52,7 @@ export default function Login() {
           onChange={handleForm}
           maxLength={64}
           required
+          data-test="email"
         />
         <Input
           name="password"
@@ -62,12 +63,13 @@ export default function Login() {
           minLength={3}
           maxLength={32}
           required
+          data-test="password"
         />
-        <ButtonSubmit disabled={isLoading}>
+        <ButtonSubmit disabled={isLoading} datatest="login-btn">
           Log In
         </ButtonSubmit>
       </Form>
-      <Link to="/sign-up">First time? Create an account!</Link>
+      <Link to="/sign-up" data-test="sign-up-link">First time? Create an account!</Link>
     </SignPagesTemplate>
   );
 }
