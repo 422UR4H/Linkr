@@ -24,7 +24,7 @@ export default function Hashtags() {
   function reload(){
     const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
     axios
-      .get(`${process.env.REACT_APP_API_URL}/hashtags/${params}`, {
+      .get(`http://localhost:5000/hashtags/${params}`, {
         headers: { Authorization: token },
       })
       .then((response) => {
