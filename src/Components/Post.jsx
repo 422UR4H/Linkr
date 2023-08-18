@@ -33,7 +33,7 @@ export default function Post({
   const editRef = useRef();
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
-  const [showModal,setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     validateMetadataImage();
@@ -66,20 +66,20 @@ export default function Post({
 
   function deleteThis() {
     const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
-    axios.delete(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/post/${post_id}`,{ headers: { Authorization: token }})
-    .then(res => {
-      console.log(res);
-      setShowModal(false);
-      reload();
-    })
-    .catch(err => {
-      setShowModal(false);
-      console.log(err);
-      alert("Error deleting post!");
-    })
+    axios.delete(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/post/${post_id}`, { headers: { Authorization: token } })
+      .then(res => {
+        console.log(res);
+        setShowModal(false);
+        reload();
+      })
+      .catch(err => {
+        setShowModal(false);
+        console.log(err);
+        alert("Error deleting post!");
+      })
   }
 
-  function updatePost(e){
+  function updatePost(e) {
     e.preventDefault();
     alert("Implemente o axios do edit post!");
   }
@@ -91,7 +91,7 @@ export default function Post({
   function like() {
     const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
     setLiked(true);
-    setLikeCount(likeCount+1);
+    setLikeCount(likeCount + 1);
     axios
       .post(
         `${process.env.REACT_APP_API_URL}/like/${post_id}`,
@@ -103,7 +103,7 @@ export default function Post({
         //reload();
       })
       .catch((err) => {
-        setLikeCount(likeCount-1);
+        setLikeCount(likeCount - 1);
         setLiked(false);
         console.log(err);
       });
@@ -112,7 +112,7 @@ export default function Post({
   function dislike() {
     const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
     setLiked(false);
-    setLikeCount(likeCount-1);
+    setLikeCount(likeCount - 1);
     axios
       .delete(`${process.env.REACT_APP_API_URL}/dislike/${post_id}`, {
         headers: { Authorization: token },
@@ -123,7 +123,7 @@ export default function Post({
       })
       .catch((err) => {
         setLiked(true);
-        setLikeCount(likeCount+1);
+        setLikeCount(likeCount + 1);
         console.log(err);
       });
   }
@@ -198,22 +198,21 @@ export default function Post({
     const splittedTextBySpaces = t.split(' ');
 
     const transformedSegments = splittedTextBySpaces.map((textSegment, index) => {
-      if (textSegment.includes('#')) return <a className="hashtag" href={`/hashtag/${textSegment.replace('#','')}`} key={index}>{textSegment + " "}</a>
+      if (textSegment.includes('#')) return <a className="hashtag" href={`/hashtag/${textSegment.replace('#', '')}`} key={index}>{textSegment + " "}</a>
       return textSegment + " ";
     });
 
     return transformedSegments;
   }
-  function tooltipTextContent()
-  {
-    if(likeCount == 1 && default_liked) return "Você curtiu este post";
-    if(likeCount == 2 && default_liked) return `Você e ${first_liker_name} curtiram este post`;
-    if(likeCount == 3 && default_liked) return `Você, ${first_liker_name} e ${second_liker_name} curtiram este post`;
-    if(likeCount >= 4 && default_liked) return `Você, ${first_liker_name},${second_liker_name} e outras ${likeCount - 3} pessoas curtiram este post`;
+  function tooltipTextContent() {
+    if (likeCount == 1 && default_liked) return "Você curtiu este post";
+    if (likeCount == 2 && default_liked) return `Você e ${first_liker_name} curtiram este post`;
+    if (likeCount == 3 && default_liked) return `Você, ${first_liker_name} e ${second_liker_name} curtiram este post`;
+    if (likeCount >= 4 && default_liked) return `Você, ${first_liker_name},${second_liker_name} e outras ${likeCount - 3} pessoas curtiram este post`;
 
-    if(likeCount == 1 && !default_liked) return `${first_liker_name} curtiu este post`;
-    if(likeCount == 2 && !default_liked) return `${first_liker_name}} e ${second_liker_name} curtiram este post`;
-    if(likeCount >= 3 && !default_liked) return `${first_liker_name} e ${second_liker_name} e outras ${likeCount - 2} pessoas curtiram este post`;
+    if (likeCount == 1 && !default_liked) return `${first_liker_name} curtiu este post`;
+    if (likeCount == 2 && !default_liked) return `${first_liker_name}} e ${second_liker_name} curtiram este post`;
+    if (likeCount >= 3 && !default_liked) return `${first_liker_name} e ${second_liker_name} e outras ${likeCount - 2} pessoas curtiram este post`;
 
     // const sum = likeCount + (default_liked ? -1 : 0);
     // let text = default_liked ? "Você" : "";
@@ -226,92 +225,94 @@ export default function Post({
 
   return (
     <>
-    {
-      showModal &&
+      {
+        showModal &&
 
-      <ModalAskDelete onClick={()=> setShowModal(false)}>
-          <QuestionBox  onClick={(e)=> {e.stopPropagation();}}>
+        <ModalAskDelete onClick={() => setShowModal(false)}>
+          <QuestionBox onClick={(e) => { e.stopPropagation(); }}>
             <h1>Are you sure you want to delete this post?</h1>
             <div className="actions">
-              <button onClick={(e)=> {e.stopPropagation(); setShowModal(false);}}>No, go back</button>
-              <button onClick={(e)=> {e.stopPropagation(); deleteThis();}}>Yes, delete it</button>
+              <button onClick={(e) => { e.stopPropagation(); setShowModal(false); }} data-test="cancel">No, go back</button>
+              <button onClick={(e) => { e.stopPropagation(); deleteThis(); }} data-test="confirm">Yes, delete it</button>
             </div>
           </QuestionBox>
-      </ModalAskDelete>
-    }
-    <PostContainer>
-      {user && owner_id && user.id == owner_id && (
-        <Actions>
-          <AiFillEdit onClick={(e) => {startEdit(e); e.stopPropagation();}} className="icon" />
-          <BiSolidTrashAlt onClick={askDelete} className="icon" />
-        </Actions>
-      )}
-      <Tooltip id="tooltip likes" />
-      <AvatarAndLikes>
-        <img
-          onClick={goToUser}
-          src={avatar_photo_url ? avatar_photo_url : placeholderImage}
-          alt={name}
-        />
-        <Likes>
-          {liked ? (
-            <AiFillHeart onClick={dislike} className="like-btn full" />
-          ) : (
-            <AiOutlineHeart onClick={like} className="like-btn empty" />
-          )}
-          <span
-            data-tooltip-id="tooltip likes"
-            data-tooltip-content={tooltipTextContent()}
-          >
-            {likeCount ? likeCount : 0} likes
-          </span>
-        </Likes>
-      </AvatarAndLikes>
-      <PostInfo>
-        <h1 className="user-name" onClick={goToUser}>
-          {name ? name : "Username"}
-        </h1>
-        {!inEditMode && <p>{description ? transformTextWithHashtags(description) : "Description"}</p>}
-        {inEditMode && (
-          <PostForm onBlur={finishEdit} onSubmit={(e) => updatePost(e)}>
-            <input
-              ref={editRef}
-              onBlur={finishEdit}
-              value={descriptionEditValue}
-              type="text"
-              placeholder="Description"
-              className="edit-post"
-              onChange={(e) => setDescriptionEditValue(e.target.value)}
-            />
-          </PostForm>
+        </ModalAskDelete>
+      }
+      <PostContainer data-test="post">
+        {user && owner_id && user.id == owner_id && (
+          <Actions>
+            <AiFillEdit onClick={(e) => { startEdit(e); e.stopPropagation(); }} className="icon" data-test="edit-btn" />
+            <BiSolidTrashAlt onClick={askDelete} className="icon" data-test="delete-btn" />
+          </Actions>
         )}
-        <Metadata>
-          <MetadataInfo>
-            <h1 className="metadata-title">
-              {metadata_title && metadata_title !== ""
-                ? metadata_title
-                : createdLinkTitle(link)}
-            </h1>
-            <h2 className="metadata-description">
-              {metadata_description ? metadata_description : "Description"}
-            </h2>
-            <a onClick={() => window.open(link)} href={link} target="_blank">
-              {link}
-            </a>
-          </MetadataInfo>
-          <div className="metadata-image">
-            <img
-              src={
-                metadata_image && metadata_image !== "" && !usePlaceholderImage
-                  ? metadata_image
-                  : placeholderImage
-              }
-              alt=""
-            />
-          </div>
-        </Metadata>
-      </PostInfo>
-    </PostContainer>
+        <Tooltip id="tooltip likes" data-test="tooltip"/>
+        <AvatarAndLikes>
+          <img
+            onClick={goToUser}
+            src={avatar_photo_url ? avatar_photo_url : placeholderImage}
+            alt={name}
+          />
+          <Likes data-test="like-btn">
+            {liked ? (
+              <AiFillHeart onClick={dislike} className="like-btn full" />
+            ) : (
+              <AiOutlineHeart onClick={like} className="like-btn empty" />
+            )}
+            <span
+              data-tooltip-id="tooltip likes"
+              data-tooltip-content={tooltipTextContent()}
+              data-test="counter"
+            >
+              {likeCount ? likeCount : 0} likes
+            </span>
+          </Likes>
+        </AvatarAndLikes>
+        <PostInfo>
+          <h1 className="user-name" onClick={goToUser} data-test="username">
+            {name ? name : "Username"}
+          </h1>
+          {!inEditMode && <p data-test="description">{description ? transformTextWithHashtags(description) : "Description"}</p>}
+          {inEditMode && (
+            <PostForm onBlur={finishEdit} onSubmit={(e) => updatePost(e)}>
+              <input
+                ref={editRef}
+                onBlur={finishEdit}
+                value={descriptionEditValue}
+                type="text"
+                placeholder="Description"
+                className="edit-post"
+                onChange={(e) => setDescriptionEditValue(e.target.value)}
+                data-test="edit-input"
+              />
+            </PostForm>
+          )}
+          <Metadata data-test="link">
+            <MetadataInfo>
+              <h1 className="metadata-title">
+                {metadata_title && metadata_title !== ""
+                  ? metadata_title
+                  : createdLinkTitle(link)}
+              </h1>
+              <h2 className="metadata-description">
+                {metadata_description ? metadata_description : "Description"}
+              </h2>
+              <a onClick={() => window.open(link)} href={link} target="_blank">
+                {link}
+              </a>
+            </MetadataInfo>
+            <div className="metadata-image">
+              <img
+                src={
+                  metadata_image && metadata_image !== "" && !usePlaceholderImage
+                    ? metadata_image
+                    : placeholderImage
+                }
+                alt=""
+              />
+            </div>
+          </Metadata>
+        </PostInfo>
+      </PostContainer>
     </>
   );
 }

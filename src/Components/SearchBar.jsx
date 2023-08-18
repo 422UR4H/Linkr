@@ -4,7 +4,7 @@ import UserSearchSuggestion from './UserSearchSuggestion';
 import axios from 'axios';
 import { AiOutlineSearch } from 'react-icons/ai';
 
-export default function SearchBar({className}) {
+export default function SearchBar({ className }) {
 
     const [searchValue, setSearchValue] = useState("");
     const searchRef = useRef();
@@ -62,7 +62,16 @@ export default function SearchBar({className}) {
     return (
         <SCSearchBar className={className}>
             <AiOutlineSearch className='icon' />
-            <input ref={searchRef} value={searchValue} onChange={(e) => handleSearchChanged(e)} name='search' id='search' required type="text" placeholder='Search for people' />
+            <input
+                ref={searchRef}
+                value={searchValue}
+                onChange={(e) => handleSearchChanged(e)}
+                name='search'
+                id='search'
+                required type="text"
+                placeholder='Search for people'
+                data-test="search"
+            />
             {
                 searchValue.length > 0 && showSuggestions &&
                 <SearchSuggestions>

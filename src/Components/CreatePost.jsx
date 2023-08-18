@@ -3,41 +3,42 @@ import { styled } from "styled-components";
 import UserContext from "../Contexts/UserContext";
 
 export default function CreatePost() {
-  const {user} = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
 
   function extractTextWithHashtagsSplitedByComa(text_to_extract) {
     const splittedTextBySpaces = text_to_extract.split(' ');
     const transformedSegments = [];
     splittedTextBySpaces.map((textSegment, index) => {
-      if (textSegment.includes('#')) transformedSegments.push(textSegment.replace('#',''));
+      if (textSegment.includes('#')) transformedSegments.push(textSegment.replace('#', ''));
     });
     const joinedText = transformedSegments.join(',');
     return joinedText;
   }
 
   return (
-      <Container>
-        <ContainerCreatePost>
-          <img
-            src={user ? user.photo : "/placeholder.jpg"}
-            alt={user ? user.name : "loading"}
-          />
-          <div className="container2">
-            <div>
-              <h2>What are you going to share today?</h2>
-              <input type="text" placeholder="http://..."></input>
-              <textarea
-                type="text"
-                placeholder="Awesome article about #javascript"
-              ></textarea>
-            </div>
-            <StyledButton>
-              <button>Publish</button>
-            </StyledButton>
+    <Container data-test="publish-box">
+      <ContainerCreatePost>
+        <img
+          src={user ? user.photo : "/placeholder.jpg"}
+          alt={user ? user.name : "loading"}
+        />
+        <div className="container2">
+          <div>
+            <h2>What are you going to share today?</h2>
+            <input type="text" placeholder="http://..." data-test="link"></input>
+            <textarea
+              type="text"
+              placeholder="Awesome article about #javascript"
+              data-test="description"
+            ></textarea>
           </div>
-        </ContainerCreatePost>
-      </Container>
+          <StyledButton>
+            <button data-test="publish-btn">Publish</button>
+          </StyledButton>
+        </div>
+      </ContainerCreatePost>
+    </Container>
   );
 }
 

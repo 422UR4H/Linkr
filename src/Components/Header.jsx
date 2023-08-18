@@ -46,9 +46,9 @@ export default function Header() {
             {location.pathname !== '/' && location.pathname !== '/sign-up' && (
 
                 <HeaderContainer>
-                    <h1 onClick={()=> navigate('/timeline')}>Linkr</h1>
+                    <h1 onClick={() => navigate('/timeline')}>Linkr</h1>
                     {size.width > 720 && <SearchBar />}
-                    <UserAvatar>
+                    <UserAvatar data-test="avatar">
                         {showLogout ?
                             <AiOutlineUp className='menu' onClick={toggleShowLogout} />
                             :
@@ -61,8 +61,8 @@ export default function Header() {
                             alt={user ? user.name : "Loading..."}
                         />
                         {showLogout && (
-                            <LogoutContainer ref={logoutRef}>
-                                <button onClick={signOut}>Logout</button>
+                            <LogoutContainer ref={logoutRef} data-test="menu">
+                                <button onClick={signOut} data-test="logout">Logout</button>
                             </LogoutContainer>
                         )}
                     </UserAvatar>

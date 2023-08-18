@@ -11,7 +11,7 @@ export default function UserSearchSuggestion({ photo, username, user_id }) {
     navigate(`/user/${user_id}`);
   }
   return (
-    <SCUserSearchSuggestion onClick={goToUser}>
+    <SCUserSearchSuggestion onClick={goToUser} data-test="user-search">
       <img src={photo ? photo : placeholderImage} alt="" />
       <h1 className="username">{username ? username : "Name"}</h1>
     </SCUserSearchSuggestion>

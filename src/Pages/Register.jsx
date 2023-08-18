@@ -56,6 +56,7 @@ export default function Register() {
           onChange={handleForm}
           maxLength={64}
           required
+          data-test="email"
         />
         <Input
           name="password"
@@ -66,6 +67,7 @@ export default function Register() {
           minLength={3}
           maxLength={32}
           required
+          data-test="password"
         />
         <Input
           name="user_name"
@@ -76,6 +78,7 @@ export default function Register() {
           minLength={3}
           maxLength={64}
           required
+          data-test="username"
         />
         <Input
           name="photo"
@@ -84,12 +87,13 @@ export default function Register() {
           value={form.photo}
           onChange={handleForm}
           required
+          data-test="picture-url"
         />
-        <ButtonSubmit disabled={isLoading}>
+        <ButtonSubmit disabled={isLoading} datatest="sign-up-btn">
           Sign Up
         </ButtonSubmit>
       </Form>
-      <Link to="/">Switch back to log in</Link>
+      <Link to="/" data-test="login-link">Switch back to log in</Link>
     </SignPagesTemplate>
   );
 }

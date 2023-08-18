@@ -9,28 +9,28 @@ import SearchBar from '../Components/SearchBar';
 import Trending from '../Components/Trending';
 
 export default function UserPage() {
-  const [thisUser,setThisUser] = useState(null);
-  const [userNotFound,setUserNotFound] = useState(false);
+  const [thisUser, setThisUser] = useState(null);
+  const [userNotFound, setUserNotFound] = useState(false);
   const params = useParams();
   const navigate = useNavigate();
   const size = useWindowSize();
 
-  function reload(){
+  function reload() {
     const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
-    axios.get(`${process.env.REACT_APP_API_URL}/user/${params.id}`,{ headers: { Authorization: token } })
-    .then(res=>{
+    axios.get(`${process.env.REACT_APP_API_URL}/user/${params.id}`, { headers: { Authorization: token } })
+      .then(res => {
         setThisUser(res.data);
         console.log(res.data);
-      }).catch((error) =>{
+      }).catch((error) => {
         setUserNotFound(true);
         //console.log(error);
       });
   }
 
-  useEffect(()=>{
-    if(!localStorage.getItem("token")) return navigate('/');
+  useEffect(() => {
+    if (!localStorage.getItem("token")) return navigate('/');
     reload();
-  },[]);
+  }, []);
 
   return (
     <PageContainer>
@@ -39,52 +39,52 @@ export default function UserPage() {
 
         <Content>
           <SCTimeline>
-          {
-            size.width <= 500 && <SearchBar className={'search-bar'}/>
-          }
-          <AvatarAndTitle>
-            <img src={thisUser ? thisUser.photo : "/placeholder.jpg"} alt={thisUser ? thisUser.name : "Loading.."} />
-            <h1>{thisUser ? thisUser.user_name+"’s posts" : "Loading..."}</h1>
-          </AvatarAndTitle>
-          <PostsAndTrending>
-          <Posts>
-            
-            {thisUser && thisUser.user_posts.length == 0 && <h1 className='no-posts'>This user has no posts</h1>}
             {
-              thisUser && thisUser.user_posts.map(post => (
-                <Post 
-                    key={post.post_id} 
-                    owner_id={thisUser.user_id} 
-                    post_id={post.post_id} 
-                    description={post.description} 
-                    like_count={post.likes_count} 
-                    link={post.link}
-                    avatar_photo_url={thisUser.photo}
-                    name={thisUser.user_name}
-                    default_liked={post.default_liked}
-                    metadata_description={post.metadata?.description}
-                    metadata_image={post.metadata?.image}
-                    metadata_title={post.metadata?.title}
-                    first_liker_name={post.first_liker_name}
-                    second_liker_name={post.second_liker_name}
-                    reload={reload}
-                />
-            ))
+              size.width <= 500 && <SearchBar className={'search-bar'} />
             }
-          </Posts>
-          {size.width > 720 && thisUser && <Trending/>}
-          </PostsAndTrending>
+            <AvatarAndTitle>
+              <img src={thisUser ? thisUser.photo : "/placeholder.jpg"} alt={thisUser ? thisUser.name : "Loading.."} />
+              <h1>{thisUser ? thisUser.user_name + "’s posts" : "Loading..."}</h1>
+            </AvatarAndTitle>
+            <PostsAndTrending>
+              <Posts>
+
+                {thisUser && thisUser.user_posts.length == 0 && <h1 className='no-posts'>This user has no posts</h1>}
+                {
+                  thisUser && thisUser.user_posts.map(post => (
+                    <Post
+                      key={post.post_id}
+                      owner_id={thisUser.user_id}
+                      post_id={post.post_id}
+                      description={post.description}
+                      like_count={post.likes_count}
+                      link={post.link}
+                      avatar_photo_url={thisUser.photo}
+                      name={thisUser.user_name}
+                      default_liked={post.default_liked}
+                      metadata_description={post.metadata?.description}
+                      metadata_image={post.metadata?.image}
+                      metadata_title={post.metadata?.title}
+                      first_liker_name={post.first_liker_name}
+                      second_liker_name={post.second_liker_name}
+                      reload={reload}
+                    />
+                  ))
+                }
+              </Posts>
+              {size.width > 720 && thisUser && <Trending />}
+            </PostsAndTrending>
           </SCTimeline>
         </Content>
       }
       {
-        userNotFound && 
+        userNotFound &&
         <div className='not-found'>
           <h1 >Error 404 : User not found</h1>
-          <button onClick={()=>navigate('/timeline')}>Go back</button>
+          <button onClick={() => navigate('/timeline')}>Go back</button>
         </div>
       }
-       
+
     </PageContainer>
   )
 }

@@ -15,7 +15,7 @@ const StyledForm = styled.form`
     flex-direction: column;
     align-items: center;
 
-    @madia (max-width: 767px) {
+    @media (max-width: 767px) {
         gap: 11px;
     }
 `;

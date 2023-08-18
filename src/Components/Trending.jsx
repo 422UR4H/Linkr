@@ -5,43 +5,43 @@ import { useNavigate } from 'react-router-dom';
 
 
 export default function Trending() {
-  
+
   const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
   const [trendingHashtags, setTrendingHashtags] = useState([]);
   const navigate = useNavigate()
 
   useEffect(() => {
 
-      async function getApiTrending(){
-        try {
-          const response = await axios
+    async function getApiTrending() {
+      try {
+        const response = await axios
           .get(`http://localhost:5000/hashtags`, {
             headers: { Authorization: token }
           })
-          setTrendingHashtags(response.data);
-        } catch (error) {
-          console.error(error);
-        }
+        setTrendingHashtags(response.data);
+      } catch (error) {
+        console.error(error);
       }
-      getApiTrending()
+    }
+    getApiTrending()
 
   }, [])
 
-  function goToHashtag(e){
+  function goToHashtag(e) {
     const hashtag = e.target.textContent.slice(1)
     navigate(`/hashtag/${hashtag}`);
   }
 
-    return (
-        <Container>
-            <h1>trending</h1>
-            <div className="tags">
-                {trendingHashtags && trendingHashtags.map((hashtag, i) => (
-                  <p onClick={goToHashtag} key={i}>#{hashtag}</p>
-                ))}
-            </div>
-        </Container>
-    )
+  return (
+    <Container data-test="trending">
+      <h1>trending</h1>
+      <div className="tags">
+        {trendingHashtags && trendingHashtags.map((hashtag, i) => (
+          <p onClick={goToHashtag} key={i} data-test="hashtag">#{hashtag}</p>
+        ))}
+      </div>
+    </Container>
+  )
 }
 
 const Container = styled.div`

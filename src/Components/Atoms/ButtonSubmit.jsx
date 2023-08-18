@@ -1,9 +1,9 @@
 import { ThreeDots } from "react-loader-spinner";
 import { styled } from "styled-components";
 
-export default function ButtonSubmit({ disabled, children }) {
+export default function ButtonSubmit({ disabled, datatest, children }) {
     return (
-        <StyledButtonSubmit type="submit" disabled={disabled}>
+        <StyledButtonSubmit type="submit" disabled={disabled} data-test={datatest}>
             {disabled ?
                 <ThreeDots
                     height="35"
