@@ -47,7 +47,7 @@ export default function Header() {
 
                 <HeaderContainer>
                     <h1 onClick={()=> navigate('/timeline')}>Linkr</h1>
-                    {size.width > 500 && <SearchBar />}
+                    {size.width > 720 && <SearchBar />}
                     <UserAvatar>
                         {showLogout ?
                             <AiOutlineUp className='menu' onClick={toggleShowLogout} />

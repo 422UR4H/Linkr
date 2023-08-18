@@ -1,6 +1,6 @@
 import { styled } from "styled-components";
 import CreatePost from "../Components/CreatePost";
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import Post from "../Components/Post";
 import SearchBar from "../Components/SearchBar";
@@ -20,7 +20,7 @@ export default function Timeline() {
     reload();
   }, []);
 
-  function reload(){
+  function reload() {
     setLoading(true);
     const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
     axios
@@ -39,11 +39,11 @@ export default function Timeline() {
   return (
     <PageContainer>
       <ContainerTimeline>
-      {size.width <= 720 && <SearchBar className={"search-bar"} />}
+        {size.width <= 720 && <SearchBar className={"search-bar"} />}
         <Title>
           <h1>timeline</h1>
         </Title>
-        
+
         <Content>
           <SCTimeline>
             <CreatePost />
@@ -78,7 +78,7 @@ export default function Timeline() {
               ))
             )}
           </SCTimeline>
-         {size.width > 720 &&  <Trending/>}
+          {size.width > 720 && <Trending />}
         </Content>
       </ContainerTimeline>
     </PageContainer>
@@ -114,6 +114,13 @@ const Title = styled.div`
     font-size: 43px;
     font-weight: 700;
     line-height: 64px;
+  }
+  @media (max-width: 720px) {
+      display: flex;
+      justify-content: center;
+      h1 {
+        width: 611px;
+      }
   }
 `;
 

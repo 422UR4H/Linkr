@@ -93,8 +93,8 @@ export default function SearchBar({className}) {
 
 
 const SCSearchBar = styled.div`
-    max-width: 563px;
-    width: 100%;
+    width: 611px;
+    max-width: 611px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -111,8 +111,8 @@ const SCSearchBar = styled.div`
     }
 
     input{
-    
         width: 100%;
+        max-width: 611px;
         height: 45px;
         flex-shrink: 0;
         border-radius: 8px;
