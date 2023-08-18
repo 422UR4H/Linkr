@@ -11,7 +11,7 @@ import { useWindowSize } from "@uidotdev/usehooks";
 
 export default function Header() {
     const [showLogout, setShowLogout] = useState(false);
-    const { user, setUser } = useContext(UserContext);
+    const { user } = useContext(UserContext);
     const { logout } = useToken();
     const logoutRef = useRef(null);
     const location = useLocation();

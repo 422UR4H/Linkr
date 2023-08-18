@@ -173,9 +173,6 @@ const AvatarAndTitle = styled.div`
     object-fit: cover;
   }
 `;
-/*@media (max-width: 1000px) {
-      max-width: calc(100% - 30px) !important;
-  }*/
 const PageContainer = styled.main`
   width: 100%;
   display: flex;
