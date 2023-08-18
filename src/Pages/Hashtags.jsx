@@ -6,12 +6,14 @@ import SearchBar from "../Components/SearchBar";
 import { useWindowSize } from "@uidotdev/usehooks";
 import { useNavigate } from "react-router-dom";
 import Trending from "../Components/Trending";
+import { useParams } from "react-router-dom";
 
 export default function Hashtags() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const size = useWindowSize();
+  const params = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,7 +24,7 @@ export default function Hashtags() {
   function reload(){
     const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
     axios
-      .get(`${process.env.REACT_APP_API_URL}/timeline`, {
+      .get(`${process.env.REACT_APP_API_URL}/hashtags/${params}`, {
         headers: { Authorization: token },
       })
       .then((response) => {
@@ -39,7 +41,7 @@ export default function Hashtags() {
       <ContainerTimeline>
       {size.width <= 720 && <SearchBar className={"search-bar"} />}
         <Title>
-          <h1>#hashtag</h1>
+          <h1>#{params.hashtag}</h1>
         </Title>
         
         <Content>
