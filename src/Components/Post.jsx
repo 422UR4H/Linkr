@@ -100,7 +100,7 @@ export default function Post({
       )
       .then((res) => {
         //console.log(res.data);
-        reload();
+        //reload();
       })
       .catch((err) => {
         setLikeCount(likeCount-1);
@@ -119,7 +119,7 @@ export default function Post({
       })
       .then((res) => {
         //console.log(res.data); 
-        reload();
+        //reload();
       })
       .catch((err) => {
         setLiked(true);
