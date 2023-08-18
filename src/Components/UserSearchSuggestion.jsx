@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 
 export default function UserSearchSuggestion({ photo, username, user_id }) {
-  const placeholderImage =
-    "https://i.kym-cdn.com/entries/icons/facebook/000/016/546/hidethepainharold.jpg";
+  const placeholderImage = "/placeholder.jpg";
   const navigate = useNavigate();
   function goToUser() {
     if (!user_id) return alert("This suggestions doenst have an owner_id prop");

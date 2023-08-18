@@ -1,12 +1,10 @@
 import { styled } from "styled-components";
 import CreatePost from "../Components/CreatePost";
-import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
-import { useContext, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import axios from "axios";
 import Post from "../Components/Post";
 import SearchBar from "../Components/SearchBar";
 import { useWindowSize } from "@uidotdev/usehooks";
-import UserContext from "../Contexts/UserContext";
 import { useNavigate } from "react-router-dom";
 import Trending from "../Components/Trending";
 
@@ -26,7 +24,7 @@ export default function Timeline() {
     setLoading(true);
     const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
     axios
-      .get(`http://localhost:5000/timeline`, {
+      .get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/timeline`, {
         headers: { Authorization: token },
       })
       .then((response) => {
@@ -71,9 +69,9 @@ export default function Timeline() {
                   owner_id={post.owner_id}
                   post_id={post.id}
                   default_liked={post.default_liked}
-                  //metadata_title={post.metadata.title}
-                  //metadata_description={post.metadata.description}
-                  //metadata_image={post.metadata.image}
+                  metadata_title={post.metadata.title}
+                  metadata_description={post.metadata.description}
+                  metadata_image={post.metadata.image}
                   first_liker_name={post.first_liker_name}
                   second_liker_name={post.second_liker_name}
                 />
