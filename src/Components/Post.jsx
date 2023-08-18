@@ -65,14 +65,18 @@ export default function Post({
   }
 
   function deleteThis() {
-    alert("Implemente o axios do deletar post!");
-    // axios.delete(`${process.env.REACT_APP_API_URL}/posts/${post_id}`)
-    // .then(res => {
-    //     console.log(res);
-    // })
-    // .catch(err => {
-    //     console.log(err);
-    // })
+    const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
+    axios.delete(`http://localhost:5000/post/${post_id}`,{ headers: { Authorization: token }})
+    .then(res => {
+      console.log(res);
+      setShowModal(false);
+      reload();
+    })
+    .catch(err => {
+      setShowModal(false);
+      console.log(err);
+      alert("Error deleting post!");
+    })
   }
 
   function updatePost(e){
