@@ -37,6 +37,7 @@ export default function Timeline() {
       setLoading(false);
     } catch (err) {
       console.log(err);
+      alert("An error occured while trying to fetch the posts, please refresh the page");
       setError(true);
     }
   }
