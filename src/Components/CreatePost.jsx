@@ -31,7 +31,7 @@ export default function CreatePost({ reload }) {
       })
       .catch(err => {
         console.log(err);
-        alert("Error publishing your link");
+        alert("There was an error publishing your link");
       })
       .finally(() => setLoading(false))
   }
