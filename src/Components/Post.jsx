@@ -31,6 +31,7 @@ export default function Post({
   const [usePlaceholderImage, setUsePlaceholderImage] = useState(false);
   // const [inEditMode, setInEditMode] = useState(false);
   const [descriptionEditValue, setDescriptionEditValue] = useState(description ? description : "");
+  const [isToggleLiking, setIsToggleLiking] = useState(false);
   const [likeCount, setLikeCount] = useState(Number(like_count));
   const editRef = useRef(null);
   const { token } = useToken();
@@ -72,7 +73,6 @@ export default function Post({
 
   function deleteThis() {
     if (deleting) return;
-    const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
     setDeleting(true);
     axios.delete(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/post/${post_id}`, { headers: { Authorization: token } })
       .then(res => {
@@ -123,40 +123,32 @@ export default function Post({
       })
   }
 
-  function like() {
-    const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
-    setLiked(true);
-    setLikeCount(likeCount + 1);
-    axios
-      .post(
-        `${process.env.REACT_APP_API_URL}/like/${post_id}`,
-        { like_owner_id: user.id },
-        { headers: { Authorization: token } }
-      )
-      .catch((err) => {
-        setLikeCount(likeCount - 1);
-        setLiked(false);
-        console.log(err);
-      });
-  }
+  function toggleLike() {
+    if (isToggleLiking) return;
+    setIsToggleLiking(true);
+    setLiked(!liked);
 
-  function dislike() {
-    const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
-    setLiked(false);
-    setLikeCount(likeCount - 1);
-    axios
-      .delete(`${process.env.REACT_APP_API_URL}/dislike/${post_id}`, {
-        headers: { Authorization: token },
-      })
-      .then((res) => {
-        //console.log(res.data); 
-        //reload();
-      })
-      .catch((err) => {
-        setLiked(true);
-        setLikeCount(likeCount + 1);
-        console.log(err);
-      });
+    if (!liked) {
+      setLikeCount(likeCount + 1);
+
+      api.setLike(post_id, { like_owner_id: user.id }, token)
+        .catch((err) => {
+          setLikeCount(likeCount - 1);
+          setLiked(false);
+          console.log(err);
+        })
+        .finally(() => setIsToggleLiking(false));
+    } else {
+      setLikeCount(likeCount - 1);
+      
+      api.setUnlike(post_id, token)
+        .catch((err) => {
+          setLikeCount(likeCount + 1);
+          setLiked(true);
+          console.log(err);
+        })
+        .finally(() => setIsToggleLiking(false));
+    }
   }
 
   async function validateMetadataImage() {
@@ -284,20 +276,21 @@ export default function Post({
             src={avatar_photo_url ? avatar_photo_url : placeholderImage}
             alt={name}
           />
-          <Likes data-test="like-btn">
+          <Likes onClick={toggleLike} data-test="like-btn">
             {liked ? (
-              <AiFillHeart onClick={dislike} className="like-btn full" />
+              <AiFillHeart className="like-btn full" />
             ) : (
-              <AiOutlineHeart onClick={like} className="like-btn empty" />
+              <AiOutlineHeart className="like-btn empty" />
             )}
-            <span
-              data-tooltip-id="tooltip likes"
-              data-tooltip-content={tooltipTextContent()}
-              data-test="counter"
-            >
-              {likeCount ? likeCount : 0} likes
-            </span>
           </Likes>
+          <span
+            data-tooltip-id="tooltip likes"
+            data-tooltip-content={tooltipTextContent()}
+            // data-test="tooltip"
+            data-test="counter"
+          >
+            {likeCount ? likeCount : 0} likes
+          </span>
         </AvatarAndLikes>
         <PostInfo>
           <h1 className="user-name" onClick={goToUser} data-test="username">
@@ -485,7 +478,7 @@ const AvatarAndLikes = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 4px;
   justify-content: flex-start;
 
   img {
@@ -496,14 +489,27 @@ const AvatarAndLikes = styled.div`
     object-fit: cover;
     cursor: pointer;
   }
+
+  span {
+    color: #fff;
+    text-align: center;
+    font-family: 'Lato';
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+  }
 `;
 
-const Likes = styled.div`
+const Likes = styled.button`
+  background-color: inherit;
   display: flex;
   align-items: center;
   flex-direction: column;
-  gap: 4px;
   font-size: 20px;
+  margin-top: 16px;
+  border: none;
+  padding: 0;
 
   * {
     user-select: none;
@@ -519,16 +525,6 @@ const Likes = styled.div`
 
   .like-btn {
     cursor: pointer;
-  }
-
-  span {
-    color: #fff;
-    text-align: center;
-    font-family: Lato;
-    font-size: 11px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
   }
 `;
 
