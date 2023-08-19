@@ -7,29 +7,31 @@ export default function CreatePost({reload}) {
   const { user } = useContext(UserContext);
   const [linkPost, setlinkPost] = useState("");
   const [descriptionPost, setdescriptionPost] = useState("");
+  const [loading,setLoading] = useState(false);
  
   function createPost(text_to_extract) {
-    console.log(linkPost);
-    console.log(descriptionPost);
-    console.log(user);
-
-    if(linkPost === "") {
+    if(linkPost === "" || loading) {
       return;
     }
 
+    setLoading(true);
+
     const hashtags = extractTextWithHashtagsSplitedByComa(descriptionPost);
     const body = {"description" : descriptionPost, "link" : linkPost, "hash_tags" : hashtags};
+    if( body.description == "") delete body.description;
+    if( body.hash_tags == "") delete body.hash_tags;
     const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
     axios.post(`http://localhost:5000/post/`,body,{ headers: { Authorization: token }})
         .then(res => {
-          console.log(res);
           setlinkPost("");
           setdescriptionPost("");
           reload();
+          setLoading(false);
         })
         .catch(err => {
           console.log(err);
           alert("Error publishing your link");
+          setLoading(false);
         })
   }
 
@@ -45,7 +47,7 @@ export default function CreatePost({reload}) {
 
   return (
     <Container data-test="publish-box">
-      <ContainerCreatePost>
+      <ContainerCreatePost onSubmit={(e)=> {createPost(); e.preventDefault()}}>
         <img
           src={user ? user.photo : "/placeholder.jpg"}
           alt={user ? user.name : "loading"}
@@ -61,17 +63,17 @@ export default function CreatePost({reload}) {
               onChange={(e) => setlinkPost(e.target.value)}
               data-test="link"
             ></input>
-            <input
+            <textarea
                 type="text"
                 placeholder="Awesome article about #javascript"
                 value={descriptionPost}
                 onChange={(e) => setdescriptionPost(e.target.value)}
                 data-test="description"
-            ></input>
+            ></textarea>
 
           </div>
-          <StyledButton onClick={()=> createPost()}>
-            <button data-test="publish-btn">Publish</button>
+          <StyledButton>
+            <button data-test="publish-btn">{loading ? "Publishing..." : "Publish"}</button>
           </StyledButton>
         </div>
       </ContainerCreatePost>
@@ -91,7 +93,7 @@ const Container = styled.div`
   }
 `;
 
-const ContainerCreatePost = styled.div`
+const ContainerCreatePost = styled.form`
   display: flex;
   width: 100%;
   min-height: 209px;
@@ -121,6 +123,7 @@ const ContainerCreatePost = styled.div`
     width: 100%;
     height: 13px;
     padding: 15px;
+    
     margin-bottom: 5px;
     background-color: #efefef;
     border-radius: 5px;
@@ -177,9 +180,15 @@ const StyledButton = styled.div`
     font-size: 14px;
     font-weight: 700;
     line-height: 17px;
-    &:hover {
-      cursor: pointer;
-      background-color: #86bbff;
+    &:enabled{
+      &:hover {
+        cursor: pointer;
+        background-color: #86bbff;
+      }
+    }
+    &:disabled{
+     opacity: 50%;
+     cursor: not-allowed;
     }
   }
 `;

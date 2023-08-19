@@ -28,12 +28,13 @@ export default function Post({
   const [liked, setLiked] = useState(default_liked);
   const [usePlaceholderImage, setUsePlaceholderImage] = useState(false);
   const [inEditMode, setInEditMode] = useState(false);
-  const [descriptionEditValue, setDescriptionEditValue] = useState(description);
+  const [descriptionEditValue, setDescriptionEditValue] = useState(description ? description : "");
   const [likeCount, setLikeCount] = useState(Number(like_count));
   const editRef = useRef();
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     validateMetadataImage();
@@ -65,15 +66,18 @@ export default function Post({
   }
 
   function deleteThis() {
+    if(deleting) return;
     const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
+    setDeleting(true);
     axios.delete(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/post/${post_id}`, { headers: { Authorization: token } })
       .then(res => {
-        console.log(res);
+        setDeleting(false);
         setShowModal(false);
         reload();
       })
       .catch(err => {
         setShowModal(false);
+        setDeleting(false);
         console.log(err);
         alert("Error deleting post!");
       })
@@ -257,7 +261,7 @@ export default function Post({
             <h1>Are you sure you want to delete this post?</h1>
             <div className="actions">
               <button onClick={(e) => { e.stopPropagation(); setShowModal(false); }} data-test="cancel">No, go back</button>
-              <button onClick={(e) => { e.stopPropagation(); deleteThis(); }} data-test="confirm">Yes, delete it</button>
+              <button disabled={deleting} onClick={(e) => { e.stopPropagation(); deleteThis(); }} data-test="confirm">{deleting ? "Wait.." : "Yes, delete it"}</button>
             </div>
           </QuestionBox>
         </ModalAskDelete>
@@ -295,11 +299,16 @@ export default function Post({
           <h1 className="user-name" onClick={goToUser} data-test="username">
             {name ? name : "Username"}
           </h1>
-          {!inEditMode && <p data-test="description">{description ? transformTextWithHashtags(description) : "Description"}</p>}
+          {!inEditMode && <p data-test="description">{description ? transformTextWithHashtags(description) : ""}</p>}
           {inEditMode && (
             <PostForm onBlur={finishEdit} onSubmit={(e) => updatePost(e)}>
               <input
                 ref={editRef}
+                onKeyDown={(e) =>{
+                  if (e.key === "Escape") {
+                    setInEditMode(false);
+                  }
+                }}
                 onBlur={finishEdit}
                 value={descriptionEditValue}
                 type="text"
@@ -381,9 +390,15 @@ const QuestionBox = styled.div`
       border-radius: 5px;
       background: #1877F2;
 
-      &:hover{
-        background: #FFF;
-        color: #1877F2;
+      &:enabled{
+          &:hover{
+          background: #FFF;
+          color: #1877F2;
+        }
+      }
+      &:disabled{
+        opacity: 50%;
+        cursor: not-allowed;
       }
     }
   }
