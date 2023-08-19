@@ -103,7 +103,7 @@ export default function Post({
 
     setEditInput(false);
     if (descriptionEditValue === description) return;
-    
+
     //alert("Implemente o axios do edit post!");
     const hashtags = extractTextWithHashtagsSplitedByComa(descriptionEditValue);
     console.log(hashtags)
@@ -225,8 +225,9 @@ export default function Post({
   }
 
   function transformTextWithHashtags(t) {
-    const splittedTextBySpaces = t.split(' ');
+    if (!t) return "";
 
+    const splittedTextBySpaces = t.split(' ');
     const transformedSegments = splittedTextBySpaces.map((textSegment, index) => {
       if (textSegment.includes('#')) return <a className="hashtag" href={`/hashtag/${textSegment.replace('#', '')}`} key={index}>{textSegment + " "}</a>
       return textSegment + " ";
@@ -301,14 +302,13 @@ export default function Post({
           <h1 className="user-name" onClick={goToUser} data-test="username">
             {name ? name : "Username"}
           </h1>
-          {/*!inEditMode*/ !editInput && <p data-test="description">{description ? transformTextWithHashtags(description) : ""}</p>}
+          {!editInput && <p data-test="description">{transformTextWithHashtags(description)}</p>}
           {editInput &&
             <PostForm onSubmit={(e) => updatePost(e)}>
               <input
                 ref={editRef}
                 onKeyDown={(e) => {
                   if (e.key === "Escape") {
-                    // setInEditMode(false);
                     setEditInput(false);
                   }
                 }}
