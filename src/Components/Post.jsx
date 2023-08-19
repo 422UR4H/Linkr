@@ -333,9 +333,9 @@ export default function Post({
               <h2 className="metadata-description">
                 {metadata_description ? metadata_description : "Description"}
               </h2>
-              <a /*onClick={() => window.open(link)} href={link} target="_blank"*/>
+              <span /*onClick={() => window.open(link)} href={link} target="_blank"*/>
                 {link.trim()}
-              </a>
+              </span>
             </MetadataInfo>
             <div className="metadata-image">
               <img
@@ -617,7 +617,7 @@ const MetadataInfo = styled.div`
     height: fit-content;
   }
 
-  a {
+  span {
     color: #cecece;
     font-family: Lato;
     font-size: 11px;

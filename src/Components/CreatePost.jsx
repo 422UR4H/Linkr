@@ -64,7 +64,7 @@ export default function CreatePost({ reload }) {
               onChange={(e) => setlinkPost(e.target.value)}
               data-test="link"
             ></input>
-            <input
+            <input className="description"
               type="text"
               placeholder="Awesome article about #javascript"
               value={descriptionPost}
@@ -139,7 +139,7 @@ const ContainerCreatePost = styled.form`
       outline: none;
     }
   }
-  textarea {
+  .description {
     height: 66px;
     resize: none;
     width: 100%;
@@ -149,6 +149,7 @@ const ContainerCreatePost = styled.form`
     background-color: #efefef;
     border: none;
     padding: 10px;
+
     &:focus {
       outline: none;
     }
