@@ -31,7 +31,7 @@ export default function Timeline() {
       const responsePosts = (await api.getPosts(token)).data;
       setPosts(responsePosts);
 
-      const responseHashtags = (await api.getHashtags(token)).data;
+      const responseHashtags = (await api.getAllHashtags(token)).data;
       setTrendingHashtags(responseHashtags);
 
       setLoading(false);
@@ -73,9 +73,9 @@ export default function Timeline() {
                   owner_id={post.owner_id}
                   post_id={post.id}
                   default_liked={post.default_liked}
-                  metadata_title={post.metadata.title}
-                  metadata_description={post.metadata.description}
-                  metadata_image={post.metadata.image}
+                  metadata_title={post.metadata?.title}
+                  metadata_description={post.metadata?.description}
+                  metadata_image={post.metadata?.image}
                   first_liker_name={post.first_liker_name}
                   second_liker_name={post.second_liker_name}
                 />

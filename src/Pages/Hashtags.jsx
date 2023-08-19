@@ -1,39 +1,37 @@
 import { styled } from "styled-components";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import Post from "../Components/Post";
 import SearchBar from "../Components/SearchBar";
 import { useWindowSize } from "@uidotdev/usehooks";
 import { useNavigate } from "react-router-dom";
 import Trending from "../Components/Trending";
 import { useParams } from "react-router-dom";
+import useToken from "../Hooks/useToken.js";
+import api from "../Services/api.js";
 
 export default function Hashtags() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const { hashtag } = useParams();
+  const { token } = useToken();
   const size = useWindowSize();
-  const params = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!localStorage.getItem("token")) return navigate("/");
     reload();
-  }, [params.hashtag]);
+  }, [hashtag]);
 
   function reload() {
-    const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
-    axios
-      .get(`http://localhost:5000/hashtags/${params.hashtag}`, {
-        headers: { Authorization: token },
-      },
-        setLoading(true)
-      )
-      .then((response) => {
-        setPosts(response.data);
+    setLoading(true);
+    api.getPostsByHashtag(hashtag, token)
+      .then(({ data }) => {
+        setPosts(data);
         setLoading(false);
       })
       .catch((error) => {
+        console.log(error);
         setError(true);
       });
   }
@@ -44,7 +42,7 @@ export default function Hashtags() {
       <ContainerTimeline>
         {size.width <= 720 && <SearchBar className={"search-bar"} />}
         <Title data-test="hashtag-title">
-          <h1>#{params.hashtag}</h1>
+          <h1>#{hashtag}</h1>
         </Title>
 
         <Content>

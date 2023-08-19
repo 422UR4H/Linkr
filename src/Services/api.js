@@ -21,14 +21,18 @@ function editPost(body, token, id) {
   return axios.put(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/post/${id}`, body, config(token));
 }
 
-function getHashtags(token) {
+function getAllHashtags(token) {
   return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/hashtags`, config(token));
+}
+
+function getPostsByHashtag(hashtag, token) {
+  return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/hashtags/${hashtag}`, config(token));
 }
 
 const api = {
   signin, signup,
   createPost, getPosts, editPost,
-  getHashtags
+  getAllHashtags, getPostsByHashtag
 };
 
 export default api;
