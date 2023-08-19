@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import UserContext from "../Contexts/UserContext";
 import "react-tooltip/dist/react-tooltip.css";
 import { Tooltip } from "react-tooltip";
+import api from "../Services/api.js";
+import useToken from "../Hooks/useToken.js";
 
 export default function Post({
   post_id,
@@ -27,23 +29,27 @@ export default function Post({
   const placeholderImage = "/placeholder.jpg";
   const [liked, setLiked] = useState(default_liked);
   const [usePlaceholderImage, setUsePlaceholderImage] = useState(false);
-  const [inEditMode, setInEditMode] = useState(false);
+  // const [inEditMode, setInEditMode] = useState(false);
   const [descriptionEditValue, setDescriptionEditValue] = useState(description ? description : "");
   const [likeCount, setLikeCount] = useState(Number(like_count));
-  const editRef = useRef();
+  const editRef = useRef(null);
+  const { token } = useToken();
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [editInput, setEditInput] = useState(false);
 
   useEffect(() => {
     validateMetadataImage();
     window.addEventListener("click", endEdit);
-  }, []);
+    if (editRef.current) editRef.current.focus();
+  }, [editInput]);
 
   function endEdit(event) {
     if (editRef.current && !event.target.classList.contains("edit-post")) {
-      setInEditMode(false);
+      // setInEditMode(false);
+      setEditInput(false);
     }
   }
   function goToUser() {
@@ -52,12 +58,11 @@ export default function Post({
     navigate(`/user/${owner_id}`);
   }
 
-  function startEdit() {
-    if (inEditMode) {
-      setInEditMode(false);
-    } else {
-      setInEditMode(true);
-    }
+  function startEdit(event) {
+    event.stopPropagation();
+
+    setEditInput(!editInput);
+    // setInEditMode(!inEditMode);
   }
 
   function askDelete() {
@@ -66,7 +71,7 @@ export default function Post({
   }
 
   function deleteThis() {
-    if(deleting) return;
+    if (deleting) return;
     const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
     setDeleting(true);
     axios.delete(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/post/${post_id}`, { headers: { Authorization: token } })
@@ -95,25 +100,26 @@ export default function Post({
 
   function updatePost(e) {
     e.preventDefault();
+
+    setEditInput(false);
+    if (descriptionEditValue === description) return;
+    
     //alert("Implemente o axios do edit post!");
     const hashtags = extractTextWithHashtagsSplitedByComa(descriptionEditValue);
-    const body = {"description" : descriptionEditValue, "id" : post_id, "hash_tags" : hashtags};
-    const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
-    axios.put(`http://localhost:5000/post/`,body,{ headers: { Authorization: token }})
-    .then(res => {
-      console.log(res);
-      setShowModal(false);
-      reload();
-    })
-    .catch(err => {
-      setShowModal(false);
-      console.log(err);
-      alert("Error editing your post!");
-    })
-  }
-
-  function finishEdit(e) {
-    e?.preventDefault();
+    console.log(hashtags)
+    const body = { description: descriptionEditValue, hash_tags: hashtags };
+    if (body.hash_tags === "") delete body.hash_tags;
+    api.editPost(body, token, post_id)
+      .then(res => {
+        console.log(res);
+        setShowModal(false);
+        reload();
+      })
+      .catch(err => {
+        setShowModal(false);
+        console.log(err);
+        alert("Error editing your post!");
+      })
   }
 
   function like() {
@@ -126,10 +132,6 @@ export default function Post({
         { like_owner_id: user.id },
         { headers: { Authorization: token } }
       )
-      .then((res) => {
-        //console.log(res.data);
-        //reload();
-      })
       .catch((err) => {
         setLikeCount(likeCount - 1);
         setLiked(false);
@@ -269,11 +271,11 @@ export default function Post({
       <PostContainer data-test="post">
         {user && owner_id && user.id == owner_id && (
           <Actions>
-            <AiFillEdit onClick={(e) => { startEdit(e); e.stopPropagation(); }} className="icon" data-test="edit-btn" />
+            <AiFillEdit onClick={(e) => startEdit(e)} className="icon" data-test="edit-btn" />
             <BiSolidTrashAlt onClick={askDelete} className="icon" data-test="delete-btn" />
           </Actions>
         )}
-        <Tooltip id="tooltip likes" data-test="tooltip"/>
+        <Tooltip id="tooltip likes" data-test="tooltip" />
         <AvatarAndLikes>
           <img
             onClick={goToUser}
@@ -299,17 +301,18 @@ export default function Post({
           <h1 className="user-name" onClick={goToUser} data-test="username">
             {name ? name : "Username"}
           </h1>
-          {!inEditMode && <p data-test="description">{description ? transformTextWithHashtags(description) : ""}</p>}
-          {inEditMode && (
-            <PostForm onBlur={finishEdit} onSubmit={(e) => updatePost(e)}>
+          {/*!inEditMode*/ !editInput && <p data-test="description">{description ? transformTextWithHashtags(description) : ""}</p>}
+          {editInput &&
+            <PostForm onSubmit={(e) => updatePost(e)}>
               <input
                 ref={editRef}
-                onKeyDown={(e) =>{
+                onKeyDown={(e) => {
                   if (e.key === "Escape") {
-                    setInEditMode(false);
+                    // setInEditMode(false);
+                    setEditInput(false);
                   }
                 }}
-                onBlur={finishEdit}
+                onBlur={(e) => endEdit(e)}
                 value={descriptionEditValue}
                 type="text"
                 placeholder="Description"
@@ -318,7 +321,7 @@ export default function Post({
                 data-test="edit-input"
               />
             </PostForm>
-          )}
+          }
           <Metadata data-test="link">
             <MetadataInfo>
               <h1 className="metadata-title">

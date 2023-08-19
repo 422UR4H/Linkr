@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import SignPagesTemplate from '../Components/Templates/SignPagesTemplate.jsx';
 import Form from '../Components/Atoms/Form.jsx';
 import Input from '../Styles/Input.js';
@@ -12,10 +12,14 @@ import useUser from '../Hooks/useUser.js';
 
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
+  const { token, login } = useToken();
   const { putUser } = useUser();
   const { form, handleForm } = useForm({ email: "", password: "" });
-  const { login } = useToken();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (token) navigate("/timeline");
+  }, [token]);
 
   function handleSubmit(e) {
     e.preventDefault();

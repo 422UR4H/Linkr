@@ -1,38 +1,39 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useState } from "react";
 import { styled } from "styled-components";
 import UserContext from "../Contexts/UserContext";
-import axios from "axios";
+import api from "../Services/api.js";
+import useToken from "../Hooks/useToken.js";
 
-export default function CreatePost({reload}) {
+export default function CreatePost({ reload }) {
   const { user } = useContext(UserContext);
+  const { token } = useToken();
   const [linkPost, setlinkPost] = useState("");
   const [descriptionPost, setdescriptionPost] = useState("");
-  const [loading,setLoading] = useState(false);
- 
-  function createPost(text_to_extract) {
-    if(linkPost === "" || loading) {
+  const [loading, setLoading] = useState(false);
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    
+    if (linkPost === "" || loading) {
       return;
     }
-
     setLoading(true);
 
     const hashtags = extractTextWithHashtagsSplitedByComa(descriptionPost);
-    const body = {"description" : descriptionPost, "link" : linkPost, "hash_tags" : hashtags};
-    if( body.description == "") delete body.description;
-    if( body.hash_tags == "") delete body.hash_tags;
-    const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
-    axios.post(`http://localhost:5000/post/`,body,{ headers: { Authorization: token }})
-        .then(res => {
-          setlinkPost("");
-          setdescriptionPost("");
-          reload();
-          setLoading(false);
-        })
-        .catch(err => {
-          console.log(err);
-          alert("Error publishing your link");
-          setLoading(false);
-        })
+    const body = { "description": descriptionPost, "link": linkPost, "hash_tags": hashtags };
+    if (body.description == "") delete body.description;
+    if (body.hash_tags == "") delete body.hash_tags;
+    api.createPost(body, token)
+      .then(res => {
+        setlinkPost("");
+        setdescriptionPost("");
+        reload();
+      })
+      .catch(err => {
+        console.log(err);
+        alert("Error publishing your link");
+      })
+      .finally(() => setLoading(false))
   }
 
   function extractTextWithHashtagsSplitedByComa(text_to_extract) {
@@ -47,7 +48,7 @@ export default function CreatePost({reload}) {
 
   return (
     <Container data-test="publish-box">
-      <ContainerCreatePost onSubmit={(e)=> {createPost(); e.preventDefault()}}>
+      <ContainerCreatePost onSubmit={(e) => handleSubmit(e)}>
         <img
           src={user ? user.photo : "/placeholder.jpg"}
           alt={user ? user.name : "loading"}
@@ -64,16 +65,18 @@ export default function CreatePost({reload}) {
               data-test="link"
             ></input>
             <textarea
-                type="text"
-                placeholder="Awesome article about #javascript"
-                value={descriptionPost}
-                onChange={(e) => setdescriptionPost(e.target.value)}
-                data-test="description"
+              type="text"
+              placeholder="Awesome article about #javascript"
+              value={descriptionPost}
+              onChange={(e) => setdescriptionPost(e.target.value)}
+              data-test="description"
             ></textarea>
 
           </div>
           <StyledButton>
-            <button data-test="publish-btn">{loading ? "Publishing..." : "Publish"}</button>
+            <button type="submit" data-test="publish-btn">
+              {loading ? "Publishing..." : "Publish"}
+            </button>
           </StyledButton>
         </div>
       </ContainerCreatePost>
