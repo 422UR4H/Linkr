@@ -46,9 +46,7 @@ export default function Timeline() {
 
         <Content>
           <SCTimeline>
-            <CreatePost 
-              reload={reload}
-            />
+            <CreatePost reload={reload} />
             {loading ? (
               <p className="loading">Loading...</p>
             ) : error ? (
