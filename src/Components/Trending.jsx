@@ -7,21 +7,6 @@ export default function Trending({ trendingHashtags }) {
   const { token } = useToken();
   const navigate = useNavigate()
 
-  // useEffect(() => {
-    // async function getApiTrending() {
-    //   try {
-        // const response = await axios
-        //   .get(`http://localhost:5000/hashtags`, {
-        //     headers: { Authorization: token }
-        //   })
-        // setTrendingHashtags(response.data);
-      // } catch (error) {
-      //   console.error(error);
-      // }
-    // }
-    // getApiTrending();
-  // }, []);
-
   function goToHashtag(e) {
     const hashtag = e.target.textContent.slice(1)
     navigate(`/hashtag/${hashtag}`);
