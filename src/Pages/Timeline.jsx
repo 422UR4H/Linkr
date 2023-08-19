@@ -46,7 +46,9 @@ export default function Timeline() {
 
         <Content>
           <SCTimeline>
-            <CreatePost />
+            <CreatePost 
+              reload={reload}
+            />
             {loading ? (
               <p className="loading">Loading...</p>
             ) : error ? (
@@ -69,9 +71,9 @@ export default function Timeline() {
                   owner_id={post.owner_id}
                   post_id={post.id}
                   default_liked={post.default_liked}
-                  metadata_title={post.metadata.title}
-                  metadata_description={post.metadata.description}
-                  metadata_image={post.metadata.image}
+                  //metadata_title={post.metadata.title}
+                  //metadata_description={post.metadata.description}
+                  //metadata_image={post.metadata.image}
                   first_liker_name={post.first_liker_name}
                   second_liker_name={post.second_liker_name}
                 />

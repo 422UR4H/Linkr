@@ -1,10 +1,37 @@
-import { useContext } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { styled } from "styled-components";
 import UserContext from "../Contexts/UserContext";
+import axios from "axios";
 
-export default function CreatePost() {
+export default function CreatePost({reload}) {
   const { user } = useContext(UserContext);
+  const [linkPost, setlinkPost] = useState("");
+  const [descriptionPost, setdescriptionPost] = useState("");
+ 
+  function createPost(text_to_extract) {
+    console.log(linkPost);
+    console.log(descriptionPost);
+    console.log(user);
 
+    if(linkPost === "") {
+      return;
+    }
+
+    const hashtags = extractTextWithHashtagsSplitedByComa(descriptionPost);
+    const body = {"description" : descriptionPost, "link" : linkPost, "hash_tags" : hashtags};
+    const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
+    axios.post(`http://localhost:5000/post/`,body,{ headers: { Authorization: token }})
+        .then(res => {
+          console.log(res);
+          setlinkPost("");
+          setdescriptionPost("");
+          reload();
+        })
+        .catch(err => {
+          console.log(err);
+          alert("Error publishing your link");
+        })
+  }
 
   function extractTextWithHashtagsSplitedByComa(text_to_extract) {
     const splittedTextBySpaces = text_to_extract.split(' ');
@@ -26,14 +53,24 @@ export default function CreatePost() {
         <div className="container2">
           <div>
             <h2>What are you going to share today?</h2>
-            <input type="text" placeholder="http://..." data-test="link"></input>
-            <textarea
+            <input
+              required
               type="text"
-              placeholder="Awesome article about #javascript"
-              data-test="description"
-            ></textarea>
+              placeholder="http://..."
+              value={linkPost}
+              onChange={(e) => setlinkPost(e.target.value)}
+              data-test="link"
+            ></input>
+            <input
+                type="text"
+                placeholder="Awesome article about #javascript"
+                value={descriptionPost}
+                onChange={(e) => setdescriptionPost(e.target.value)}
+                data-test="description"
+            ></input>
+
           </div>
-          <StyledButton>
+          <StyledButton onClick={()=> createPost()}>
             <button data-test="publish-btn">Publish</button>
           </StyledButton>
         </div>
