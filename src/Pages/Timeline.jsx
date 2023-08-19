@@ -7,33 +7,38 @@ import SearchBar from "../Components/SearchBar";
 import { useWindowSize } from "@uidotdev/usehooks";
 import { useNavigate } from "react-router-dom";
 import Trending from "../Components/Trending";
+import useToken from "../Hooks/useToken.js";
+import api from "../Services/api.js";
 
 export default function Timeline() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [trendingHashtags, setTrendingHashtags] = useState([]);
+  const { token } = useToken();
   const size = useWindowSize();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!localStorage.getItem("token")) return navigate("/");
+    if (!token) return navigate("/");
     reload();
   }, []);
 
-  function reload() {
+  async function reload() {
     setLoading(true);
-    const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
-    axios
-      .get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/timeline`, {
-        headers: { Authorization: token },
-      })
-      .then((response) => {
-        setPosts(response.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setError(true);
-      });
+
+    try {
+      const responsePosts = (await api.getPosts(token)).data;
+      setPosts(responsePosts);
+
+      const responseHashtags = (await api.getHashtags(token)).data;
+      setTrendingHashtags(responseHashtags);
+
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      setError(true);
+    }
   }
 
   return (
@@ -77,7 +82,9 @@ export default function Timeline() {
               ))
             )}
           </SCTimeline>
-          {size.width > 720 && <Trending />}
+          {size.width > 720 &&
+            <Trending trendingHashtags={trendingHashtags} />
+          }
         </Content>
       </ContainerTimeline>
     </PageContainer>
