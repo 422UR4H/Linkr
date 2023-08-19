@@ -29,10 +29,19 @@ function getPostsByHashtag(hashtag, token) {
   return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/hashtags/${hashtag}`, config(token));
 }
 
+function setLike(id, body, token) {
+  return axios.post(`${process.env.REACT_APP_API_URL}/like/${id}`, body, config(token));
+}
+
+function setUnlike(id, token) {
+  return axios.delete(`${process.env.REACT_APP_API_URL}/dislike/${id}`, config(token));
+}
+
 const api = {
   signin, signup,
   createPost, getPosts, editPost,
-  getAllHashtags, getPostsByHashtag
+  getAllHashtags, getPostsByHashtag,
+  setLike, setUnlike
 };
 
 export default api;
