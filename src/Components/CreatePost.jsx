@@ -13,7 +13,7 @@ export default function CreatePost({ reload }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    
+
     if (linkPost === "" || loading) {
       return;
     }
@@ -64,17 +64,17 @@ export default function CreatePost({ reload }) {
               onChange={(e) => setlinkPost(e.target.value)}
               data-test="link"
             ></input>
-            <textarea
+            <input
               type="text"
               placeholder="Awesome article about #javascript"
               value={descriptionPost}
               onChange={(e) => setdescriptionPost(e.target.value)}
               data-test="description"
-            ></textarea>
+            ></input>
 
           </div>
           <StyledButton>
-            <button type="submit" data-test="publish-btn">
+            <button type="submit" disable={loading} data-test="publish-btn">
               {loading ? "Publishing..." : "Publish"}
             </button>
           </StyledButton>
