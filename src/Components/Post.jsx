@@ -89,6 +89,7 @@ export default function Post({
   }
 
   function extractTextWithHashtagsSplitedByComa(text_to_extract) {
+    if (!text_to_extract) return "";
     const splittedTextBySpaces = text_to_extract.split(' ');
     const transformedSegments = [];
     splittedTextBySpaces.map((textSegment, index) => {
@@ -322,7 +323,7 @@ export default function Post({
               />
             </PostForm>
           }
-          <Metadata data-test="link">
+          <Metadata data-test="link" href={link} target="_blank">
             <MetadataInfo>
               <h1 className="metadata-title">
                 {metadata_title && metadata_title !== ""
@@ -332,8 +333,8 @@ export default function Post({
               <h2 className="metadata-description">
                 {metadata_description ? metadata_description : "Description"}
               </h2>
-              <a onClick={() => window.open(link)} href={link} target="_blank">
-                {link}
+              <a /*onClick={() => window.open(link)} href={link} target="_blank"*/>
+                {link.trim()}
               </a>
             </MetadataInfo>
             <div className="metadata-image">
@@ -574,7 +575,7 @@ const PostInfo = styled.div`
   }
 `;
 
-const Metadata = styled.div`
+const Metadata = styled.a`
   display: flex;
   width: 100%;
   max-width: 503px;

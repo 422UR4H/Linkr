@@ -74,7 +74,7 @@ export default function CreatePost({ reload }) {
 
           </div>
           <StyledButton>
-            <button type="submit" disable={loading} data-test="publish-btn">
+            <button type="submit" disabled={loading} data-test="publish-btn">
               {loading ? "Publishing..." : "Publish"}
             </button>
           </StyledButton>
