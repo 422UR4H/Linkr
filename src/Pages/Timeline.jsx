@@ -51,8 +51,7 @@ export default function Timeline() {
               <p className="loading">Loading...</p>
             ) : error ? (
               <p>
-                An error occured while trying to fetch the posts, please refresh the
-                page.
+                An error occured while trying to fetch the posts, please refresh the page
               </p>
             ) : posts.length === 0 ? (
               <p data-test="message">There are no posts yet.</p>
