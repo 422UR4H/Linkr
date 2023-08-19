@@ -13,14 +13,22 @@ function createPost(body, token) {
   return axios.post(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/post`, body, config(token));
 }
 
+function getPosts(token) {
+  return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/timeline`, config(token));
+}
+
 function editPost(body, token, id) {
   return axios.put(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/post/${id}`, body, config(token));
 }
 
+function getHashtags(token) {
+  return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/hashtags`, config(token));
+}
 
 const api = {
   signin, signup,
-  createPost, editPost
+  createPost, getPosts, editPost,
+  getHashtags
 };
 
 export default api;
