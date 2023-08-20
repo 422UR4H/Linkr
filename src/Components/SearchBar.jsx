@@ -15,7 +15,7 @@ export default function SearchBar({ className }) {
 
     useEffect(() => {
         const delay = setTimeout(() => {
-            if (debouncedSearchValue.length >= 3) {
+            if (debouncedSearchValue.length > 2) {
                 performSearch(debouncedSearchValue);
             }
         }, 300);
@@ -29,7 +29,7 @@ export default function SearchBar({ className }) {
 
     function performSearch(query) {
         const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
-
+        setSearching(true);
         axios.get(`${process.env.REACT_APP_API_URL}/users/${query}`, { headers: { Authorization: token } })
             .then(res => {
                 setShowSuggestions(true);
@@ -53,7 +53,7 @@ export default function SearchBar({ className }) {
 
     function handleSearchChanged(e) {
         setSearchValue(e.target.value);
-        setSearching(e.target.value.length >= 3);
+        setSearching(e.target.value.length > 2);
         if (e.target.value === "") {
             setShowSuggestions(false);
         }
@@ -121,7 +121,6 @@ const SCSearchBar = styled.div`
 
     input{
         width: 100%;
-        max-width: 611px;
         height: 45px;
         flex-shrink: 0;
         border-radius: 8px;

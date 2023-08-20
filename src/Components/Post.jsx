@@ -9,6 +9,7 @@ import "react-tooltip/dist/react-tooltip.css";
 import { Tooltip } from "react-tooltip";
 import api from "../Services/api.js";
 import useToken from "../Hooks/useToken.js";
+import { DISCORD_METADATA_IMAGE_URL, TRELLO_METADATA_IMAGE_URL, urlMetadata } from "../Utils/constants";
 
 export default function Post({
   post_id,
@@ -40,12 +41,45 @@ export default function Post({
   const [showModal, setShowModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [editInput, setEditInput] = useState(false);
+  const [metadata, setMetadata] = useState(null);
+  const [validAvatarUrl, setValidAvatarUrl] = useState(false);
+
+  useEffect(() => {
+    if(!link) return;
+
+    if(avatar_photo_url)
+    {
+      validateUrl(avatar_photo_url)
+      .then((res) => {
+          setValidAvatarUrl(true);
+        })
+        .catch((err) => {
+          setValidAvatarUrl(false);
+        });
+    }
+
+    if(!metadata_image || !metadata_title || !metadata_description){
+      urlMetadata(link)
+      .then((res) => {
+        const meta = res.data;
+        const metadatas = {
+          description: meta.description ? meta.description : "", 
+          title: meta.title ? meta.title : "",
+          image: link.includes("discord.com") ? DISCORD_METADATA_IMAGE_URL :
+          link.includes("trello.com") ? TRELLO_METADATA_IMAGE_URL :
+          meta.images &&  meta.images[0] ? meta.images[0] : ""
+        }
+        setMetadata(metadatas);
+      }).catch(error =>{ console.log(error)}) 
+    }
+  }, []);
 
   useEffect(() => {
     validateMetadataImage();
     window.addEventListener("click", endEdit);
     if (editRef.current) editRef.current.focus();
   }, [editInput]);
+
 
   function endEdit(event) {
     if (editRef.current && !event.target.classList.contains("edit-post")) {
@@ -273,7 +307,7 @@ export default function Post({
         <AvatarAndLikes>
           <img
             onClick={goToUser}
-            src={avatar_photo_url ? avatar_photo_url : placeholderImage}
+            src={avatar_photo_url && validAvatarUrl ? avatar_photo_url : placeholderImage}
             alt={name}
           />
           <Likes onClick={toggleLike} data-test="like-btn">
@@ -319,12 +353,12 @@ export default function Post({
           <Metadata data-test="link" href={link} target="_blank">
             <MetadataInfo>
               <h1 className="metadata-title">
-                {metadata_title && metadata_title !== ""
+                {metadata && metadata.title ? metadata.title : metadata_title && metadata_title !== ""
                   ? metadata_title
                   : createdLinkTitle(link)}
               </h1>
               <h2 className="metadata-description">
-                {metadata_description ? metadata_description : "Description"}
+                {metadata ? metadata.description : metadata_description ? metadata_description : ""}
               </h2>
               <span /*onClick={() => window.open(link)} href={link} target="_blank"*/>
                 {link.trim()}
@@ -333,6 +367,7 @@ export default function Post({
             <div className="metadata-image">
               <img
                 src={
+                  metadata ? metadata.image :
                   metadata_image && metadata_image !== "" && !usePlaceholderImage
                     ? metadata_image
                     : placeholderImage
@@ -535,6 +570,7 @@ const PostInfo = styled.div`
   height: fit-content;
   gap: 7px;
   width: 100%;
+  overflow: hidden;
 
   .user-name {
     color: #fff;
@@ -575,6 +611,7 @@ const Metadata = styled.a`
   display: flex;
   width: 100%;
   max-width: 503px;
+  min-height: 155px;
   max-height: 155px;
   flex-shrink: 0;
   border-radius: 11px;
@@ -582,9 +619,13 @@ const Metadata = styled.a`
   overflow: hidden;
   justify-content: space-between;
   text-decoration: none !important;
+  @media (max-width: 720px) {
+    max-width: 100%;
+  }
   @media (max-width: 500px) {
     height: fit-content;
     max-height: fit-content;
+    min-height: 50px;
   }
 
   .metadata-image {
@@ -592,6 +633,7 @@ const Metadata = styled.a`
     max-width: 153.44px;
     border-radius: 0px 12px 13px 0px;
     overflow: hidden;
+    flex-shrink: 0;
     img {
       width: 100%;
       height: 100%;
@@ -606,14 +648,17 @@ const MetadataInfo = styled.div`
   flex-direction: column;
   padding: 20px;
   gap: 10px;
-  max-width: 327px;
+  max-width: 247px;
 
   @media (max-width: 500px) {
     padding: 7px;
     height: fit-content;
+    max-width: 50%;
   }
 
+
   span {
+    overflow: hidden;
     color: #cecece;
     font-family: Lato;
     font-size: 11px;

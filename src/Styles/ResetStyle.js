@@ -27,6 +27,13 @@ html, body, span, applet, object, iframe,
 	}
 	body {
 		line-height: 1;
+		&::-webkit-scrollbar {
+			width: 10px;
+		}
+		&::-webkit-scrollbar-thumb {
+			background-color:#1877F2;
+			border-radius: 3px;
+		}
 	}
 	ol, ul {
 		list-style: none;

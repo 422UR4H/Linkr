@@ -106,6 +106,7 @@ const SCTimeline = styled.div`
   }
   @media (max-width: 720px) {
     width: 100%;
+    max-width: 100%;
   }
   
 `;
@@ -136,6 +137,9 @@ const Content = styled.div`
   width: 100%;
   gap: 25px;
   justify-content: center;
+  @media (max-width: 720px) {
+    max-width: 100%;
+  }
 `;
 
 
@@ -160,6 +164,7 @@ const ContainerTimeline = styled.div`
   }
   .search-bar {
     margin-top: 10px;
+    width: 100%;
     max-width: calc(100% - 20px) !important;
   }
 `;

@@ -13,8 +13,9 @@ export default function Hashtags() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const { hashtag } = useParams();
+  const [trendingHashtags, setTrendingHashtags] = useState([]);
   const { token } = useToken();
+  const { hashtag } = useParams();
   const size = useWindowSize();
   const navigate = useNavigate();
 
@@ -23,8 +24,9 @@ export default function Hashtags() {
     reload();
   }, [hashtag]);
 
-  function reload() {
+ async function reload() {
     setLoading(true);
+    if(!hashtag) return;
     api.getPostsByHashtag(hashtag, token)
       .then(({ data }) => {
         setPosts(data);
@@ -34,6 +36,13 @@ export default function Hashtags() {
         console.log(error);
         setError(true);
       });
+        try {
+          const responseHashtags = (await api.getAllHashtags(token)).data;
+          setTrendingHashtags(responseHashtags);
+        } catch (err) {
+          console.log(err);
+        }
+
   }
 
 
@@ -69,16 +78,16 @@ export default function Hashtags() {
                   owner_id={post.owner_id}
                   post_id={post.id}
                   default_liked={post.default_liked}
-                  metadata_title={post.metadata.title}
-                  metadata_description={post.metadata.description}
-                  metadata_image={post.metadata.image}
+                  metadata_title={post.metadata?.title}
+                  metadata_description={post.metadata?.description}
+                  metadata_image={post.metadata?.image}
                   first_liker_name={post.first_liker_name}
                   second_liker_name={post.second_liker_name}
                 />
               ))
             )}
           </SCTimeline>
-          {size.width > 720 && <Trending />}
+          {size.width > 720 && <Trending trendingHashtags={trendingHashtags} />}
         </Content>
       </ContainerTimeline>
     </PageContainer>
@@ -99,6 +108,7 @@ const SCTimeline = styled.div`
   }
   @media (max-width: 720px) {
     width: 100%;
+    max-width: 100%;
   }
   
 `;
@@ -147,5 +157,6 @@ const ContainerTimeline = styled.div`
   .search-bar {
     margin-top: 10px;
     max-width: calc(100% - 20px) !important;
+    width: 100%;
   }
 `;
