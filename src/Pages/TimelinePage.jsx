@@ -7,6 +7,9 @@ import CreatePost from "../Components/CreatePost";
 import Post from "../Components/Post";
 import api from "../Services/api.js";
 import useTrending from "../Hooks/useTrending.js";
+import ErrorFetchMessage from "../Components/Atoms/ErrorFetchMessage.jsx";
+import LoadingMessage from "../Components/Atoms/LoadingMessage.jsx";
+import NoPostsYetMessage from "../Components/Atoms/NoPostsYetMessage.jsx";
 
 
 export default function Timeline() {
@@ -40,35 +43,28 @@ export default function Timeline() {
         <MainTemplate textHeader="timeline">
             <StyledTimeline>
                 <CreatePost reload={reload} />
-                {loading ? (
-                    <p className="loading">Loading...</p>
-                ) : error ? (
-                    <p>
-                        An error occured while trying to fetch the posts, please refresh the page
-                    </p>
-                ) : posts.length === 0 ? (
-                    <p data-test="message">There are no posts yet.</p>
-                ) : (
-                    posts.map((post) => (
-                        <Post
-                            reload={reload}
-                            key={post.id}
-                            avatar_photo_url={post.user_photo}
-                            name={post.user_name}
-                            description={post.description}
-                            like_count={post.likes_count}
-                            link={post.link}
-                            owner_id={post.owner_id}
-                            post_id={post.id}
-                            default_liked={post.default_liked}
-                            metadata_title={post.metadata?.title}
-                            metadata_description={post.metadata?.description}
-                            metadata_image={post.metadata?.image}
-                            first_liker_name={post.first_liker_name}
-                            second_liker_name={post.second_liker_name}
-                        />
-                    ))
-                )}
+                {loading ?
+                    <LoadingMessage /> : error ?
+                        <ErrorFetchMessage /> : posts.length === 0 ?
+                            <NoPostsYetMessage /> : (posts.map((post) => (
+                                <Post
+                                    reload={reload}
+                                    key={post.id}
+                                    avatar_photo_url={post.user_photo}
+                                    name={post.user_name}
+                                    description={post.description}
+                                    like_count={post.likes_count}
+                                    link={post.link}
+                                    owner_id={post.owner_id}
+                                    post_id={post.id}
+                                    default_liked={post.default_liked}
+                                    metadata_title={post.metadata?.title}
+                                    metadata_description={post.metadata?.description}
+                                    metadata_image={post.metadata?.image}
+                                    first_liker_name={post.first_liker_name}
+                                    second_liker_name={post.second_liker_name}
+                                />
+                            )))}
             </StyledTimeline>
         </MainTemplate>
     );

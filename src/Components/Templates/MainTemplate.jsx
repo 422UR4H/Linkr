@@ -1,13 +1,9 @@
-import { useEffect, useState } from 'react';
 import { useWindowSize } from '@uidotdev/usehooks';
 import { styled } from 'styled-components';
-import useToken from '../../Hooks/useToken.js';
 import SearchBar from '../SearchBar.jsx';
 import Trending from '../Trending.jsx';
-import api from '../../Services/api.js';
 
 export default function MainTemplate({ textHeader, children }) {
-    const { token } = useToken();
     const size = useWindowSize();
 
     return (
