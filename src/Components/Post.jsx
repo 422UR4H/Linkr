@@ -289,7 +289,7 @@ export default function Post({
             <BiSolidTrashAlt onClick={askDelete} className="icon" data-test="delete-btn" />
           </Actions>
         )}
-        <Tooltip id="tooltip likes" data-test="tooltip" />
+        <Tooltip render={({content}) => <p data-test="tooltip">{content}</p>} id="tooltip likes"  />
         <AvatarAndLikes>
           <img
             onClick={goToUser}
@@ -447,6 +447,13 @@ const PostContainer = styled.div`
   padding: 20px;
   position: relative;
   margin-bottom: 10px;
+  .react-tooltip{
+    max-width: fit-content;
+    p{
+      font-size: 16px;
+      color: white;
+    }
+  }
 
   @media (max-width: 720px) {
     max-width: 100%;

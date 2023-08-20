@@ -1,7 +1,7 @@
 import { styled } from 'styled-components';
 
 export default function Menu({ children }) {
-    return <StyledMenu>{children}</StyledMenu>
+    return <StyledMenu data-test="menu">{children}</StyledMenu>
 }
 
 const StyledMenu = styled.nav`

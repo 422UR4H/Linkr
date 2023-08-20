@@ -150,6 +150,8 @@ const ContainerCreatePost = styled.form`
     background-color: #efefef;
     border: none;
     padding: 10px;
+    padding-bottom: 66px;
+    padding-top: 20px;
 
     &:focus {
       outline: none;
