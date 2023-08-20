@@ -1,25 +1,24 @@
-import { styled } from "styled-components";
 import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { styled } from "styled-components";
 import Post from "../Components/Post";
-import SearchBar from "../Components/SearchBar";
-import { useWindowSize } from "@uidotdev/usehooks";
-import { useNavigate } from "react-router-dom";
-import Trending from "../Components/Trending";
-import { useParams } from "react-router-dom";
 import useToken from "../Hooks/useToken.js";
 import api from "../Services/api.js";
+import MainTemplate from "../Components/Templates/MainTemplate.jsx";
+import LoadingMessage from "../Components/Atoms/LoadingMessage.jsx";
+import ErrorFetchMessage from "../Components/Atoms/ErrorFetchMessage.jsx";
+
 
 export default function Hashtags() {
   const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(true);
   const { hashtag } = useParams();
   const { token } = useToken();
-  const size = useWindowSize();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!localStorage.getItem("token")) return navigate("/");
+    if (!token) return navigate("/");
     reload();
   }, [hashtag]);
 
@@ -36,26 +35,13 @@ export default function Hashtags() {
       });
   }
 
-
   return (
-    <PageContainer>
-      <ContainerTimeline>
-        {size.width <= 720 && <SearchBar className={"search-bar"} />}
-        <Title data-test="hashtag-title">
-          <h1>#{hashtag}</h1>
-        </Title>
-
-        <Content>
-          <SCTimeline>
-            {loading ? (
-              <p className="loading">Loading...</p>
-            ) : error ? (
-              <p>
-                An error occured while trying to fetch the posts, please refresh the
-                page.
-              </p>
-            ) : posts.length === 0 ? (
-              <p>There are no posts yet.</p>
+    <MainTemplate textHeader={`#${hashtag}`}>
+      <StyledHashtags>
+        {loading ?
+          <LoadingMessage /> : error ?
+            <ErrorFetchMessage /> : posts.length === 0 ? (
+              <p>There are no posts yet</p>
             ) : (
               posts.map((post) => (
                 <Post
@@ -77,20 +63,18 @@ export default function Hashtags() {
                 />
               ))
             )}
-          </SCTimeline>
-          {size.width > 720 && <Trending />}
-        </Content>
-      </ContainerTimeline>
-    </PageContainer>
+      </StyledHashtags>
+    </MainTemplate >
   );
 }
 
-const SCTimeline = styled.div`
+const StyledHashtags = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
   max-width: 611px;
+
   .loading{
     font-size: 40px;
     color: white;
@@ -99,53 +83,5 @@ const SCTimeline = styled.div`
   }
   @media (max-width: 720px) {
     width: 100%;
-  }
-  
-`;
-
-const Title = styled.div`
-  max-width: 930px;
-  width: 100%;
-  text-align: start;
-  padding: 15px;
-  h1 {
-    font-family: "Oswald", sans-serif;
-    color: #ffffff;
-    font-size: 43px;
-    font-weight: 700;
-    line-height: 64px;
-  }
-`;
-
-const Content = styled.div`
-  display: flex;
-  width: 100%;
-  gap: 25px;
-  justify-content: center;
-`;
-
-
-const PageContainer = styled.main`
-  display: flex;
-  width: 100%;
-  height: 100%;
-  justify-content: center;
-`;
-const ContainerTimeline = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  max-width: calc(100% - 20px);
-  @media (max-width: 720px) {
-    max-width: 100%;
-  }
-  p {
-    color: #707070;
-    font-size: 40px;
-  }
-  .search-bar {
-    margin-top: 10px;
-    max-width: calc(100% - 20px) !important;
   }
 `;

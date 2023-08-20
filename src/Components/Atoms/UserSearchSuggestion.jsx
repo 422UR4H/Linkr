@@ -1,24 +1,23 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 
 export default function UserSearchSuggestion({ photo, username, user_id }) {
   const placeholderImage = "/placeholder.jpg";
   const navigate = useNavigate();
+
   function goToUser() {
     if (!user_id) return alert("This suggestions doenst have an owner_id prop");
-
     navigate(`/user/${user_id}`);
   }
   return (
-    <SCUserSearchSuggestion onClick={goToUser} data-test="user-search">
+    <StyledUserSearchSuggestion onClick={goToUser} data-test="user-search">
       <img src={photo ? photo : placeholderImage} alt="" />
       <h1 className="username">{username ? username : "Name"}</h1>
-    </SCUserSearchSuggestion>
+    </StyledUserSearchSuggestion>
   );
 }
 
-const SCUserSearchSuggestion = styled.div`
+const StyledUserSearchSuggestion = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
