@@ -1,13 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { styled } from 'styled-components';
-import UserSearchSuggestion from './UserSearchSuggestion';
-import axios from 'axios';
+import { useEffect, useRef, useState } from 'react'
 import { AiOutlineSearch } from 'react-icons/ai';
+import { styled } from 'styled-components';
+import SearchSuggestions from './Molecules/SearchSuggestions.jsx';
+import useToken from '../Hooks/useToken.js';
+import api from '../Services/api.js';
+
 
 export default function SearchBar({ className }) {
-
-    const [searchValue, setSearchValue] = useState("");
     const searchRef = useRef();
+    const { token } = useToken();
+    const [searchValue, setSearchValue] = useState("");
     const [searching, setSearching] = useState(false);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [suggestions, setSuggestions] = useState([]);
@@ -22,27 +24,6 @@ export default function SearchBar({ className }) {
         return () => clearTimeout(delay);
     }, [debouncedSearchValue]);
 
-    function cancelSearch() {
-        setSearching(false);
-        setShowSuggestions(false);
-    }
-
-    function performSearch(query) {
-        const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
-
-        axios.get(`${process.env.REACT_APP_API_URL}/users/${query}`, { headers: { Authorization: token } })
-            .then(res => {
-                setShowSuggestions(true);
-                setSuggestions(res.data);
-                setSearching(false);
-            })
-            .catch(err => {
-                setSuggestions([]);
-                setShowSuggestions(false);
-                setSearching(false);
-            });
-    }
-
     useEffect(() => {
         const delay = setTimeout(() => {
             setDebouncedSearchValue(searchValue);
@@ -51,16 +32,35 @@ export default function SearchBar({ className }) {
         return () => clearTimeout(delay);
     }, [searchValue]);
 
-    function handleSearchChanged(e) {
-        setSearchValue(e.target.value);
-        setSearching(e.target.value.length >= 3);
-        if (e.target.value === "") {
+    function cancelSearch() {
+        setSearching(false);
+        setShowSuggestions(false);
+    }
+
+    function performSearch(query) {
+        api.getUsersByName(query, token)
+            .then(res => {
+                setShowSuggestions(true);
+                setSuggestions(res.data);
+            })
+            .catch((err) => {
+                console.log(err);
+                setSuggestions([]);
+                setShowSuggestions(false);
+            })
+            .finally(() => setSearching(false));
+    }
+
+    function handleSearchChanged({ target }) {
+        setSearchValue(target.value);
+        setSearching(target.value.length >= 3);
+        if (target.value === "") {
             setShowSuggestions(false);
         }
     }
 
     return (
-        <SCSearchBar className={className}>
+        <StyledSearchBar className={className}>
             <AiOutlineSearch className='icon' />
             <input
                 ref={searchRef}
@@ -72,36 +72,14 @@ export default function SearchBar({ className }) {
                 placeholder='Search for people'
                 data-test="search"
             />
-            {
-                searchValue.length > 0 && showSuggestions &&
-                <SearchSuggestions>
-                    {
-                        (searching || suggestions.length == 0) &&
-
-                        <SearchDefaultSuggestion>
-                            <p>{searching ? "Searching.." : suggestions?.length > 0 ? "" : "No results found"}</p>
-                        </SearchDefaultSuggestion>
-                    }
-                    {
-                        suggestions && suggestions.map(user_suggestion => {
-                            return (
-                                <UserSearchSuggestion
-                                    key={user_suggestion.id}
-                                    user_id={user_suggestion.id}
-                                    photo={user_suggestion.photo}
-                                    username={user_suggestion.user_name}
-                                />
-                            )
-                        })
-                    }
-                </SearchSuggestions>
+            {searchValue.length > 0 && showSuggestions &&
+                <SearchSuggestions searching={searching} suggestions={suggestions} />
             }
-        </SCSearchBar>
+        </StyledSearchBar>
     )
 }
 
-
-const SCSearchBar = styled.div`
+const StyledSearchBar = styled.div`
     width: 611px;
     max-width: 611px;
     display: flex;
@@ -141,34 +119,4 @@ const SCSearchBar = styled.div`
             line-height: normal;
         }
     }
-`;
-
-const SearchDefaultSuggestion = styled.div`
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 40px;
-    padding: 8px;
-    p{
-        color: #515151;
-        font-family: Lato;
-        font-size: 15px;
-        font-style: normal;
-        font-weight: 400;
-        line-height: normal;
-    }
-`;
-
-const SearchSuggestions = styled.nav`
-    position: absolute;
-    left: 0;
-    top: 40px;
-    width: 100%;
-    height: fit-content;
-    border-radius: 8px;
-    background: #E7E7E7;
-    border-top-right-radius: 0;
-    border-top-left-radius: 0;
-    z-index: 3;
 `;

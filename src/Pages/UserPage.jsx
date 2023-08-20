@@ -1,19 +1,20 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router';
-import { styled } from 'styled-components'
-import Post from '../Components/Post';
 import { useNavigate } from 'react-router-dom';
 import { useWindowSize } from '@uidotdev/usehooks';
-import SearchBar from '../Components/SearchBar';
+import { styled } from 'styled-components'
 import Trending from '../Components/Trending';
+import SearchBar from '../Components/SearchBar';
+import axios from 'axios';
+import Post from '../Components/Post';
+
 
 export default function UserPage() {
   const [thisUser, setThisUser] = useState(null);
   const [userNotFound, setUserNotFound] = useState(false);
   const params = useParams();
-  const navigate = useNavigate();
   const size = useWindowSize();
+  const navigate = useNavigate();
 
   function reload() {
     const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
@@ -21,9 +22,9 @@ export default function UserPage() {
       .then(res => {
         setThisUser(res.data);
         console.log(res.data);
-      }).catch((error) => {
+      }).catch((err) => {
         setUserNotFound(true);
-        //console.log(error);
+        console.log(err);
       });
   }
 

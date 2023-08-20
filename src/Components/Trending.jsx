@@ -1,11 +1,22 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
+import useTrending from '../Hooks/useTrending.js';
 import useToken from '../Hooks/useToken.js';
+import api from '../Services/api.js';
 
-
-export default function Trending({ trendingHashtags }) {
+export default function Trending() {
+  const navigate = useNavigate();
   const { token } = useToken();
-  const navigate = useNavigate()
+  const { trendingHashtags, setTrendingHashtags } = useTrending();
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  async function load() {
+    setTrendingHashtags((await api.getAllHashtags(token)).data);
+  }
 
   function goToHashtag(e) {
     const hashtag = e.target.textContent.slice(1)
@@ -13,20 +24,21 @@ export default function Trending({ trendingHashtags }) {
   }
 
   return (
-    <Container data-test="trending">
+    <StyledTrending data-test="trending">
       <h1>trending</h1>
       <div className="tags">
         {trendingHashtags?.length > 0 && trendingHashtags.map((hashtag, i) => (
           <p onClick={goToHashtag} key={i} data-test="hashtag">#{hashtag}</p>
         ))}
       </div>
-    </Container>
-  )
+    </StyledTrending>
+  );
 }
 
-const Container = styled.div`
+const StyledTrending = styled.div`
   width: 301px;
   height: 406px;
+  /* margin-top: 130px; */
   border-radius: 16px;
   flex-shrink: 0;
   background: #171717;

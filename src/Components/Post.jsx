@@ -1,14 +1,15 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import styled from "styled-components";
+import { useContext, useEffect, useRef, useState } from "react";
 import { AiFillHeart, AiOutlineHeart, AiFillEdit } from "react-icons/ai";
 import { BiSolidTrashAlt } from "react-icons/bi";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import UserContext from "../Contexts/UserContext";
-import "react-tooltip/dist/react-tooltip.css";
 import { Tooltip } from "react-tooltip";
-import api from "../Services/api.js";
+import { styled } from "styled-components";
+import "react-tooltip/dist/react-tooltip.css";
+import UserContext from "../Contexts/UserContext";
 import useToken from "../Hooks/useToken.js";
+import api from "../Services/api.js";
+import axios from "axios";
+
 
 export default function Post({
   post_id,
@@ -27,19 +28,18 @@ export default function Post({
   second_liker_name,
 }) {
   const placeholderImage = "/placeholder.jpg";
-  const [liked, setLiked] = useState(default_liked);
-  const [usePlaceholderImage, setUsePlaceholderImage] = useState(false);
-  // const [inEditMode, setInEditMode] = useState(false);
   const [descriptionEditValue, setDescriptionEditValue] = useState(description ? description : "");
+  const [usePlaceholderImage, setUsePlaceholderImage] = useState(false);
   const [isToggleLiking, setIsToggleLiking] = useState(false);
   const [likeCount, setLikeCount] = useState(Number(like_count));
-  const editRef = useRef(null);
-  const { token } = useToken();
-  const { user } = useContext(UserContext);
-  const navigate = useNavigate();
+  const [liked, setLiked] = useState(default_liked);
   const [showModal, setShowModal] = useState(false);
-  const [deleting, setDeleting] = useState(false);
   const [editInput, setEditInput] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const { user } = useContext(UserContext);
+  const { token } = useToken();
+  const editRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     validateMetadataImage();
@@ -49,7 +49,6 @@ export default function Post({
 
   function endEdit(event) {
     if (editRef.current && !event.target.classList.contains("edit-post")) {
-      // setInEditMode(false);
       setEditInput(false);
     }
   }
@@ -63,7 +62,6 @@ export default function Post({
     event.stopPropagation();
 
     setEditInput(!editInput);
-    // setInEditMode(!inEditMode);
   }
 
   function askDelete() {
@@ -78,7 +76,7 @@ export default function Post({
       .then(res => {
         setDeleting(false);
         setShowModal(false);
-        reload();
+        reload(true);
       })
       .catch(err => {
         setShowModal(false);
@@ -105,16 +103,13 @@ export default function Post({
     setEditInput(false);
     if (descriptionEditValue === description) return;
 
-    //alert("Implemente o axios do edit post!");
     const hashtags = extractTextWithHashtagsSplitedByComa(descriptionEditValue);
-    console.log(hashtags)
     const body = { description: descriptionEditValue, hash_tags: hashtags };
     if (body.hash_tags === "") delete body.hash_tags;
     api.editPost(body, token, post_id)
       .then(res => {
-        console.log(res);
         setShowModal(false);
-        reload();
+        reload(true);
       })
       .catch(err => {
         setShowModal(false);
@@ -140,7 +135,7 @@ export default function Post({
         .finally(() => setIsToggleLiking(false));
     } else {
       setLikeCount(likeCount - 1);
-      
+
       api.setUnlike(post_id, token)
         .catch((err) => {
           setLikeCount(likeCount + 1);

@@ -1,25 +1,26 @@
-import { styled } from "styled-components";
 import { useEffect, useState } from "react";
-import Post from "../Components/Post";
-import SearchBar from "../Components/SearchBar";
+import { useParams, useNavigate } from "react-router-dom";
 import { useWindowSize } from "@uidotdev/usehooks";
-import { useNavigate } from "react-router-dom";
+import { styled } from "styled-components";
+import SearchBar from "../Components/SearchBar";
 import Trending from "../Components/Trending";
-import { useParams } from "react-router-dom";
+import Post from "../Components/Post";
 import useToken from "../Hooks/useToken.js";
 import api from "../Services/api.js";
+import MainTemplate from "../Components/Templates/MainTemplate.jsx";
+
 
 export default function Hashtags() {
   const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(true);
   const { hashtag } = useParams();
   const { token } = useToken();
   const size = useWindowSize();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!localStorage.getItem("token")) return navigate("/");
+    if (!token) return navigate("/");
     reload();
   }, [hashtag]);
 
@@ -36,52 +37,45 @@ export default function Hashtags() {
       });
   }
 
-
   return (
-    <PageContainer>
-      <ContainerTimeline>
-        {size.width <= 720 && <SearchBar className={"search-bar"} />}
-        <Title data-test="hashtag-title">
-          <h1>#{hashtag}</h1>
-        </Title>
+    <MainTemplate
+      textHeader={`#${hashtag}`}>
 
-        <Content>
-          <SCTimeline>
-            {loading ? (
-              <p className="loading">Loading...</p>
-            ) : error ? (
-              <p>
-                An error occured while trying to fetch the posts, please refresh the
-                page.
-              </p>
-            ) : posts.length === 0 ? (
-              <p>There are no posts yet.</p>
-            ) : (
-              posts.map((post) => (
-                <Post
-                  reload={reload}
-                  key={post.id}
-                  avatar_photo_url={post.user_photo}
-                  name={post.user_name}
-                  description={post.description}
-                  like_count={post.likes_count}
-                  link={post.link}
-                  owner_id={post.owner_id}
-                  post_id={post.id}
-                  default_liked={post.default_liked}
-                  metadata_title={post.metadata.title}
-                  metadata_description={post.metadata.description}
-                  metadata_image={post.metadata.image}
-                  first_liker_name={post.first_liker_name}
-                  second_liker_name={post.second_liker_name}
-                />
-              ))
-            )}
-          </SCTimeline>
-          {size.width > 720 && <Trending />}
-        </Content>
-      </ContainerTimeline>
-    </PageContainer>
+      <Content>
+        <SCTimeline>
+          {loading ? (
+            <p className="loading">Loading...</p>
+          ) : error ? (
+            <p>
+              An error occured while trying to fetch the posts, please refresh the page
+            </p>
+          ) : posts.length === 0 ? (
+            <p>There are no posts yet</p>
+          ) : (
+            posts.map((post) => (
+              <Post
+                reload={reload}
+                key={post.id}
+                avatar_photo_url={post.user_photo}
+                name={post.user_name}
+                description={post.description}
+                like_count={post.likes_count}
+                link={post.link}
+                owner_id={post.owner_id}
+                post_id={post.id}
+                default_liked={post.default_liked}
+                metadata_title={post.metadata.title}
+                metadata_description={post.metadata.description}
+                metadata_image={post.metadata.image}
+                first_liker_name={post.first_liker_name}
+                second_liker_name={post.second_liker_name}
+              />
+            ))
+          )}
+        </SCTimeline>
+        {size.width > 720 && <Trending />}
+      </Content>
+    </MainTemplate >
   );
 }
 
