@@ -26,5 +26,4 @@ const Input = styled.input`
         height: 55px;
     }
 `;
-
 export default Input;

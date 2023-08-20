@@ -1,14 +1,15 @@
 import { useContext, useState } from "react";
 import { styled } from "styled-components";
 import UserContext from "../Contexts/UserContext";
-import api from "../Services/api.js";
 import useToken from "../Hooks/useToken.js";
+import api from "../Services/api.js";
+
 
 export default function CreatePost({ reload }) {
   const { user } = useContext(UserContext);
   const { token } = useToken();
-  const [linkPost, setlinkPost] = useState("");
   const [descriptionPost, setdescriptionPost] = useState("");
+  const [linkPost, setlinkPost] = useState("");
   const [loading, setLoading] = useState(false);
 
   function handleSubmit(e) {
@@ -27,7 +28,7 @@ export default function CreatePost({ reload }) {
       .then(res => {
         setlinkPost("");
         setdescriptionPost("");
-        reload();
+        reload(true);
       })
       .catch(err => {
         console.log(err);

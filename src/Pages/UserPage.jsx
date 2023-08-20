@@ -1,14 +1,15 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router';
-import { styled } from 'styled-components'
-import Post from '../Components/Post';
 import { useNavigate } from 'react-router-dom';
 import { useWindowSize } from '@uidotdev/usehooks';
-import SearchBar from '../Components/SearchBar';
+import { styled } from 'styled-components'
 import Trending from '../Components/Trending';
 import api from '../Services/api';
 import useToken from '../Hooks/useToken';
+import SearchBar from '../Components/SearchBar';
+import axios from 'axios';
+import Post from '../Components/Post';
+
 
 export default function UserPage() {
   const [thisUser, setThisUser] = useState(null);
@@ -43,24 +44,22 @@ export default function UserPage() {
 
   return (
     <PageContainer>
-      {
-        !userNotFound &&
+      {!userNotFound &&
 
         <Content>
           <SCTimeline>
-            {
-              size.width <= 720 && <SearchBar className={'search-bar'} />
-            }
+            {size.width <= 500 && <SearchBar className={'search-bar'} />}
             <AvatarAndTitle>
               <img src={thisUser ? thisUser.photo : "/placeholder.jpg"} alt={thisUser ? thisUser.name : "Loading.."} />
               <h1>{thisUser ? thisUser.user_name + "’s posts" : "Loading..."}</h1>
             </AvatarAndTitle>
             <PostsAndTrending>
               <Posts>
-
-                {thisUser && thisUser.user_posts.length == 0 && <h1 className='no-posts'>This user has no posts</h1>}
-                {
-                  thisUser && thisUser.user_posts.map(post => (
+                {thisUser &&
+                  thisUser.user_posts.length == 0 && <h1 className='no-posts'>This user has no posts</h1>
+                }
+                {thisUser &&
+                  thisUser.user_posts.map(post => (
                     <Post
                       key={post.post_id}
                       owner_id={thisUser.user_id}
@@ -86,16 +85,14 @@ export default function UserPage() {
           </SCTimeline>
         </Content>
       }
-      {
-        userNotFound &&
+      {userNotFound &&
         <div className='not-found'>
           <h1 >Error 404 : User not found</h1>
           <button onClick={() => navigate('/timeline')}>Go back</button>
         </div>
       }
-
     </PageContainer>
-  )
+  );
 }
 
 const PostsAndTrending = styled.div`
@@ -128,7 +125,6 @@ const Posts = styled.div`
 `;
 
 const Content = styled.div`
-
   display: flex;
   width: 100%;
   max-width: 940px;
@@ -143,7 +139,6 @@ const Content = styled.div`
       width: 100%;
     }
   }
- 
 `;
 
 const AvatarAndTitle = styled.div`

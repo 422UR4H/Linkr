@@ -37,8 +37,13 @@ function setUnlike(id, token) {
   return axios.delete(`${process.env.REACT_APP_API_URL}/dislike/${id}`, config(token));
 }
 
+function getUsersByName(name, token) {
+  return axios.get(`${process.env.REACT_APP_API_URL}/users/${name}`, config(token));
+}
+
 const api = {
   signin, signup,
+  getUsersByName,
   createPost, getPosts, editPost,
   getAllHashtags, getPostsByHashtag,
   setLike, setUnlike

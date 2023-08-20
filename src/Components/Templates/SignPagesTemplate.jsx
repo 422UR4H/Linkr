@@ -1,7 +1,6 @@
 import { styled } from 'styled-components'
 import Presentation from '../Atoms/Presentation.jsx';
 
-
 export default function SignPagesTemplate({ children, margin }) {
     return (
         <StyledSignTemplates $margin={margin}>
@@ -21,7 +20,6 @@ export const StyledSignTemplates = styled.div`
     .form-div {
         background-color: #333333;
         width: 535px;
-        /* height: 100vh; */
         margin-top: ${({ $margin }) => $margin};
         display: flex;
         flex-direction: column;
