@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { useWindowSize } from '@uidotdev/usehooks';
 import { styled } from 'styled-components'
 import Trending from '../Components/Trending';
+import api from '../Services/api';
+import useToken from '../Hooks/useToken';
 import SearchBar from '../Components/SearchBar';
 import axios from 'axios';
 import Post from '../Components/Post';
@@ -12,20 +14,27 @@ import Post from '../Components/Post';
 export default function UserPage() {
   const [thisUser, setThisUser] = useState(null);
   const [userNotFound, setUserNotFound] = useState(false);
+  const [trendingHashtags, setTrendingHashtags] = useState([]);
   const params = useParams();
-  const size = useWindowSize();
+  const { token } = useToken();
   const navigate = useNavigate();
+  const size = useWindowSize();
 
-  function reload() {
-    const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
+  async function reload() {
     axios.get(`${process.env.REACT_APP_API_URL}/user/${params.id}`, { headers: { Authorization: token } })
       .then(res => {
         setThisUser(res.data);
-        console.log(res.data);
-      }).catch((err) => {
+      }).catch((error) => {
+        console.log(error);
         setUserNotFound(true);
-        console.log(err);
       });
+
+    try {
+      const responseHashtags = (await api.getAllHashtags(token)).data;
+      setTrendingHashtags(responseHashtags);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   useEffect(() => {
@@ -71,7 +80,7 @@ export default function UserPage() {
                   ))
                 }
               </Posts>
-              {size.width > 720 && thisUser && <Trending />}
+              {size.width > 720 && thisUser && <Trending trendingHashtags={trendingHashtags} />}
             </PostsAndTrending>
           </SCTimeline>
         </Content>
@@ -124,9 +133,10 @@ const Content = styled.div`
       max-width:100% !important;
   }
   .search-bar{
-    @media (max-width: 500px) {
+    @media (max-width: 720px) {
       max-width: calc(100% - 20px) !important;
       margin-top: 10px !important;
+      width: 100%;
     }
   }
 `;

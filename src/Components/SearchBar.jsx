@@ -17,12 +17,28 @@ export default function SearchBar({ className }) {
 
     useEffect(() => {
         const delay = setTimeout(() => {
-            if (debouncedSearchValue.length >= 3) {
+            if (debouncedSearchValue.length > 2) {
                 performSearch(debouncedSearchValue);
             }
         }, 300);
         return () => clearTimeout(delay);
     }, [debouncedSearchValue]);
+
+    function performSearch(query) {
+        const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
+        setSearching(true);
+        axios.get(`${process.env.REACT_APP_API_URL}/users/${query}`, { headers: { Authorization: token } })
+            .then(res => {
+                setShowSuggestions(true);
+                setSuggestions(res.data);
+                setSearching(false);
+            })
+            .catch(err => {
+                setSuggestions([]);
+                setShowSuggestions(false);
+                setSearching(false);
+            });
+    }
 
     useEffect(() => {
         const delay = setTimeout(() => {
@@ -31,11 +47,6 @@ export default function SearchBar({ className }) {
 
         return () => clearTimeout(delay);
     }, [searchValue]);
-
-    function cancelSearch() {
-        setSearching(false);
-        setShowSuggestions(false);
-    }
 
     function performSearch(query) {
         api.getUsersByName(query, token)
@@ -99,7 +110,6 @@ const StyledSearchBar = styled.div`
 
     input{
         width: 100%;
-        max-width: 611px;
         height: 45px;
         flex-shrink: 0;
         border-radius: 8px;

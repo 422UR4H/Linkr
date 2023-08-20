@@ -12,6 +12,8 @@ import ErrorFetchMessage from "../Components/Atoms/ErrorFetchMessage.jsx";
 export default function Hashtags() {
   const [posts, setPosts] = useState([]);
   const [error, setError] = useState(false);
+
+  const size = useWindowSize();
   const [loading, setLoading] = useState(true);
   const { hashtag } = useParams();
   const { token } = useToken();
@@ -22,8 +24,9 @@ export default function Hashtags() {
     reload();
   }, [hashtag]);
 
-  function reload() {
+ async function reload() {
     setLoading(true);
+    if(!hashtag) return;
     api.getPostsByHashtag(hashtag, token)
       .then(({ data }) => {
         setPosts(data);
@@ -33,6 +36,13 @@ export default function Hashtags() {
         console.log(error);
         setError(true);
       });
+        try {
+          const responseHashtags = (await api.getAllHashtags(token)).data;
+          setTrendingHashtags(responseHashtags);
+        } catch (err) {
+          console.log(err);
+        }
+
   }
 
   return (
@@ -55,9 +65,9 @@ export default function Hashtags() {
                   owner_id={post.owner_id}
                   post_id={post.id}
                   default_liked={post.default_liked}
-                  metadata_title={post.metadata.title}
-                  metadata_description={post.metadata.description}
-                  metadata_image={post.metadata.image}
+                  metadata_title={post.metadata?.title}
+                  metadata_description={post.metadata?.description}
+                  metadata_image={post.metadata?.image}
                   first_liker_name={post.first_liker_name}
                   second_liker_name={post.second_liker_name}
                 />
@@ -83,5 +93,6 @@ const StyledHashtags = styled.div`
   }
   @media (max-width: 720px) {
     width: 100%;
+    max-width: 100%;
   }
 `;
