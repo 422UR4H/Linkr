@@ -1,4 +1,4 @@
-import {  useEffect, useState } from "react";
+import {  useContext, useEffect, useRef, useState } from "react";
 import { AiFillHeart, AiOutlineHeart, AiFillEdit } from "react-icons/ai";
 import { BiSolidTrashAlt } from "react-icons/bi";
 import { Tooltip } from "react-tooltip";
@@ -7,7 +7,9 @@ import "react-tooltip/dist/react-tooltip.css";
 import { DISCORD_METADATA_IMAGE_URL, TRELLO_METADATA_IMAGE_URL, urlMetadata } from "../Utils/constants";
 import api from "../Services/api.js";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
+import UserContext from "../Contexts/UserContext";
+import useToken from "../Hooks/useToken";
 
 export default function Post({
   post_id,
@@ -25,6 +27,8 @@ export default function Post({
   first_liker_name,
   second_liker_name,
 }) {
+  const {user} = useContext(UserContext);
+  const{token} = useToken();
   const placeholderImage = "/placeholder.jpg";
   const [descriptionEditValue, setDescriptionEditValue] = useState(description ? description : "");
   const [usePlaceholderImage, setUsePlaceholderImage] = useState(false);
@@ -35,6 +39,9 @@ export default function Post({
   const [editInput, setEditInput] = useState(false);
   const [metadata, setMetadata] = useState(null);
   const [validAvatarUrl, setValidAvatarUrl] = useState(false);
+  const editRef = useRef();
+  const navigate = useNavigate();
+  const [deleting,setDeleting] = useState(false);
 
   useEffect(() => {
     if(!link) return;
