@@ -16,7 +16,7 @@ const UserAvatar = forwardRef((props, logoutRef) => {
             }
             <Icon />
             {showLogout &&
-                <Menu ref={logoutRef} data-test="menu">
+                <Menu ref={logoutRef}>
                     <button onClick={signOut} data-test="logout">Logout</button>
                 </Menu>
             }

@@ -11,7 +11,7 @@ export default function MainTemplate({ textHeader, children }) {
             <div>
                 {size.width <= 720 && <SearchBar className="search-bar" />}
                 <Title>
-                    <h1>{textHeader}</h1>
+                    <h1 data-test="hashtag-title">{textHeader}</h1>
                 </Title>
 
                 <StyledContent>
