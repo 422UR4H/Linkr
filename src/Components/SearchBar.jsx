@@ -4,7 +4,8 @@ import { styled } from 'styled-components';
 import SearchSuggestions from './Molecules/SearchSuggestions.jsx';
 import useToken from '../Hooks/useToken.js';
 import api from '../Services/api.js';
-
+import { useWindowSize } from '@uidotdev/usehooks';
+import axios from 'axios';
 
 export default function SearchBar({ className }) {
     const searchRef = useRef();
