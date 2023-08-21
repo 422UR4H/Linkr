@@ -20,9 +20,6 @@ export default function Post({
   description,
   link,
   default_liked = false,
-  metadata_image,
-  metadata_title,
-  metadata_description,
   reload,
   first_liker_name,
   second_liker_name,
@@ -66,30 +63,27 @@ export default function Post({
 
   function getPostMetadataInfo() {
     if (!link || isImageLink(link)) return; // Prevent API calls to extract metadata from an invalid link, in this case a image link
+    api.urlMetadata(link)
+      .then((res) => {
+        const meta = res.data;
 
-    if (!metadata_image || !metadata_title || !metadata_description) {
-      api.urlMetadata(link)
-        .then((res) => {
-          const meta = res.data;
+        const cleanedMetadataImage = link.includes("discord.com") ? DISCORD_METADATA_IMAGE_URL :
+          link.includes("trello.com") ? TRELLO_METADATA_IMAGE_URL :
+            meta.images && meta.images[0] ? meta.images[0] : "";
 
-          const cleanedMetadataImage = link.includes("discord.com") ? DISCORD_METADATA_IMAGE_URL :
-            link.includes("trello.com") ? TRELLO_METADATA_IMAGE_URL :
-              meta.images && meta.images[0] ? meta.images[0] : "";
+        const metadatas = {
+          description: meta.description ? meta.description : "",
+          title: meta.title ? meta.title : "",
+          image: cleanedMetadataImage
+        }
 
-          const metadatas = {
-            description: meta.description ? meta.description : "",
-            title: meta.title ? meta.title : "",
-            image: cleanedMetadataImage
-          }
-
-          validateImageUrl(cleanedMetadataImage)
-            .then((res) => setMetadata(metadatas))
-            .catch((error) => {
-              metadatas.image = PLACEHOLDER_IMAGE;
-              setMetadata(metadatas);
-            })
-        }).catch(error => console.log(error))
-    }
+        validateImageUrl(cleanedMetadataImage)
+          .then((res) => setMetadata(metadatas))
+          .catch((error) => {
+            metadatas.image = PLACEHOLDER_IMAGE;
+            setMetadata(metadatas);
+          })
+      }).catch(error => console.log(error))
   }
 
   function endEdit(event) {
@@ -133,7 +127,7 @@ export default function Post({
   function updatePost(e) {
     e.preventDefault();
     setEditInput(false);
-    
+
     if (descriptionEditValue === description) return;
 
     const hashtags = extractTextWithHashtagsSplitedByComa(descriptionEditValue);
@@ -191,14 +185,14 @@ export default function Post({
   }
 
   function metadataTitle() {
-    return metadata && metadata.title ? metadata.title : metadata_title && metadata_title !== "" ? metadata_title : createdLinkTitle(link);
+    return metadata && metadata.title ? metadata.title :  createdLinkTitle(link);
   }
   function metadataDescription() {
-    return metadata ? metadata.description : metadata_description ? metadata_description : "";
+    return metadata ? metadata.description : "";
   }
 
   function metadataImage() {
-    return metadata ? metadata.image : metadata_image && metadata_image !== "" ? metadata_image : PLACEHOLDER_IMAGE;
+    return metadata ? metadata.image : PLACEHOLDER_IMAGE;
   }
 
   function userLoggedInIsOwnerOfThisPost() {
