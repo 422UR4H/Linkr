@@ -11,8 +11,17 @@ const StyledHashtag = styled.p`
     font-weight: 700;
     line-height: 23px;
     letter-spacing: 0.05em;
+    cursor:pointer;
 
-    &:hover{
-        cursor:pointer;
+    @media (max-width: 720px) {
+        font-size: 15px;
+        border-radius: 10px;
+        border: 1px solid #7f7f7f;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+    @media (max-width: 500px) {
+        font-size: 12px;
     }
 `;
