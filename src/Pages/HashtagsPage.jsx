@@ -64,9 +64,6 @@ export default function HashtagsPage() {
                   owner_id={post.owner_id}
                   post_id={post.id}
                   default_liked={post.default_liked}
-                  metadata_title={post.metadata?.title}
-                  metadata_description={post.metadata?.description}
-                  metadata_image={post.metadata?.image}
                   first_liker_name={post.first_liker_name}
                   second_liker_name={post.second_liker_name}
                 />
