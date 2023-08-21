@@ -12,7 +12,7 @@ import LoadingMessage from "../Components/Atoms/LoadingMessage.jsx";
 import NoPostsYetMessage from "../Components/Atoms/NoPostsYetMessage.jsx";
 
 
-export default function Timeline() {
+export default function TimelinePage() {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
@@ -45,8 +45,8 @@ export default function Timeline() {
                 <CreatePost reload={reload} />
                 {loading ?
                     <LoadingMessage /> : error ?
-                        <ErrorFetchMessage /> : posts.length === 0 ?
-                            <NoPostsYetMessage /> : (posts.map((post) => (
+                        <ErrorFetchMessage /> : posts.length === 0 ? <NoPostsYetMessage /> :
+                            (posts.map((post) => (
                                 <Post
                                     reload={reload}
                                     key={post.id}

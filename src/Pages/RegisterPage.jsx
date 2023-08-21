@@ -12,7 +12,7 @@ function isAnyFieldEmpty({ email, password, user_name, photo }) {
   return (email === "" || password === "" || user_name === "" || photo === "");
 }
 
-export default function Register() {
+export default function RegisterPage() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const { form, handleForm } = useForm({
@@ -35,7 +35,6 @@ export default function Register() {
 
     api.signup(form)
       .then(({ data }) => {
-        console.log(data)
         navigate("/");
       })
       .catch((err) => {

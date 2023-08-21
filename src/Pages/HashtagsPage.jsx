@@ -7,11 +7,10 @@ import api from "../Services/api.js";
 import MainTemplate from "../Components/Templates/MainTemplate.jsx";
 import LoadingMessage from "../Components/Atoms/LoadingMessage.jsx";
 import ErrorFetchMessage from "../Components/Atoms/ErrorFetchMessage.jsx";
-import { useWindowSize } from "@uidotdev/usehooks";
 import useTrending from "../Hooks/useTrending";
 
 
-export default function Hashtags() {
+export default function HashtagsPage() {
   const [posts, setPosts] = useState([]);
   const [error, setError] = useState(false);
   const {setTrendingHashtags} = useTrending();

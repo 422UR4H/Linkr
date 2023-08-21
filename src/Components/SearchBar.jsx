@@ -4,8 +4,7 @@ import { styled } from 'styled-components';
 import SearchSuggestions from './Molecules/SearchSuggestions.jsx';
 import useToken from '../Hooks/useToken.js';
 import api from '../Services/api.js';
-import { useWindowSize } from '@uidotdev/usehooks';
-import axios from 'axios';
+
 
 export default function SearchBar({ className }) {
     const searchRef = useRef();
@@ -25,31 +24,15 @@ export default function SearchBar({ className }) {
         return () => clearTimeout(delay);
     }, [debouncedSearchValue]);
 
-    function performSearch(query) {
-        const token = `Bearer ${JSON.parse(localStorage.getItem("token")).token}`;
-        setSearching(true);
-        axios.get(`${process.env.REACT_APP_API_URL}/users/${query}`, { headers: { Authorization: token } })
-            .then(res => {
-                setShowSuggestions(true);
-                setSuggestions(res.data);
-                setSearching(false);
-            })
-            .catch(err => {
-                setSuggestions([]);
-                setShowSuggestions(false);
-                setSearching(false);
-            });
-    }
-
     useEffect(() => {
         const delay = setTimeout(() => {
             setDebouncedSearchValue(searchValue);
         }, 300);
-
         return () => clearTimeout(delay);
     }, [searchValue]);
 
     function performSearch(query) {
+        setSearching(true);
         api.getUsersByName(query, token)
             .then(res => {
                 setShowSuggestions(true);
@@ -108,7 +91,6 @@ const StyledSearchBar = styled.div`
         transform: translateY(-50%);
         cursor: pointer;
     }
-
     input{
         width: 100%;
         height: 45px;

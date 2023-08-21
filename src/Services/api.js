@@ -30,23 +30,26 @@ function getPostsByHashtag(hashtag, token) {
 }
 
 function setLike(id, body, token) {
-  return axios.post(`${process.env.REACT_APP_API_URL}/like/${id}`, body, config(token));
+  return axios.post(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/like/${id}`, body, config(token));
 }
 
 function setUnlike(id, token) {
-  return axios.delete(`${process.env.REACT_APP_API_URL}/dislike/${id}`, config(token));
+  return axios.delete(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/dislike/${id}`, config(token));
 }
 
 function getUsersByName(name, token) {
-  return axios.get(`${process.env.REACT_APP_API_URL}/users/${name}`, config(token));
+  return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/users/${name}`, config(token));
+}
+
+function getUserById(id, token) {
+  return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/user/${id}`, config(token));
 }
 
 const api = {
   signin, signup,
-  getUsersByName,
+  getUsersByName, getUserById,
   createPost, getPosts, editPost,
   getAllHashtags, getPostsByHashtag,
   setLike, setUnlike
 };
-
 export default api;
