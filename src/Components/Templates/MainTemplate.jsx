@@ -12,7 +12,7 @@ export default function MainTemplate({ textHeader, src, alt, children }) {
             <div>
                 {size.width <= 720 && <SearchBar className="search-bar" />}
 
-                <AvatarAndTitle $width={!!src && !!alt}>
+                <AvatarAndTitle className='avatar-and-title' $width={!!src && !!alt}>
                     {src && alt && <Avatar src={src} alt={alt} />}
                     <h1 data-test="hashtag-title">{textHeader}</h1>
                 </AvatarAndTitle>
@@ -42,6 +42,10 @@ const StyledContent = styled.div`
         width: 100%;
         max-width: 611px;
         gap: 25px;
+
+        @media (max-width: 720px) {
+            max-width: 100%;
+        }
         
     }
     @media (max-width: 720px) {
@@ -116,7 +120,7 @@ const AvatarAndTitle = styled.div`
     padding-inline: 20px;
     
     @media (max-width: 720px) {
-        max-width: 640px;
+        max-width: 100%;
         margin-block: 20px;
     }
     h1{
