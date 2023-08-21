@@ -4,11 +4,12 @@ import { BiSolidTrashAlt } from "react-icons/bi";
 import { Tooltip } from "react-tooltip";
 import { styled } from "styled-components";
 import "react-tooltip/dist/react-tooltip.css";
-import { DISCORD_METADATA_IMAGE_URL, TRELLO_METADATA_IMAGE_URL, urlMetadata } from "../Utils/constants";
+import { DISCORD_METADATA_IMAGE_URL, TRELLO_METADATA_IMAGE_URL } from "../Utils/constants";
 import api from "../Services/api.js";
 import { useNavigate } from "react-router-dom";
 import UserContext from "../Contexts/UserContext";
 import useToken from "../Hooks/useToken";
+
 
 export default function Post({
   post_id,
@@ -56,7 +57,7 @@ export default function Post({
     }
 
     if (!metadata_image || !metadata_title || !metadata_description) {
-      urlMetadata(link)
+      api.urlMetadata(link)
         .then((res) => {
           const meta = res.data;
           const metadatas = {

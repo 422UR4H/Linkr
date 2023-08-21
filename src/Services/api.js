@@ -48,12 +48,15 @@ function getUsersByName(name, token) {
 function getUserById(id, token) {
   return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/users/id/${id}`, config(token));
 }
+function urlMetadata(link){
+    return axios.get(`https://jsonlink.io/api/extract?url=${link}`);
+}
 
 const api = {
   signin, signup,
   getUsersByName, getUserById,
   createPost, getPosts, editPost, deletePost,
   getAllHashtags, getPostsByHashtag,
-  setLike, setUnlike
+  setLike, setUnlike,urlMetadata
 };
 export default api;
