@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { styled } from "styled-components";
 import useToken from "../Hooks/useToken.js";
 import MainTemplate from "../Components/Templates/MainTemplate.jsx";
 import CreatePost from "../Components/CreatePost";
@@ -28,7 +27,9 @@ export default function TimelinePage() {
         setLoading(true);
 
         try {
-            setPosts((await api.getPosts(token)).data);
+            const posts = (await api.getPosts(token)).data;
+            //console.log(posts);
+            setPosts(posts);
             setTrendingHashtags((await api.getAllHashtags(token)).data);
             setLoading(false);
         } catch (err) {
