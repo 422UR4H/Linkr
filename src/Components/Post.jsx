@@ -4,12 +4,12 @@ import { BiSolidTrashAlt } from "react-icons/bi";
 import { Tooltip } from "react-tooltip";
 import { styled } from "styled-components";
 import "react-tooltip/dist/react-tooltip.css";
-import { DISCORD_METADATA_IMAGE_URL, TRELLO_METADATA_IMAGE_URL } from "../Utils/constants";
+import { DISCORD_METADATA_IMAGE_URL, PLACEHOLDER_IMAGE, TRELLO_METADATA_IMAGE_URL } from "../Utils/constants";
 import api from "../Services/api.js";
 import { useNavigate } from "react-router-dom";
 import UserContext from "../Contexts/UserContext";
 import useToken from "../Hooks/useToken";
-
+import { createdLinkTitle, extractTextWithHashtagsSplitedByComa, isImageLink, transformTextWithHashtags, validateImageUrl } from "../Utils/utils";
 
 export default function Post({
   post_id,
@@ -27,27 +27,34 @@ export default function Post({
   first_liker_name,
   second_liker_name,
 }) {
-  const { user } = useContext(UserContext);
-  const { token } = useToken();
-  const placeholderImage = "/placeholder.jpg";
   const [descriptionEditValue, setDescriptionEditValue] = useState(description ? description : "");
-  const [usePlaceholderImage, setUsePlaceholderImage] = useState(false);
   const [isToggleLiking, setIsToggleLiking] = useState(false);
   const [likeCount, setLikeCount] = useState(Number(like_count));
   const [liked, setLiked] = useState(default_liked);
   const [showModal, setShowModal] = useState(false);
   const [editInput, setEditInput] = useState(false);
   const [metadata, setMetadata] = useState(null);
+  const [deleting, setDeleting] = useState(false);
   const [validAvatarUrl, setValidAvatarUrl] = useState(false);
+
   const editRef = useRef();
   const navigate = useNavigate();
-  const [deleting, setDeleting] = useState(false);
+  const { user } = useContext(UserContext);
+  const { token } = useToken();
 
   useEffect(() => {
-    if (!link) return;
+    validateAndSetAvatarImage();
+    getPostMetadataInfo();
+  }, []);
 
+  useEffect(() => {
+    window.addEventListener("click", endEdit);
+    if (editRef.current) editRef.current.focus();
+  }, [editInput]);
+
+  function validateAndSetAvatarImage() {
     if (avatar_photo_url) {
-      validateUrl(avatar_photo_url)
+      validateImageUrl(avatar_photo_url)
         .then((res) => {
           setValidAvatarUrl(true);
         })
@@ -55,43 +62,35 @@ export default function Post({
           setValidAvatarUrl(false);
         });
     }
+  }
 
-    function isImageLink(link) {
-      const imageFormats = ['.png', '.jpeg', '.jpg', '.gif', '.bmp', '.svg', '.webp'];
-
-      for (const imgFormat of imageFormats) {
-        if (link.toLowerCase().endsWith(imgFormat)) {
-          return true;
-        }
-      }
-
-      return false;
-    }
-
-    if (isImageLink(link)) return; // Prevent API calls to extract metadata from an invalid link, in this case a image link
+  function getPostMetadataInfo() {
+    if (!link || isImageLink(link)) return; // Prevent API calls to extract metadata from an invalid link, in this case a image link
 
     if (!metadata_image || !metadata_title || !metadata_description) {
       api.urlMetadata(link)
         .then((res) => {
           const meta = res.data;
+
+          const cleanedMetadataImage = link.includes("discord.com") ? DISCORD_METADATA_IMAGE_URL :
+            link.includes("trello.com") ? TRELLO_METADATA_IMAGE_URL :
+              meta.images && meta.images[0] ? meta.images[0] : "";
+
           const metadatas = {
             description: meta.description ? meta.description : "",
             title: meta.title ? meta.title : "",
-            image: link.includes("discord.com") ? DISCORD_METADATA_IMAGE_URL :
-              link.includes("trello.com") ? TRELLO_METADATA_IMAGE_URL :
-                meta.images && meta.images[0] ? meta.images[0] : ""
+            image: cleanedMetadataImage
           }
-          setMetadata(metadatas);
-        }).catch(error => { console.log(error) })
+
+          validateImageUrl(cleanedMetadataImage)
+            .then((res) => setMetadata(metadatas))
+            .catch((error) => {
+              metadatas.image = PLACEHOLDER_IMAGE;
+              setMetadata(metadatas);
+            })
+        }).catch(error => console.log(error))
     }
-  }, []);
-
-  useEffect(() => {
-    validateMetadataImage();
-    window.addEventListener("click", endEdit);
-    if (editRef.current) editRef.current.focus();
-  }, [editInput]);
-
+  }
 
   function endEdit(event) {
     if (editRef.current && !event.target.classList.contains("edit-post")) {
@@ -105,7 +104,6 @@ export default function Post({
 
   function startEdit(event) {
     event.stopPropagation();
-
     setEditInput(!editInput);
   }
 
@@ -132,21 +130,10 @@ export default function Post({
       })
   }
 
-  function extractTextWithHashtagsSplitedByComa(text_to_extract) {
-    if (!text_to_extract) return "";
-    const splittedTextBySpaces = text_to_extract.split(' ');
-    const transformedSegments = [];
-    splittedTextBySpaces.map((textSegment, index) => {
-      if (textSegment.includes('#')) transformedSegments.push(textSegment.replace('#', ''));
-    });
-    const joinedText = transformedSegments.join(',');
-    return joinedText;
-  }
-
   function updatePost(e) {
     e.preventDefault();
-
     setEditInput(false);
+    
     if (descriptionEditValue === description) return;
 
     const hashtags = extractTextWithHashtagsSplitedByComa(descriptionEditValue);
@@ -192,84 +179,6 @@ export default function Post({
     }
   }
 
-  async function validateMetadataImage() {
-    if (!metadata_image) return;
-    try {
-      await validateUrl(metadata_image);
-    } catch (error) {
-      setUsePlaceholderImage(true);
-    }
-  }
-
-  async function validateUrl(url) {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.onload = function () {
-        resolve(true);
-      };
-      img.onerror = function () {
-        reject(false);
-      };
-      img.src = url;
-    });
-  }
-
-  function createdLinkTitle(link) {
-    if (link.includes("instagram.com")) {
-      return "Instagram";
-    } else if (link.includes("twitter.com")) {
-      return "Twitter";
-    } else if (link.includes("facebook.com")) {
-      return "Facebook";
-    } else if (link.includes("youtube.com")) {
-      return "Youtube";
-    } else if (link.includes("tiktok.com")) {
-      return "Tiktok";
-    } else if (link.includes("pinterest.com")) {
-      return "Pinterest";
-    } else if (link.includes("linkedin.com")) {
-      return "Linkedin";
-    } else if (link.includes("reddit.com")) {
-      return "Reddit";
-    } else if (link.includes("tumblr.com")) {
-      return "Tumblr";
-    }
-
-    return extractDomain(link);
-  }
-
-  function extractDomain(link) {
-    if (typeof link !== "string" || link.trim() === "") {
-      return "Title";
-    }
-
-    const domainParts = link
-      .toLowerCase()
-      .replace("https://www.", "")
-      .replace("https://", "")
-      .split(".");
-    if (domainParts.length >= 1) {
-      return capitalizeFirstLetter(domainParts[0]);
-    } else {
-      return "Title";
-    }
-  }
-
-  function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  }
-
-  function transformTextWithHashtags(t) {
-    if (!t) return "";
-
-    const splittedTextBySpaces = t.split(' ');
-    const transformedSegments = splittedTextBySpaces.map((textSegment, index) => {
-      if (textSegment.includes('#')) return <a className="hashtag" href={`/hashtag/${textSegment.replace('#', '')}`} key={index}>{textSegment + " "}</a>
-      return textSegment + " ";
-    });
-
-    return transformedSegments;
-  }
   function tooltipTextContent() {
     if (likeCount == 1 && liked) return "Você curtiu este post";
     if (likeCount == 2 && liked) return `Você e ${first_liker_name} curtiram este post`;
@@ -289,7 +198,7 @@ export default function Post({
   }
 
   function metadataImage() {
-    return metadata ? metadata.image : metadata_image && metadata_image !== "" && !usePlaceholderImage ? metadata_image : placeholderImage;
+    return metadata ? metadata.image : metadata_image && metadata_image !== "" ? metadata_image : PLACEHOLDER_IMAGE;
   }
 
   function userLoggedInIsOwnerOfThisPost() {
@@ -320,7 +229,7 @@ export default function Post({
         showModal &&
 
         <ModalAskDelete onClick={closeModal}>
-          <QuestionBox onClick={(e) =>  e.stopPropagation()}>
+          <QuestionBox onClick={(e) => e.stopPropagation()}>
             <h1>Are you sure you want to delete this post?</h1>
             <div className="actions">
               <button disabled={deleting} onClick={closeModal} data-test="cancel">No, go back</button>
@@ -329,7 +238,7 @@ export default function Post({
           </QuestionBox>
         </ModalAskDelete>
       }
-      <PostContainer title={metadataTitle()} data-test="post">
+      <PostContainer data-test="post">
         {userLoggedInIsOwnerOfThisPost() && (
           <Actions>
             <AiFillEdit onClick={(e) => startEdit(e)} className="icon" data-test="edit-btn" />
@@ -338,7 +247,7 @@ export default function Post({
         )}
         <Tooltip render={({ content }) => content ? <p data-test="tooltip">{content}</p> : null} id="tooltip likes" />
         <AvatarAndLikes>
-          <img onClick={goToUser} src={avatar_photo_url && validAvatarUrl ? avatar_photo_url : placeholderImage} alt={name} />
+          <img title={name ? name : "Username"} onClick={goToUser} src={avatar_photo_url && validAvatarUrl ? avatar_photo_url : PLACEHOLDER_IMAGE} alt={name} />
           <Likes onClick={toggleLike} data-test="like-btn">
             {liked ? <AiFillHeart className="like-btn full" /> : <AiOutlineHeart className="like-btn empty" />}
           </Likes>
