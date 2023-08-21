@@ -41,7 +41,7 @@ const StyledContent = styled.div`
         align-items: center;
         width: 100%;
         max-width: 611px;
-        gap: 25px;
+        gap: 16px;
 
         @media (max-width: 720px) {
             max-width: 100%;

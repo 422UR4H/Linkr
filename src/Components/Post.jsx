@@ -444,7 +444,6 @@ const PostContainer = styled.div`
   gap: 18px;
   padding: 20px;
   position: relative;
-  margin-bottom: 10px;
   .react-tooltip{
     max-width: fit-content;
     p{
