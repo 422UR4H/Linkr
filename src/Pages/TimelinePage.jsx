@@ -71,6 +71,7 @@ export default function TimelinePage() {
 }
 
 const StyledTimeline = styled.div`
+background-color: red;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -80,7 +81,7 @@ const StyledTimeline = styled.div`
     .loading{
         font-size: 40px;
         color: white;
-        font-family: Oswald;
+        font-family: "Oswald", sans-serif;
         margin-top: 20px;
     }
     @media (max-width: 720px) {
