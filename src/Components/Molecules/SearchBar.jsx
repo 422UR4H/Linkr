@@ -76,12 +76,15 @@ export default function SearchBar({ className }) {
 
 const StyledSearchBar = styled.div`
     width:100%;
-    max-width: 100%;
+    max-width: 611px;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
     
+    @media (max-width: 720px) {
+        max-width: 100%;   
+    }
     .icon{
         font-size: 30px;
         color: #C6C6C6;
