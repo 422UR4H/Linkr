@@ -603,7 +603,7 @@ const Metadata = styled.a`
   width: 100%;
   max-width: 503px;
   min-height: 155px;
-  max-height: 155px;
+
   flex-shrink: 0;
   border-radius: 11px;
   border: 1px solid #4d4d4d;
@@ -625,6 +625,9 @@ const Metadata = styled.a`
     border-radius: 0px 12px 13px 0px;
     overflow: hidden;
     flex-shrink: 0;
+    @media (max-width: 500px) {
+      max-width: 100px;
+    }
     img {
       width: 100%;
       height: 100%;
@@ -644,7 +647,7 @@ const MetadataInfo = styled.div`
   @media (max-width: 500px) {
     padding: 7px;
     height: fit-content;
-    max-width: 50%;
+    max-width: auto;
   }
 
 
