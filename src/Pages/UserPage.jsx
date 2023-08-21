@@ -9,7 +9,6 @@ import api from '../Services/api';
 import MainTemplate from '../Components/Templates/MainTemplate.jsx';
 import Button from '../Styles/Button.js';
 
-
 export default function UserPage() {
   const [thisUser, setThisUser] = useState(null);
   const [userNotFound, setUserNotFound] = useState(false);

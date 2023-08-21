@@ -27,7 +27,7 @@ export async function validateImageUrl(url) {
     if (!text_to_extract) return "";
     const splittedTextBySpaces = text_to_extract.split(' ');
     const transformedSegments = [];
-    splittedTextBySpaces.map((textSegment, index) => {
+    splittedTextBySpaces.map((textSegment) => {
       if (textSegment.includes('#')) transformedSegments.push(textSegment.replace('#', ''));
     });
     const joinedText = transformedSegments.join(',');

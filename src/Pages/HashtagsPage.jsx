@@ -9,11 +9,10 @@ import LoadingMessage from "../Components/Atoms/LoadingMessage.jsx";
 import ErrorFetchMessage from "../Components/Atoms/ErrorFetchMessage.jsx";
 import useTrending from "../Hooks/useTrending";
 
-
 export default function HashtagsPage() {
   const [posts, setPosts] = useState([]);
   const [error, setError] = useState(false);
-  const {setTrendingHashtags} = useTrending();
+  const { setTrendingHashtags } = useTrending();
   const [loading, setLoading] = useState(true);
   const { hashtag } = useParams();
   const { token } = useToken();
@@ -24,9 +23,9 @@ export default function HashtagsPage() {
     reload();
   }, [hashtag]);
 
- async function reload() {
+  async function reload() {
     setLoading(true);
-    if(!hashtag) return;
+    if (!hashtag) return;
     api.getPostsByHashtag(hashtag, token)
       .then(({ data }) => {
         setPosts(data);
@@ -36,39 +35,38 @@ export default function HashtagsPage() {
         console.log(error);
         setError(true);
       });
-        try {
-          const responseHashtags = (await api.getAllHashtags(token)).data;
-          setTrendingHashtags(responseHashtags);
-        } catch (err) {
-          console.log(err);
-        }
-
+    try {
+      const responseHashtags = (await api.getAllHashtags(token)).data;
+      setTrendingHashtags(responseHashtags);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   return (
     <MainTemplate textHeader={`#${hashtag}`}>
-        {loading ?
-          <LoadingMessage /> : error ?
-            <ErrorFetchMessage /> : posts.length === 0 ? (
-              <p>There are no posts yet</p>
-            ) : (
-              posts.map((post) => (
-                <Post
-                  reload={reload}
-                  key={post.id}
-                  avatar_photo_url={post.user_photo}
-                  name={post.user_name}
-                  description={post.description}
-                  like_count={post.likes_count}
-                  link={post.link}
-                  owner_id={post.owner_id}
-                  post_id={post.id}
-                  default_liked={post.default_liked}
-                  first_liker_name={post.first_liker_name}
-                  second_liker_name={post.second_liker_name}
-                />
-              ))
-            )}
+      {loading ?
+        <LoadingMessage /> : error ?
+          <ErrorFetchMessage /> : posts.length === 0 ? (
+            <p>There are no posts yet</p>
+          ) : (
+            posts.map((post) => (
+              <Post
+                reload={reload}
+                key={post.id}
+                avatar_photo_url={post.user_photo}
+                name={post.user_name}
+                description={post.description}
+                like_count={post.likes_count}
+                link={post.link}
+                owner_id={post.owner_id}
+                post_id={post.id}
+                default_liked={post.default_liked}
+                first_liker_name={post.first_liker_name}
+                second_liker_name={post.second_liker_name}
+              />
+            ))
+          )}
     </MainTemplate >
   );
 }

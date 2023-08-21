@@ -3,7 +3,7 @@ import { styled } from "styled-components";
 import UserContext from "../Contexts/UserContext";
 import useToken from "../Hooks/useToken.js";
 import api from "../Services/api.js";
-
+import { extractTextWithHashtagsSplitedByComa } from "../Utils/utils";
 
 export default function CreatePost({ reload }) {
   const { user } = useContext(UserContext);
@@ -36,16 +36,6 @@ export default function CreatePost({ reload }) {
         alert("There was an error publishing your link");
       })
       .finally(() => setLoading(false))
-  }
-
-  function extractTextWithHashtagsSplitedByComa(text_to_extract) {
-    const splittedTextBySpaces = text_to_extract.split(' ');
-    const transformedSegments = [];
-    splittedTextBySpaces.map((textSegment) => {
-      if (textSegment.includes('#')) transformedSegments.push(textSegment.replace('#', ''));
-    });
-    const joinedText = transformedSegments.join(',');
-    return joinedText;
   }
 
   return (

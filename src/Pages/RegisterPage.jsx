@@ -7,7 +7,6 @@ import Input from "../Styles/Input.js";
 import ButtonSubmit from "../Components/Atoms/ButtonSubmit.jsx";
 import SignPagesTemplate from "../Components/Templates/SignPagesTemplate.jsx";
 
-
 function isAnyFieldEmpty({ email, password, user_name, photo }) {
   return (email === "" || password === "" || user_name === "" || photo === "");
 }

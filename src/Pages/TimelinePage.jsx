@@ -11,7 +11,6 @@ import ErrorFetchMessage from "../Components/Atoms/ErrorFetchMessage.jsx";
 import LoadingMessage from "../Components/Atoms/LoadingMessage.jsx";
 import NoPostsYetMessage from "../Components/Atoms/NoPostsYetMessage.jsx";
 
-
 export default function TimelinePage() {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);

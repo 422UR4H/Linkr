@@ -3,7 +3,7 @@ import { createContext, useState } from "react";
 const UserContext = createContext();
 
 export function UserProvider({ children }) {
-    const lsUser = JSON.parse(localStorage.getItem("user"));    
+    const lsUser = JSON.parse(localStorage.getItem("user"));
     const [user, setUser] = useState(lsUser?.user);
 
     function putUser(data) {
