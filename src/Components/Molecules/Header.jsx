@@ -6,7 +6,7 @@ import UserAvatar from './UserAvatar.jsx';
 import useToken from '../../Hooks/useToken.js';
 import SearchBar from "./SearchBar.jsx";
 
-
+//test protection change
 export default function Header() {
     const [showLogout, setShowLogout] = useState(false);
     const { logout } = useToken();
