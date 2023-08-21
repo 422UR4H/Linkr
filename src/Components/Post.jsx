@@ -56,6 +56,20 @@ export default function Post({
         });
     }
 
+    function isImageLink(link) {
+      const imageFormats = ['.png', '.jpeg', '.jpg', '.gif', '.bmp', '.svg', '.webp'];
+
+      for (const imgFormat of imageFormats) {
+        if (link.toLowerCase().endsWith(imgFormat)) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    if (isImageLink(link)) return; // Prevent API calls to extract metadata from an invalid link, in this case a image link
+
     if (!metadata_image || !metadata_title || !metadata_description) {
       api.urlMetadata(link)
         .then((res) => {
@@ -267,8 +281,37 @@ export default function Post({
     if (likeCount >= 3 && !liked) return `${first_liker_name} e ${second_liker_name} e outras ${likeCount - 2} pessoas curtiram este post`;
   }
 
-  function MetadataTitle(){
-    return metadata && metadata.title ? metadata.title : metadata_title && metadata_title !== "" ? metadata_title: createdLinkTitle(link);
+  function metadataTitle() {
+    return metadata && metadata.title ? metadata.title : metadata_title && metadata_title !== "" ? metadata_title : createdLinkTitle(link);
+  }
+  function metadataDescription() {
+    return metadata ? metadata.description : metadata_description ? metadata_description : "";
+  }
+
+  function metadataImage() {
+    return metadata ? metadata.image : metadata_image && metadata_image !== "" && !usePlaceholderImage ? metadata_image : placeholderImage;
+  }
+
+  function userLoggedInIsOwnerOfThisPost() {
+    return user && owner_id && user.id == owner_id;
+  }
+
+  function checkForEscapeKeyPress(e) {
+    if (e.key === "Escape") {
+      setEditInput(false);
+    }
+  }
+
+  function closeModal(e) {
+    if (deleting) return;
+    e.stopPropagation();
+    setShowModal(false);
+  }
+
+  function modalConfirmDeletionClick(e) {
+    if (deleting) return;
+    e.stopPropagation();
+    deleteThis();
   }
 
   return (
@@ -276,18 +319,18 @@ export default function Post({
       {
         showModal &&
 
-        <ModalAskDelete onClick={() => setShowModal(false)}>
-          <QuestionBox onClick={(e) => { e.stopPropagation(); }}>
+        <ModalAskDelete onClick={closeModal}>
+          <QuestionBox onClick={(e) =>  e.stopPropagation()}>
             <h1>Are you sure you want to delete this post?</h1>
             <div className="actions">
-              <button onClick={(e) => { e.stopPropagation(); setShowModal(false); }} data-test="cancel">No, go back</button>
-              <button disabled={deleting} onClick={(e) => { e.stopPropagation(); deleteThis(); }} data-test="confirm">{deleting ? "Wait.." : "Yes, delete it"}</button>
+              <button disabled={deleting} onClick={closeModal} data-test="cancel">No, go back</button>
+              <button disabled={deleting} onClick={modalConfirmDeletionClick} data-test="confirm">{deleting ? "Wait.." : "Yes, delete it"}</button>
             </div>
           </QuestionBox>
         </ModalAskDelete>
       }
-      <PostContainer title={MetadataTitle()} data-test="post">
-        {user && owner_id && user.id == owner_id && (
+      <PostContainer title={metadataTitle()} data-test="post">
+        {userLoggedInIsOwnerOfThisPost() && (
           <Actions>
             <AiFillEdit onClick={(e) => startEdit(e)} className="icon" data-test="edit-btn" />
             <BiSolidTrashAlt onClick={askDelete} className="icon" data-test="delete-btn" />
@@ -295,24 +338,11 @@ export default function Post({
         )}
         <Tooltip render={({ content }) => content ? <p data-test="tooltip">{content}</p> : null} id="tooltip likes" />
         <AvatarAndLikes>
-          <img
-            onClick={goToUser}
-            src={avatar_photo_url && validAvatarUrl ? avatar_photo_url : placeholderImage}
-            alt={name}
-          />
+          <img onClick={goToUser} src={avatar_photo_url && validAvatarUrl ? avatar_photo_url : placeholderImage} alt={name} />
           <Likes onClick={toggleLike} data-test="like-btn">
-            {liked ? (
-              <AiFillHeart className="like-btn full" />
-            ) : (
-              <AiOutlineHeart className="like-btn empty" />
-            )}
+            {liked ? <AiFillHeart className="like-btn full" /> : <AiOutlineHeart className="like-btn empty" />}
           </Likes>
-          <span
-            data-tooltip-id="tooltip likes"
-            data-tooltip-content={tooltipTextContent()}
-            // data-test="tooltip"
-            data-test="counter"
-          >
+          <span data-tooltip-id="tooltip likes" data-tooltip-content={tooltipTextContent()} data-test="counter">
             {likeCount ? likeCount : 0} likes
           </span>
         </AvatarAndLikes>
@@ -325,12 +355,8 @@ export default function Post({
             <PostForm onSubmit={(e) => updatePost(e)}>
               <input
                 ref={editRef}
-                onKeyDown={(e) => {
-                  if (e.key === "Escape") {
-                    setEditInput(false);
-                  }
-                }}
-                onBlur={(e) => endEdit(e)}
+                onKeyDown={checkForEscapeKeyPress}
+                onBlur={endEdit}
                 value={descriptionEditValue}
                 type="text"
                 placeholder="Description"
@@ -342,26 +368,12 @@ export default function Post({
           }
           <Metadata data-test="link" href={link} target="_blank">
             <MetadataInfo>
-              <h1 className="metadata-title">
-                {MetadataTitle()}
-              </h1>
-              <h2 className="metadata-description">
-                {metadata ? metadata.description : metadata_description ? metadata_description : ""}
-              </h2>
-              <span /*onClick={() => window.open(link)} href={link} target="_blank"*/>
-                {link.trim()}
-              </span>
+              <h1 className="metadata-title">{metadataTitle()}</h1>
+              <h2 className="metadata-description">{metadataDescription()}</h2>
+              <span>{link.trim()}</span>
             </MetadataInfo>
             <div className="metadata-image">
-              <img
-                src={
-                  metadata ? metadata.image :
-                    metadata_image && metadata_image !== "" && !usePlaceholderImage
-                      ? metadata_image
-                      : placeholderImage
-                }
-                alt=""
-              />
+              <img src={metadataImage()} alt="" />
             </div>
           </Metadata>
         </PostInfo>
@@ -383,6 +395,10 @@ const QuestionBox = styled.div`
   border-radius: 50px;
   gap:20px;
   padding:20px;
+
+  @media (max-width: 597px) {
+    border-radius: 0;
+  }
 
   h1{
     color: #FFF;
@@ -650,7 +666,7 @@ const MetadataInfo = styled.div`
   @media (max-width: 500px) {
     padding: 7px;
     height: fit-content;
-    max-width: auto;
+    max-width:calc(100% - 100px);
   }
 
 
