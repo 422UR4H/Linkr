@@ -88,7 +88,7 @@ const StyledHashtags = styled.div`
   .loading{
     font-size: 40px;
     color: white;
-    font-family: Oswald;
+    font-family: "Oswald", sans-serif;
     margin-top: 20px;
   }
   @media (max-width: 720px) {

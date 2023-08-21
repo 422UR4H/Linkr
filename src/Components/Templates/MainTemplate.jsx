@@ -19,9 +19,9 @@ export default function MainTemplate({ textHeader, src, alt, children }) {
 
                 <StyledContent>
                     {children}
-                    {size.width > 720 &&
+                    {/* {size.width > 720 && */}
                         <Trending />
-                    }
+                    {/* } */}
                 </StyledContent>
             </div>
         </StyledMainTemplate>
@@ -36,6 +36,7 @@ export const StyledMainTemplate = styled.main`
     justify-content: center;
     
     &>div {
+        background-color: pink;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -60,6 +61,10 @@ const StyledContent = styled.div`
     width: 100%;
     gap: 25px;
     justify-content: center;
+
+    @media (max-width: 720px) {
+        flex-direction: column;
+    }
 `;
 
 const AvatarAndTitle = styled.div`

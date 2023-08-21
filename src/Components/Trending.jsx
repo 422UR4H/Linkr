@@ -60,4 +60,9 @@ const StyledTrending = styled.div`
     flex-direction: column;
     gap: 7px;
   }
+
+  @media (max-width: 720px) {
+    width: 100%;
+    max-width: 611px;
+  }
 `;

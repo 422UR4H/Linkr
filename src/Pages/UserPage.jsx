@@ -87,6 +87,7 @@ export default function UserPage() {
 }
 
 const Posts = styled.div`
+  background-color: red;
   .no-posts{
     color: #a1a1a1;
     font-size: 15px;
@@ -96,7 +97,8 @@ const Posts = styled.div`
 const StyledUserPage = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  width: 100%;
+  max-width: 611px;
 
   .not-found {
     color: white;
