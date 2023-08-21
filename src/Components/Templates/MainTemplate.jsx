@@ -18,10 +18,10 @@ export default function MainTemplate({ textHeader, src, alt, children }) {
                 </AvatarAndTitle>
 
                 <StyledContent>
-                    {children}
-                    {/* {size.width > 720 && */}
-                        <Trending />
-                    {/* } */}
+                    <div className="posts">
+                        {children}
+                    </div>
+                    <Trending />
                 </StyledContent>
             </div>
         </StyledMainTemplate>
@@ -29,19 +29,68 @@ export default function MainTemplate({ textHeader, src, alt, children }) {
 }
 MainTemplate.defaultProps = { src: "", alt: "" };
 
+const StyledContent = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+
+    .posts {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        max-width: 611px;
+        gap: 25px;
+        
+    }
+    @media (max-width: 720px) {
+        flex-direction: column;
+        align-items: center;
+    }
+`;
+
 export const StyledMainTemplate = styled.main`
     width: 100%;
     height: 100%;
     display: flex;
     justify-content: center;
+
+    .no-posts{
+        color: #a1a1a1;
+        font-size: 15px;
+    }
+
+    .loading{
+        font-size: 40px;
+        color: white;
+        font-family: "Oswald", sans-serif;
+        margin-top: 20px;
+    }
+
+    .not-found {
+        color: white;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-family: Oswald;
+        font-size: 30px;
+        white-space: nowrap;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 30px;
+    }
     
     &>div {
-        background-color: pink;
         display: flex;
         flex-direction: column;
         align-items: center;
         width: 100%;
         max-width: calc(100% - 20px);
+
         @media (max-width: 720px) {
             max-width: 100%;
         }
@@ -56,30 +105,18 @@ export const StyledMainTemplate = styled.main`
     }
 `;
 
-const StyledContent = styled.div`
-    display: flex;
-    width: 100%;
-    gap: 25px;
-    justify-content: center;
-
-    @media (max-width: 720px) {
-        flex-direction: column;
-    }
-`;
-
 const AvatarAndTitle = styled.div`
     display: flex;
     align-items: center;
     gap: 18px;
     width: 100%;
-    max-width: ${({ $width }) => $width ? "840px" : "970px"};
+    max-width: ${({ $width }) => $width ? "935px" : "970px"};
     margin-top: 53px;
     margin-bottom: 40px;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-inline: 20px;
     
     @media (max-width: 720px) {
-        max-width: 510px;
+        max-width: 640px;
         margin-block: 20px;
     }
     h1{

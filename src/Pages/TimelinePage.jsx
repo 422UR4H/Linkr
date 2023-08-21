@@ -41,50 +41,29 @@ export default function TimelinePage() {
 
     return (
         <MainTemplate textHeader="timeline">
-            <StyledTimeline>
-                <CreatePost reload={reload} />
-                {loading ?
-                    <LoadingMessage /> : error ?
-                        <ErrorFetchMessage /> : posts.length === 0 ? <NoPostsYetMessage /> :
-                            (posts.map((post) => (
-                                <Post
-                                    reload={reload}
-                                    key={post.id}
-                                    avatar_photo_url={post.user_photo}
-                                    name={post.user_name}
-                                    description={post.description}
-                                    like_count={post.likes_count}
-                                    link={post.link}
-                                    owner_id={post.owner_id}
-                                    post_id={post.id}
-                                    default_liked={post.default_liked}
-                                    metadata_title={post.metadata?.title}
-                                    metadata_description={post.metadata?.description}
-                                    metadata_image={post.metadata?.image}
-                                    first_liker_name={post.first_liker_name}
-                                    second_liker_name={post.second_liker_name}
-                                />
-                            )))}
-            </StyledTimeline>
+            <CreatePost reload={reload} />
+            {loading ?
+                <LoadingMessage /> : error ?
+                    <ErrorFetchMessage /> : posts.length === 0 ? <NoPostsYetMessage /> :
+                        (posts.map((post) => (
+                            <Post
+                                reload={reload}
+                                key={post.id}
+                                avatar_photo_url={post.user_photo}
+                                name={post.user_name}
+                                description={post.description}
+                                like_count={post.likes_count}
+                                link={post.link}
+                                owner_id={post.owner_id}
+                                post_id={post.id}
+                                default_liked={post.default_liked}
+                                metadata_title={post.metadata?.title}
+                                metadata_description={post.metadata?.description}
+                                metadata_image={post.metadata?.image}
+                                first_liker_name={post.first_liker_name}
+                                second_liker_name={post.second_liker_name}
+                            />
+                        )))}
         </MainTemplate>
     );
 }
-
-const StyledTimeline = styled.div`
-background-color: red;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    max-width: 611px;
-
-    .loading{
-        font-size: 40px;
-        color: white;
-        font-family: "Oswald", sans-serif;
-        margin-top: 20px;
-    }
-    @media (max-width: 720px) {
-        width: 100%;
-    }
-`;

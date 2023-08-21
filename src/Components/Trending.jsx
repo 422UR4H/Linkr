@@ -64,5 +64,8 @@ const StyledTrending = styled.div`
   @media (max-width: 720px) {
     width: 100%;
     max-width: 611px;
+    height: auto;
+    padding-bottom: 25px;
+    border-radius: 0;
   }
 `;
