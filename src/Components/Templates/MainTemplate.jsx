@@ -13,7 +13,7 @@ export default function MainTemplate({ textHeader, src, alt, children }) {
                 {size.width <= 720 && <SearchBar className="search-bar" />}
 
                 <AvatarAndTitle className='avatar-and-title' $width={!!src && !!alt}>
-                    {src && alt && <Avatar src={src} alt={alt} />}
+                    {src && alt && <Avatar src={src ? src : '/placeholder.jpg'} alt={alt} />}
                     <h1 data-test="hashtag-title">{textHeader}</h1>
                 </AvatarAndTitle>
 

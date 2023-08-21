@@ -231,6 +231,7 @@ export default function Post({
     const domainParts = link
       .toLowerCase()
       .replace("https://www.", "")
+      .replace("https://", "")
       .split(".");
     if (domainParts.length >= 1) {
       return capitalizeFirstLetter(domainParts[0]);
@@ -265,6 +266,10 @@ export default function Post({
     if (likeCount >= 3 && !liked) return `${first_liker_name} e ${second_liker_name} e outras ${likeCount - 2} pessoas curtiram este post`;
   }
 
+  function MetadataTitle(){
+    return metadata && metadata.title ? metadata.title : metadata_title && metadata_title !== "" ? metadata_title: createdLinkTitle(link);
+  }
+
   return (
     <>
       {
@@ -280,14 +285,14 @@ export default function Post({
           </QuestionBox>
         </ModalAskDelete>
       }
-      <PostContainer data-test="post">
+      <PostContainer title={MetadataTitle()} data-test="post">
         {user && owner_id && user.id == owner_id && (
           <Actions>
             <AiFillEdit onClick={(e) => startEdit(e)} className="icon" data-test="edit-btn" />
             <BiSolidTrashAlt onClick={askDelete} className="icon" data-test="delete-btn" />
           </Actions>
         )}
-        <Tooltip render={({ content }) => <p data-test="tooltip">{content}</p>} id="tooltip likes" />
+        <Tooltip render={({ content }) => content ? <p data-test="tooltip">{content}</p> : null} id="tooltip likes" />
         <AvatarAndLikes>
           <img
             onClick={goToUser}
@@ -337,9 +342,7 @@ export default function Post({
           <Metadata data-test="link" href={link} target="_blank">
             <MetadataInfo>
               <h1 className="metadata-title">
-                {metadata && metadata.title ? metadata.title : metadata_title && metadata_title !== ""
-                  ? metadata_title
-                  : createdLinkTitle(link)}
+                {MetadataTitle()}
               </h1>
               <h2 className="metadata-description">
                 {metadata ? metadata.description : metadata_description ? metadata_description : ""}

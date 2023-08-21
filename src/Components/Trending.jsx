@@ -99,13 +99,14 @@ const StyledTrending = styled.div`
       justify-content: center;
       padding-top: 10px;
       padding-left: 0;
+      padding-bottom: 10px;
     }
   }
 
   @media (max-width: 720px) {
     width: 100%;
     height: auto;
-    padding-bottom: 10px;
+
     border-radius: 0;
     display: flex;
     gap: 10px;
