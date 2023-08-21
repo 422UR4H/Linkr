@@ -4,19 +4,18 @@ import { AiOutlineDown, AiOutlineUp } from 'react-icons/ai';
 import Menu from '../Atoms/Menu.jsx';
 import Avatar from '../Atoms/Avatar.jsx';
 
-const UserAvatar = forwardRef((props, logoutRef) => {
-    const { onClick, signOut, showLogout } = props;
+const UserAvatar = forwardRef(({ onClick, signOut, showLogout, logoutRef}) => {
 
     return (
-        <StyledUserAvatar onClick={onClick} data-test="avatar">
+        <StyledUserAvatar ref={logoutRef}  className="menu"  onClick={onClick} data-test="avatar">
             {showLogout ?
-                <AiOutlineUp />
+                <AiOutlineUp className="menu" onClick={onClick} />
                 :
-                <AiOutlineDown />
+                <AiOutlineDown className="menu" onClick={onClick} />
             }
             <Avatar />
             {showLogout &&
-                <Menu ref={logoutRef}>
+                <Menu  >
                     <button onClick={signOut} data-test="logout">Logout</button>
                 </Menu>
             }

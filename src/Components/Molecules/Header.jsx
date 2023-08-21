@@ -1,4 +1,4 @@
-import { createRef, useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useWindowSize } from "@uidotdev/usehooks";
 import { styled } from 'styled-components';
@@ -10,7 +10,7 @@ import SearchBar from "./SearchBar.jsx";
 export default function Header() {
     const [showLogout, setShowLogout] = useState(false);
     const { logout } = useToken();
-    const logoutRef = createRef();
+    const logoutRef = useRef();
     const location = useLocation();
     const size = useWindowSize();
     const navigate = useNavigate();
@@ -24,7 +24,7 @@ export default function Header() {
 
     function listenerOutsiteClick(event) {
         if (logoutRef.current && !event.target.classList.contains('menu')) {
-            setShowLogout((prevShowLogout) => !prevShowLogout);
+            setShowLogout(false);
         }
     }
 
