@@ -2,19 +2,19 @@ import { forwardRef } from 'react';
 import { styled } from 'styled-components';
 import { AiOutlineDown, AiOutlineUp } from 'react-icons/ai';
 import Menu from '../Atoms/Menu.jsx';
-import Icon from '../Atoms/Icon.jsx';
+import Avatar from '../Atoms/Avatar.jsx';
 
 const UserAvatar = forwardRef((props, logoutRef) => {
-    const { toggleShowLogout, signOut, showLogout } = props;
+    const { onClick, signOut, showLogout } = props;
 
     return (
-        <StyledUserAvatar onClick={toggleShowLogout} data-test="avatar">
+        <StyledUserAvatar onClick={onClick} data-test="avatar">
             {showLogout ?
                 <AiOutlineUp />
                 :
                 <AiOutlineDown />
             }
-            <Icon />
+            <Avatar />
             {showLogout &&
                 <Menu ref={logoutRef}>
                     <button onClick={signOut} data-test="logout">Logout</button>
@@ -37,10 +37,7 @@ const StyledUserAvatar = styled.div`
     cursor: pointer;
     
     img {
-        width: 50px;
-        height: 50px;
-        flex-shrink: 0;
-        border-radius: 26.5px;
-        object-fit: cover;
+        width: 53px;
+        height: 53px;
     }
 `;

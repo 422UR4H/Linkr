@@ -2,17 +2,20 @@ import { useWindowSize } from '@uidotdev/usehooks';
 import { styled } from 'styled-components';
 import SearchBar from '../SearchBar.jsx';
 import Trending from '../Trending.jsx';
+import Avatar from '../Atoms/Avatar.jsx';
 
-export default function MainTemplate({ textHeader, children }) {
+export default function MainTemplate({ textHeader, src, alt, children }) {
     const size = useWindowSize();
 
     return (
         <StyledMainTemplate>
             <div>
                 {size.width <= 720 && <SearchBar className="search-bar" />}
-                <Title>
+
+                <AvatarAndTitle $width={!!src && !!alt}>
+                    {src && alt && <Avatar src={src} alt={alt} />}
                     <h1 data-test="hashtag-title">{textHeader}</h1>
-                </Title>
+                </AvatarAndTitle>
 
                 <StyledContent>
                     {children}
@@ -24,6 +27,7 @@ export default function MainTemplate({ textHeader, children }) {
         </StyledMainTemplate>
     );
 }
+MainTemplate.defaultProps = { src: "", alt: "" };
 
 export const StyledMainTemplate = styled.main`
     width: 100%;
@@ -58,26 +62,29 @@ const StyledContent = styled.div`
     justify-content: center;
 `;
 
-const Title = styled.div`
-    max-width: 930px;
+const AvatarAndTitle = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 18px;
     width: 100%;
-    margin-top: 23px;
-    padding: 15px;
-    
-    h1 {
-        font-family: "Oswald", sans-serif;
-        color: #ffffff;
+    max-width: ${({ $width }) => $width ? "840px" : "970px"};
+    margin-top: 53px;
+    margin-bottom: 40px;
+    padding-left: 20px;
+    padding-right: 20px;
+
+    @media (max-width: 720px) {
+        margin-block: 20px;
+    }
+    h1{
+        color: #FFF;
+        font-family: 'Oswald';
         font-size: 43px;
         font-weight: 700;
-        line-height: 64px;
-    }
-    @media (max-width: 720px) {
-        display: flex;
-        justify-content: center;
-        margin-top: 0px;
+        line-height: normal;
 
-        h1 {
-            width: 611px;
+        @media (max-width: 500px) {
+            font-size: 33px;
         }
     }
 `;

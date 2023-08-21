@@ -10,7 +10,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import useUser from '../Hooks/useUser.js';
 
 
-export default function Login() {
+export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const { token, login } = useToken();
   const { putUser } = useUser();

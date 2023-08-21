@@ -24,6 +24,7 @@ export default function CreatePost({ reload }) {
     const body = { "description": descriptionPost, "link": linkPost, "hash_tags": hashtags };
     if (body.description == "") delete body.description;
     if (body.hash_tags == "") delete body.hash_tags;
+
     api.createPost(body, token)
       .then(res => {
         setlinkPost("");
@@ -40,7 +41,7 @@ export default function CreatePost({ reload }) {
   function extractTextWithHashtagsSplitedByComa(text_to_extract) {
     const splittedTextBySpaces = text_to_extract.split(' ');
     const transformedSegments = [];
-    splittedTextBySpaces.map((textSegment, index) => {
+    splittedTextBySpaces.map((textSegment) => {
       if (textSegment.includes('#')) transformedSegments.push(textSegment.replace('#', ''));
     });
     const joinedText = transformedSegments.join(',');
@@ -72,7 +73,6 @@ export default function CreatePost({ reload }) {
               onChange={(e) => setdescriptionPost(e.target.value)}
               data-test="description"
             ></input>
-
           </div>
           <StyledButton>
             <button type="submit" disabled={loading} data-test="publish-btn">
@@ -143,19 +143,8 @@ const ContainerCreatePost = styled.form`
   .description {
     height: 66px;
     resize: none;
-    width: 100%;
-    font-size: 15px;
-    font-weight: 300;
-    border-radius: 5px;
-    background-color: #efefef;
-    border: none;
-    padding: 10px;
     padding-bottom: 66px;
     padding-top: 20px;
-
-    &:focus {
-      outline: none;
-    }
   }
 
   @media (max-width: 720px) {

@@ -46,7 +46,7 @@ export default function Header() {
                     <h1 onClick={() => navigate('/timeline')}>Linkr</h1>
                     {size.width > 720 && <SearchBar />}
                     <UserAvatar
-                        toggleShowLogout={toggleShowLogout}
+                        onClick={toggleShowLogout}
                         signOut={signOut}
                         showLogout={showLogout}
                         logoutRef={logoutRef}

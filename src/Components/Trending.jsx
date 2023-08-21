@@ -36,12 +36,10 @@ export default function Trending() {
 }
 
 const StyledTrending = styled.div`
+  background-color: #171717;
   width: 301px;
   height: 406px;
-  /* margin-top: 130px; */
   border-radius: 16px;
-  flex-shrink: 0;
-  background: #171717;
   
   h1{
     color: #FFF;

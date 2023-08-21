@@ -46,8 +46,7 @@ export default function Post({
   useEffect(() => {
     if(!link) return;
 
-    if(avatar_photo_url)
-    {
+    if(avatar_photo_url) {
       validateUrl(avatar_photo_url)
       .then((res) => {
           setValidAvatarUrl(true);
@@ -87,7 +86,6 @@ export default function Post({
   }
   function goToUser() {
     if (!owner_id) return alert("This post doenst have an owner_id prop");
-
     navigate(`/user/${owner_id}`);
   }
 
