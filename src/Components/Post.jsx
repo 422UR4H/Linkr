@@ -1,4 +1,4 @@
-import {  useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { AiFillHeart, AiOutlineHeart, AiFillEdit } from "react-icons/ai";
 import { BiSolidTrashAlt } from "react-icons/bi";
 import { Tooltip } from "react-tooltip";
@@ -6,7 +6,6 @@ import { styled } from "styled-components";
 import "react-tooltip/dist/react-tooltip.css";
 import { DISCORD_METADATA_IMAGE_URL, TRELLO_METADATA_IMAGE_URL, urlMetadata } from "../Utils/constants";
 import api from "../Services/api.js";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import UserContext from "../Contexts/UserContext";
 import useToken from "../Hooks/useToken";
@@ -27,8 +26,8 @@ export default function Post({
   first_liker_name,
   second_liker_name,
 }) {
-  const {user} = useContext(UserContext);
-  const{token} = useToken();
+  const { user } = useContext(UserContext);
+  const { token } = useToken();
   const placeholderImage = "/placeholder.jpg";
   const [descriptionEditValue, setDescriptionEditValue] = useState(description ? description : "");
   const [usePlaceholderImage, setUsePlaceholderImage] = useState(false);
@@ -41,14 +40,14 @@ export default function Post({
   const [validAvatarUrl, setValidAvatarUrl] = useState(false);
   const editRef = useRef();
   const navigate = useNavigate();
-  const [deleting,setDeleting] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
-    if(!link) return;
+    if (!link) return;
 
-    if(avatar_photo_url) {
+    if (avatar_photo_url) {
       validateUrl(avatar_photo_url)
-      .then((res) => {
+        .then((res) => {
           setValidAvatarUrl(true);
         })
         .catch((err) => {
@@ -56,19 +55,19 @@ export default function Post({
         });
     }
 
-    if(!metadata_image || !metadata_title || !metadata_description){
+    if (!metadata_image || !metadata_title || !metadata_description) {
       urlMetadata(link)
-      .then((res) => {
-        const meta = res.data;
-        const metadatas = {
-          description: meta.description ? meta.description : "", 
-          title: meta.title ? meta.title : "",
-          image: link.includes("discord.com") ? DISCORD_METADATA_IMAGE_URL :
-          link.includes("trello.com") ? TRELLO_METADATA_IMAGE_URL :
-          meta.images &&  meta.images[0] ? meta.images[0] : ""
-        }
-        setMetadata(metadatas);
-      }).catch(error =>{ console.log(error)}) 
+        .then((res) => {
+          const meta = res.data;
+          const metadatas = {
+            description: meta.description ? meta.description : "",
+            title: meta.title ? meta.title : "",
+            image: link.includes("discord.com") ? DISCORD_METADATA_IMAGE_URL :
+              link.includes("trello.com") ? TRELLO_METADATA_IMAGE_URL :
+                meta.images && meta.images[0] ? meta.images[0] : ""
+          }
+          setMetadata(metadatas);
+        }).catch(error => { console.log(error) })
     }
   }, []);
 
@@ -103,7 +102,8 @@ export default function Post({
   function deleteThis() {
     if (deleting) return;
     setDeleting(true);
-    axios.delete(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/post/${post_id}`, { headers: { Authorization: token } })
+
+    api.deletePost(token, post_id)
       .then(res => {
         setDeleting(false);
         setShowModal(false);
@@ -287,7 +287,7 @@ export default function Post({
             <BiSolidTrashAlt onClick={askDelete} className="icon" data-test="delete-btn" />
           </Actions>
         )}
-        <Tooltip render={({content}) => <p data-test="tooltip">{content}</p>} id="tooltip likes"  />
+        <Tooltip render={({ content }) => <p data-test="tooltip">{content}</p>} id="tooltip likes" />
         <AvatarAndLikes>
           <img
             onClick={goToUser}
@@ -352,9 +352,9 @@ export default function Post({
               <img
                 src={
                   metadata ? metadata.image :
-                  metadata_image && metadata_image !== "" && !usePlaceholderImage
-                    ? metadata_image
-                    : placeholderImage
+                    metadata_image && metadata_image !== "" && !usePlaceholderImage
+                      ? metadata_image
+                      : placeholderImage
                 }
                 alt=""
               />

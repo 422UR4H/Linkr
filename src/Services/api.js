@@ -10,15 +10,19 @@ function signup(body) {
 }
 
 function createPost(body, token) {
-  return axios.post(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/post`, body, config(token));
+  return axios.post(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/posts`, body, config(token));
 }
 
 function getPosts(token) {
-  return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/timeline`, config(token));
+  return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/posts`, config(token));
 }
 
 function editPost(body, token, id) {
-  return axios.put(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/post/${id}`, body, config(token));
+  return axios.put(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/posts/${id}`, body, config(token));
+}
+
+function deletePost(token, id) {
+  return axios.delete(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/posts/${id}`, config(token));
 }
 
 function getAllHashtags(token) {
@@ -26,7 +30,7 @@ function getAllHashtags(token) {
 }
 
 function getPostsByHashtag(hashtag, token) {
-  return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/hashtags/${hashtag}`, config(token));
+  return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/posts/${hashtag}`, config(token));
 }
 
 function setLike(id, body, token) {
@@ -42,13 +46,13 @@ function getUsersByName(name, token) {
 }
 
 function getUserById(id, token) {
-  return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/user/${id}`, config(token));
+  return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/users/${id}`, config(token));
 }
 
 const api = {
   signin, signup,
   getUsersByName, getUserById,
-  createPost, getPosts, editPost,
+  createPost, getPosts, editPost, deletePost,
   getAllHashtags, getPostsByHashtag,
   setLike, setUnlike
 };
