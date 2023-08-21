@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { AiOutlineSearch } from 'react-icons/ai';
 import { styled } from 'styled-components';
-import SearchSuggestions from './Molecules/SearchSuggestions.jsx';
-import useToken from '../Hooks/useToken.js';
-import api from '../Services/api.js';
+import SearchSuggestions from './SearchSuggestions.jsx';
+import useToken from '../../Hooks/useToken.js';
+import api from '../../Services/api.js';
 
 
 export default function SearchBar({ className }) {

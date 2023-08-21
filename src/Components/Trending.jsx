@@ -4,6 +4,7 @@ import { styled } from 'styled-components';
 import useTrending from '../Hooks/useTrending.js';
 import useToken from '../Hooks/useToken.js';
 import api from '../Services/api.js';
+import Hashtag from './Atoms/Hashtag.jsx';
 
 export default function Trending() {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ export default function Trending() {
   }
 
   function goToHashtag(e) {
-    const hashtag = e.target.textContent.slice(1)
+    const hashtag = e.target.textContent.slice(1);
     navigate(`/hashtag/${hashtag}`);
   }
 
@@ -28,7 +29,7 @@ export default function Trending() {
       <h1>trending</h1>
       <div className="tags">
         {trendingHashtags?.length > 0 && trendingHashtags.map((hashtag, i) => (
-          <p onClick={goToHashtag} key={i} data-test="hashtag">#{hashtag}</p>
+          <Hashtag key={i} onClick={goToHashtag}>{hashtag}</Hashtag>
         ))}
       </div>
     </StyledTrending>
@@ -43,7 +44,7 @@ const StyledTrending = styled.div`
   
   h1{
     color: #FFF;
-    font-family: Oswald;
+    font-family: 'Oswald', sans-serif;
     font-size: 27px;
     font-style: normal;
     font-weight: 700;
@@ -58,17 +59,5 @@ const StyledTrending = styled.div`
     display: flex;
     flex-direction: column;
     gap: 7px;
-      p{
-        color: #FFF;
-        font-family: Lato;
-        font-size: 19px;
-        font-style: normal;
-        font-weight: 700;
-        line-height: normal;
-        letter-spacing: 0.95px;
-        &:hover{
-          cursor:pointer;
-        }
-    }
   }
 `;

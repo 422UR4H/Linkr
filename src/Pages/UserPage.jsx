@@ -18,6 +18,11 @@ export default function UserPage() {
   const { token } = useToken();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (!localStorage.getItem("token")) return navigate('/');
+    reload();
+  }, []);
+
   async function reload() {
     api.getUserById(id, token)
       .then(res => {
@@ -34,11 +39,6 @@ export default function UserPage() {
       console.log(err);
     }
   }
-
-  useEffect(() => {
-    if (!localStorage.getItem("token")) return navigate('/');
-    reload();
-  }, []);
 
   return (
     <MainTemplate

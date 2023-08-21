@@ -4,7 +4,7 @@ import { useWindowSize } from "@uidotdev/usehooks";
 import { styled } from 'styled-components';
 import UserAvatar from './UserAvatar.jsx';
 import useToken from '../../Hooks/useToken.js';
-import SearchBar from "../SearchBar.jsx";
+import SearchBar from "./SearchBar.jsx";
 
 
 export default function Header() {
@@ -22,14 +22,14 @@ export default function Header() {
         };
     }, []);
 
-    function toggleShowLogout() {
-        setShowLogout(!showLogout);
-    }
-
     function listenerOutsiteClick(event) {
         if (logoutRef.current && !event.target.classList.contains('menu')) {
             setShowLogout((prevShowLogout) => !prevShowLogout);
         }
+    }
+
+    function toggleShowLogout() {
+        setShowLogout(!showLogout);
     }
 
     function signOut() {
@@ -41,7 +41,6 @@ export default function Header() {
     return (
         <>
             {location.pathname !== '/' && location.pathname !== '/sign-up' && (
-
                 <HeaderContainer>
                     <h1 onClick={() => navigate('/timeline')}>Linkr</h1>
                     {size.width > 720 && <SearchBar />}
