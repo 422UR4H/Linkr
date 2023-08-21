@@ -75,8 +75,8 @@ export default function SearchBar({ className }) {
 }
 
 const StyledSearchBar = styled.div`
-    width: 611px;
-    max-width: 611px;
+    width:100%;
+    max-width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
