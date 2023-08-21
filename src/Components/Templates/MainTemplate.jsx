@@ -1,6 +1,6 @@
 import { useWindowSize } from '@uidotdev/usehooks';
 import { styled } from 'styled-components';
-import SearchBar from '../SearchBar.jsx';
+import SearchBar from '../Molecules/SearchBar.jsx';
 import Trending from '../Trending.jsx';
 import Avatar from '../Atoms/Avatar.jsx';
 
@@ -44,7 +44,7 @@ export const StyledMainTemplate = styled.main`
         @media (max-width: 720px) {
             max-width: 100%;
         }
-        p {
+        &>p {
             color: #707070;
             font-size: 40px;
         }
@@ -72,8 +72,9 @@ const AvatarAndTitle = styled.div`
     margin-bottom: 40px;
     padding-left: 20px;
     padding-right: 20px;
-
+    
     @media (max-width: 720px) {
+        max-width: 510px;
         margin-block: 20px;
     }
     h1{
