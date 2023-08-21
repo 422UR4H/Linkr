@@ -53,6 +53,7 @@ const StyledTrending = styled.div`
   height: 406px;
   border-radius: 16px;
 
+
   .trending-icon-container{
     width: 70px;
     border-right: 1px solid  #484848;
@@ -110,5 +111,6 @@ const StyledTrending = styled.div`
     border-radius: 0;
     display: flex;
     gap: 10px;
+    order: -1;
   }
 `;
