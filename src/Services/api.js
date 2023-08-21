@@ -42,11 +42,11 @@ function setUnlike(id, token) {
 }
 
 function getUsersByName(name, token) {
-  return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/users/${name}`, config(token));
+  return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/users/name/${name}`, config(token));
 }
 
 function getUserById(id, token) {
-  return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/users/${id}`, config(token));
+  return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/users/id/${id}`, config(token));
 }
 
 const api = {
