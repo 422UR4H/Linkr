@@ -47,7 +47,6 @@ export default function HashtagsPage() {
 
   return (
     <MainTemplate textHeader={`#${hashtag}`}>
-      <StyledHashtags>
         {loading ?
           <LoadingMessage /> : error ?
             <ErrorFetchMessage /> : posts.length === 0 ? (
@@ -73,26 +72,6 @@ export default function HashtagsPage() {
                 />
               ))
             )}
-      </StyledHashtags>
     </MainTemplate >
   );
 }
-
-const StyledHashtags = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  max-width: 611px;
-
-  .loading{
-    font-size: 40px;
-    color: white;
-    font-family: "Oswald", sans-serif;
-    margin-top: 20px;
-  }
-  @media (max-width: 720px) {
-    width: 100%;
-    max-width: 100%;
-  }
-`;
