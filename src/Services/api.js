@@ -14,7 +14,7 @@ function createPost(body, token) {
 }
 
 function getPosts(token) {
-  return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/posts`, config(token));
+  return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/timeline`, config(token));
 }
 
 function editPost(body, token, id) {
@@ -52,11 +52,16 @@ function urlMetadata(link){
     return axios.get(`https://jsonlink.io/api/extract?url=${link}`);
 }
 
+function checkIfUserIsFollowing(token) {
+  return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/timeline`, config(token));
+}
+
 const api = {
   signin, signup,
   getUsersByName, getUserById,
   createPost, getPosts, editPost, deletePost,
   getAllHashtags, getPostsByHashtag,
-  setLike, setUnlike,urlMetadata
+  setLike, setUnlike,urlMetadata, checkIfUserIsFollowing
 };
 export default api;
+

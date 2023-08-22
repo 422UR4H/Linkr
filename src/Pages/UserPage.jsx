@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router';
-import { styled } from 'styled-components'
 import useToken from '../Hooks/useToken';
 import useTrending from '../Hooks/useTrending.js';
 import Post from '../Components/Post';
