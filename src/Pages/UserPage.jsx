@@ -9,15 +9,16 @@ import MainTemplate from '../Components/Templates/MainTemplate.jsx';
 import Button from '../Styles/Button.js';
 
 export default function UserPage() {
-  const [thisUser, setThisUser] = useState(null);
+  const [thisUser, setThisUser] = useState(null); // thisUser.user_id O CARA QUE VAI SEGUIR OU DESEGUIR
   const [userNotFound, setUserNotFound] = useState(false);
   const { setTrendingHashtags } = useTrending();
-  const { id } = useParams();
+  const { id } = useParams(); // O CARA QUE VAI SER SEGUIDO OU DESEGUIDO
   const { token } = useToken();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!localStorage.getItem("token")) return navigate('/');
+    console.log(thisUser);
     reload();
   }, []);
 
