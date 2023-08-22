@@ -36,10 +36,12 @@ export default function Post({
   const [repostCount, setRepostCount] = useState(like_count ? Number(repost_count) : undefined);
   const [commentsCount, setCommentsCount] = useState(comments_count ? Number(comments_count) : undefined);
   const [liked, setLiked] = useState(default_liked);
-  const [showModal, setShowModal] = useState(false);
+  const [showModalDelete, setShowModalDelete] = useState(false);
+  const [showModalRepost, setShowModalRepost] = useState(false);
   const [editInput, setEditInput] = useState(false);
 
   const [deleting, setDeleting] = useState(false);
+  const [reposting, setReposting] = useState(false);
   const [validAvatarUrl, setValidAvatarUrl] = useState(false);
 
   const editRef = useRef();
@@ -85,7 +87,28 @@ export default function Post({
 
   function askDelete() {
     //ask and then
-    setShowModal(true);
+    setShowModalDelete(true);
+  }
+
+  function askRepost() {
+    //ask and then
+   setShowModalRepost(true);
+  }
+
+  function repost() {
+   setReposting(true);
+   api.repost(post_id,token)
+      .then(res => {
+        setShowModalRepost(false);
+        setReposting(true);
+        reload();
+      })
+      .catch(err => {
+        setShowModalRepost(false);
+        setReposting(false);
+        console.log(err);
+        alert("Error reposting!");
+      })
   }
 
   function deleteThis() {
@@ -95,11 +118,11 @@ export default function Post({
     api.deletePost(token, post_id)
       .then(res => {
         setDeleting(false);
-        setShowModal(false);
-        reload(true);
+        setShowModalDelete(false);
+        reload();
       })
       .catch(err => {
-        setShowModal(false);
+        setShowModalDelete(false);
         setDeleting(false);
         console.log(err);
         alert("Error deleting post!");
@@ -117,11 +140,11 @@ export default function Post({
     if (body.hash_tags === "") delete body.hash_tags;
     api.editPost(body, token, post_id)
       .then(res => {
-        setShowModal(false);
+        setShowModalDelete(false);
         reload(true);
       })
       .catch(err => {
-        setShowModal(false);
+        setShowModalDelete(false);
         console.log(err);
         alert("Error editing your post!");
       })
@@ -131,9 +154,7 @@ export default function Post({
     return alert("Not implemented yet!");
   }
 
-  function askRepost() {
-    return alert("Not implemented yet!");
-  }
+  
 
   function toggleLike() {
     if (isToggleLiking) return;
@@ -178,25 +199,36 @@ export default function Post({
     return user && owner_id && user.id == owner_id;
   }
 
-  function closeModal(e) {
-    if (deleting) return;
-    e.stopPropagation();
-    setShowModal(false);
-  }
-  
+
+
   return (
     <>
-      { showModal && <Modal
-                        modal_cancel_click={closeModal}
-                        modal_confirm_click={deleteThis}
-                        disable_buttons={deleting}
-                        cancel_button_text="No, go back"
-                        confirm_button_text="Yes, delete it"
-                        data_test_cancel_btn="cancel"
-                        data_test_confirm_btn="confirm"
-                        disable_buttons_text="Wait.."
-                        modal_title="Are you sure you want to delete this post?"
-                      />
+      { showModalDelete ?
+        <Modal
+          modal_cancel_click={() => setShowModalDelete(false)}
+          modal_confirm_click={deleteThis}
+          disable_buttons={deleting}
+          cancel_button_text="No, go back"
+          confirm_button_text="Yes, delete it"
+          data_test_cancel_btn="cancel"
+          data_test_confirm_btn="confirm"
+          disable_buttons_text="Wait.."
+          modal_title="Are you sure you want to delete this post?"
+        />
+        : showModalRepost ?
+          <Modal
+            modal_cancel_click={() => setShowModalRepost(false)}
+            modal_confirm_click={repost}
+            disable_buttons={reposting}
+            cancel_button_text="No, cancel"
+            confirm_button_text="Yes, share!"
+            data_test_cancel_btn="cancel"
+            data_test_confirm_btn="confirm"
+            disable_buttons_text="Wait.."
+            modal_title="Do you want to re-post this link?"
+          />
+          :
+          <></>
       }
       <PostContainer data-test="post">
         {userLoggedInIsOwnerOfThisPost() && (

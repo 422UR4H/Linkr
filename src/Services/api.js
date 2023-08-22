@@ -48,6 +48,9 @@ function getUsersByName(name, token) {
 function getUserById(id, token) {
   return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/users/id/${id}`, config(token));
 }
+function repost(postId, token) {
+  return axios.post(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/repost`,{postId}, config(token));
+}
 function urlMetadata(link){
     return axios.get(`https://jsonlink.io/api/extract?url=${link}`);
 }
@@ -61,7 +64,7 @@ const api = {
   getUsersByName, getUserById,
   createPost, getPosts, editPost, deletePost,
   getAllHashtags, getPostsByHashtag,
-  setLike, setUnlike,urlMetadata, checkIfUserIsFollowing
+  setLike, setUnlike,urlMetadata, checkIfUserIsFollowing,repost
 };
 export default api;
 
