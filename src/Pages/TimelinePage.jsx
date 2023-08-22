@@ -61,8 +61,7 @@ export default function TimelinePage() {
                                 second_liker_name={post.second_liker_name}
                             />
                         )))}
-
-<Post
+                         {/* <Post
                                 reload={reload}
                                 key={"post.id"}
                                 avatar_photo_url={null}
@@ -75,7 +74,7 @@ export default function TimelinePage() {
                                 default_liked={null}
                                 first_liker_name={null}
                                 second_liker_name={null}
-                            />
+                            /> */}
         </MainTemplate>
     );
 }
