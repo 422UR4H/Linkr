@@ -12,6 +12,7 @@ import NoPostsYetMessage from "../Components/Atoms/NoPostsYetMessage.jsx";
 import YouDontFollowAnyoneYetMessage from "../Components/Atoms/YouDontFollowAnyoneYet.jsx";
 import InfiniteScroll from "react-infinite-scroller";
 
+
 export default function TimelinePage() {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -36,10 +37,10 @@ export default function TimelinePage() {
           }
   };
 
+
     useEffect(() => {
         if (!token) return navigate("/");
         reload();
-        checkIfUserIsFollowing();
     }, []);
 
     async function reload() {
@@ -65,6 +66,7 @@ export default function TimelinePage() {
       }
   }
   
+
 
     async function checkIfUserIsFollowing() { 
         try {
@@ -117,6 +119,4 @@ export default function TimelinePage() {
           </InfiniteScroll>
       </MainTemplate>
   );  
-}
-
-
+}  

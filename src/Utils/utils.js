@@ -90,3 +90,10 @@ export async function validateImageUrl(url) {
 
     return transformedSegments;
   }
+
+  
+  export function checkForEscapeKeyPress(e,callback,callback_value) {
+    if (e.key === "Escape") {
+      callback(callback_value);
+    }
+  }

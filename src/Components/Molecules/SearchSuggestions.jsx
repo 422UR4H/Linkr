@@ -22,6 +22,7 @@ export default function SearchSuggestions({ searching, suggestions }) {
                         user_id={s.id}
                         photo={s.photo}
                         username={s.user_name}
+                        following={s.following}
                     />
                 ))
             }
