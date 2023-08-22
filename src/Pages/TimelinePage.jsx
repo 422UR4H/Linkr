@@ -61,20 +61,6 @@ export default function TimelinePage() {
                                 second_liker_name={post.second_liker_name}
                             />
                         )))}
-                         {/* <Post
-                                reload={reload}
-                                key={"post.id"}
-                                avatar_photo_url={null}
-                                name={null}
-                                description={null}
-                                like_count={null}
-                                link={null}
-                                owner_id={null}
-                                post_id={null}
-                                default_liked={null}
-                                first_liker_name={null}
-                                second_liker_name={null}
-                            /> */}
         </MainTemplate>
     );
 }
