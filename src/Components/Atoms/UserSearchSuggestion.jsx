@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
+import { PLACEHOLDER_IMAGE } from "../../Utils/constants";
 
-export default function UserSearchSuggestion({ photo, username, user_id }) {
-  const placeholderImage = "/placeholder.jpg";
+export default function UserSearchSuggestion({ photo, username, user_id ,following}) {
   const navigate = useNavigate();
 
   function goToUser() {
@@ -11,8 +11,9 @@ export default function UserSearchSuggestion({ photo, username, user_id }) {
   }
   return (
     <StyledUserSearchSuggestion onClick={goToUser} data-test="user-search">
-      <img src={photo ? photo : placeholderImage} alt="" />
+      <img src={photo ? photo : PLACEHOLDER_IMAGE} alt={username} />
       <h1 className="username">{username ? username : "Name"}</h1>
+      {following && <p className="following">• following</p>}
     </StyledUserSearchSuggestion>
   );
 }
@@ -46,6 +47,18 @@ const StyledUserSearchSuggestion = styled.div`
 
   .username {
     color: #515151;
+    font-family: Lato;
+    font-size: 19px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+  }
+
+  p{
+    width: 140px;
+    height: 18px;
+    flex-shrink: 0;
+    color: #C5C5C5;
     font-family: Lato;
     font-size: 19px;
     font-style: normal;
