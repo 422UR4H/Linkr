@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { AiFillHeart, AiOutlineHeart, AiFillEdit } from "react-icons/ai";
-import { BiSolidTrashAlt } from "react-icons/bi";
+import { BiRepost, BiSolidTrashAlt } from "react-icons/bi";
 import { Tooltip } from "react-tooltip";
 import { styled } from "styled-components";
 import "react-tooltip/dist/react-tooltip.css";
@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import UserContext from "../Contexts/UserContext";
 import useToken from "../Hooks/useToken";
 import { createdLinkTitle, extractTextWithHashtagsSplitedByComa, isImageLink, transformTextWithHashtags, validateImageUrl } from "../Utils/utils";
+import {FaRegCommentDots} from "react-icons/fa"
 
 export default function Post({
   post_id,
@@ -240,15 +241,28 @@ export default function Post({
           </Actions>
         )}
         <Tooltip render={({ content }) => content ? <p data-test="tooltip">{content}</p> : null} id="tooltip likes" />
-        <AvatarAndLikes>
+        <AvatarAndActions>
           <img title={name ? name : "Username"} onClick={goToUser} src={avatar_photo_url && validAvatarUrl ? avatar_photo_url : PLACEHOLDER_IMAGE} alt={name} />
-          <Likes onClick={toggleLike} data-test="like-btn">
+          <PostUserAction onClick={toggleLike} data-test="like-btn">
             {liked ? <AiFillHeart className="like-btn full" /> : <AiOutlineHeart className="like-btn empty" />}
-          </Likes>
-          <span data-tooltip-id="tooltip likes" data-tooltip-content={tooltipTextContent()} data-test="counter">
-            {likeCount ? likeCount : 0} likes
-          </span>
-        </AvatarAndLikes>
+            <span data-tooltip-id="tooltip likes" data-tooltip-content={tooltipTextContent()} data-test="counter">
+              {likeCount ? likeCount : 0} likes
+            </span>
+          </PostUserAction>
+          <PostUserAction >
+            <FaRegCommentDots className="comment-btn"/>
+            <span>
+              {"0 comments"} 
+            </span>
+          </PostUserAction>
+          <PostUserAction>
+            <BiRepost className="repost-btn"/>
+            <span>
+              {"0 reposts"} 
+            </span>
+          </PostUserAction>
+         
+        </AvatarAndActions>
         <PostInfo>
           <h1 className="user-name" onClick={goToUser} data-test="username">
             {name ? name : "Username"}
@@ -418,15 +432,16 @@ const Actions = styled.nav`
   }
 `;
 
-const AvatarAndLikes = styled.div`
+const AvatarAndActions = styled.div`
   * {
     user-select: none;
   }
+
   height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 10px;
   justify-content: flex-start;
 
   img {
@@ -449,15 +464,23 @@ const AvatarAndLikes = styled.div`
   }
 `;
 
-const Likes = styled.button`
+const PostUserAction = styled.button`
   background-color: inherit;
   display: flex;
   align-items: center;
   flex-direction: column;
   font-size: 20px;
-  margin-top: 16px;
   border: none;
   padding: 0;
+  gap:4px;
+  cursor: default;
+  span{
+    white-space: nowrap;
+  }
+
+  &:first-of-type{
+    margin-top: 3px;
+  }
 
   * {
     user-select: none;
@@ -467,11 +490,11 @@ const Likes = styled.button`
     color: red;
   }
 
-  .empty {
+  .empty,.comment-btn, .repost-btn {
     color: white;
   }
 
-  .like-btn {
+  .like-btn, .comment-btn, .repost-btn {
     cursor: pointer;
   }
 `;
@@ -538,7 +561,6 @@ const Metadata = styled.a`
   @media (max-width: 500px) {
     height: fit-content;
     max-height: fit-content;
-    min-height: 50px;
   }
 
   .metadata-image {
