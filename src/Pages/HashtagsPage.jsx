@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { styled } from "styled-components";
 import Post from "../Components/Post";
 import useToken from "../Hooks/useToken.js";
 import api from "../Services/api.js";
