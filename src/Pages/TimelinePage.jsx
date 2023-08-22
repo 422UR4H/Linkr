@@ -9,7 +9,6 @@ import useTrending from "../Hooks/useTrending.js";
 import ErrorFetchMessage from "../Components/Atoms/ErrorFetchMessage.jsx";
 import LoadingMessage from "../Components/Atoms/LoadingMessage.jsx";
 import NoPostsYetMessage from "../Components/Atoms/NoPostsYetMessage.jsx";
-import YouDontFollowAnyoneYetMessage from "../Components/Atoms/YouDontFollowAnyoneYet.jsx";
 
 export default function TimelinePage() {
     const [posts, setPosts] = useState([]);
@@ -18,12 +17,10 @@ export default function TimelinePage() {
     const { setTrendingHashtags } = useTrending();
     const { token } = useToken();
     const navigate = useNavigate();
-    const [userIsFollowing, setUserIsFollowing] = useState(true); 
 
     useEffect(() => {
         if (!token) return navigate("/");
         reload();
-        checkIfUserIsFollowing();
     }, []);
 
     async function reload() {
@@ -42,45 +39,28 @@ export default function TimelinePage() {
         }
     }
 
-    async function checkIfUserIsFollowing() { 
-        try {
-            const response = await api.checkIfUserIsFollowing(token);
-            if(response.status ===404) return setUserIsFollowing(false)
-        } catch (err) {
-            console.log(err);
-        }
-    }
-
     return (
         <MainTemplate textHeader="timeline">
-          <CreatePost reload={reload} />
-          {loading ? (
-            <LoadingMessage />
-          ) : error ? (
-            <ErrorFetchMessage />
-          ) : !userIsFollowing ? ( 
-            <YouDontFollowAnyoneYetMessage />
-          ) : posts.length === 0 && userIsFollowing ? ( 
-            <NoPostsYetMessage />
-          ) : (
-            posts.map((post) => (
-              <Post
-                reload={reload}
-                key={post.id}
-                avatar_photo_url={post.user_photo}
-                name={post.user_name}
-                description={post.description}
-                like_count={post.likes_count}
-                link={post.link}
-                owner_id={post.owner_id}
-                post_id={post.id}
-                default_liked={post.default_liked}
-                first_liker_name={post.first_liker_name}
-                second_liker_name={post.second_liker_name}
-              />
-            ))
-          )}
+            <CreatePost reload={reload} />
+            {loading ?
+                <LoadingMessage /> : error ?
+                    <ErrorFetchMessage /> : posts.length === 0 ? <NoPostsYetMessage /> :
+                        (posts.map((post) => (
+                            <Post
+                                reload={reload}
+                                key={post.id}
+                                avatar_photo_url={post.user_photo}
+                                name={post.user_name}
+                                description={post.description}
+                                like_count={post.likes_count}
+                                link={post.link}
+                                owner_id={post.owner_id}
+                                post_id={post.id}
+                                default_liked={post.default_liked}
+                                first_liker_name={post.first_liker_name}
+                                second_liker_name={post.second_liker_name}
+                            />
+                        )))}
         </MainTemplate>
-      );
-      
+    );
 }
