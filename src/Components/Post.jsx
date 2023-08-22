@@ -9,8 +9,11 @@ import api from "../Services/api.js";
 import { useNavigate } from "react-router-dom";
 import UserContext from "../Contexts/UserContext";
 import useToken from "../Hooks/useToken";
-import { createdLinkTitle, extractTextWithHashtagsSplitedByComa, isImageLink, transformTextWithHashtags, validateImageUrl } from "../Utils/utils";
-import {FaRegCommentDots} from "react-icons/fa"
+import { checkForEscapeKeyPress, createdLinkTitle, extractTextWithHashtagsSplitedByComa, isImageLink, transformTextWithHashtags, validateImageUrl } from "../Utils/utils";
+import { FaRegCommentDots } from "react-icons/fa"
+import PostUserAction from "./PostUserAction";
+import Metadata from "./Metadata";
+import Modal from "./Modal";
 
 export default function Post({
   post_id,
@@ -24,14 +27,18 @@ export default function Post({
   reload,
   first_liker_name,
   second_liker_name,
+  repost_count,
+  comments_count,
 }) {
   const [descriptionEditValue, setDescriptionEditValue] = useState(description ? description : "");
   const [isToggleLiking, setIsToggleLiking] = useState(false);
-  const [likeCount, setLikeCount] = useState(Number(like_count));
+  const [likeCount, setLikeCount] = useState(like_count ? Number(like_count) : undefined);
+  const [repostCount, setRepostCount] = useState(like_count ? Number(repost_count) : undefined);
+  const [commentsCount, setCommentsCount] = useState(comments_count ? Number(comments_count) : undefined);
   const [liked, setLiked] = useState(default_liked);
   const [showModal, setShowModal] = useState(false);
   const [editInput, setEditInput] = useState(false);
-  const [metadata, setMetadata] = useState(null);
+
   const [deleting, setDeleting] = useState(false);
   const [validAvatarUrl, setValidAvatarUrl] = useState(false);
 
@@ -42,7 +49,7 @@ export default function Post({
 
   useEffect(() => {
     validateAndSetAvatarImage();
-    getPostMetadataInfo();
+
   }, []);
 
   useEffect(() => {
@@ -61,32 +68,6 @@ export default function Post({
         });
     }
   }
-
-  function getPostMetadataInfo() {
-    if (!link || isImageLink(link)) return; // Prevent API calls to extract metadata from an invalid link, in this case a image link
-    api.urlMetadata(link)
-      .then((res) => {
-        const meta = res.data;
-
-        const cleanedMetadataImage = link?.includes("discord.com") ? DISCORD_METADATA_IMAGE_URL :
-          link?.includes("trello.com") ? TRELLO_METADATA_IMAGE_URL :
-            meta.images && meta.images[0] ? meta.images[0] : "";
-
-        const metadatas = {
-          description: meta.description ? meta.description : "",
-          title: meta.title ? meta.title : "",
-          image: cleanedMetadataImage
-        }
-
-        validateImageUrl(cleanedMetadataImage)
-          .then((res) => setMetadata(metadatas))
-          .catch((error) => {
-            metadatas.image = PLACEHOLDER_IMAGE;
-            setMetadata(metadatas);
-          })
-      }).catch(error => console.log(error))
-  }
-
   function endEdit(event) {
     if (editRef.current && !event.target.classList.contains("edit-post")) {
       setEditInput(false);
@@ -146,6 +127,14 @@ export default function Post({
       })
   }
 
+  function startToComment() {
+    return alert("Not implemented yet!");
+  }
+
+  function askRepost() {
+    return alert("Not implemented yet!");
+  }
+
   function toggleLike() {
     if (isToggleLiking) return;
     setIsToggleLiking(true);
@@ -185,25 +174,8 @@ export default function Post({
     if (likeCount >= 3 && !liked) return `${first_liker_name} e ${second_liker_name} e outras ${likeCount - 2} pessoas curtiram este post`;
   }
 
-  function metadataTitle() {
-    return metadata && metadata.title ? metadata.title :  createdLinkTitle(link ? link : "https://www.example");
-  }
-  function metadataDescription() {
-    return metadata ? metadata.description : "";
-  }
-
-  function metadataImage() {
-    return metadata ? metadata.image : PLACEHOLDER_IMAGE;
-  }
-
   function userLoggedInIsOwnerOfThisPost() {
     return user && owner_id && user.id == owner_id;
-  }
-
-  function checkForEscapeKeyPress(e) {
-    if (e.key === "Escape") {
-      setEditInput(false);
-    }
   }
 
   function closeModal(e) {
@@ -211,27 +183,20 @@ export default function Post({
     e.stopPropagation();
     setShowModal(false);
   }
-
-  function modalConfirmDeletionClick(e) {
-    if (deleting) return;
-    e.stopPropagation();
-    deleteThis();
-  }
-
+  
   return (
     <>
-      {
-        showModal &&
-
-        <ModalAskDelete onClick={closeModal}>
-          <QuestionBox onClick={(e) => e.stopPropagation()}>
-            <h1>Are you sure you want to delete this post?</h1>
-            <div className="actions">
-              <button disabled={deleting} onClick={closeModal} data-test="cancel">No, go back</button>
-              <button disabled={deleting} onClick={modalConfirmDeletionClick} data-test="confirm">{deleting ? "Wait.." : "Yes, delete it"}</button>
-            </div>
-          </QuestionBox>
-        </ModalAskDelete>
+      { showModal && <Modal
+                        modal_cancel_click={closeModal}
+                        modal_confirm_click={deleteThis}
+                        disable_buttons={deleting}
+                        cancel_button_text="No, go back"
+                        confirm_button_text="Yes, delete it"
+                        data_test_cancel_btn="cancel"
+                        data_test_confirm_btn="confirm"
+                        disable_buttons_text="Wait.."
+                        modal_title="Are you sure you want to delete this post?"
+                      />
       }
       <PostContainer data-test="post">
         {userLoggedInIsOwnerOfThisPost() && (
@@ -243,25 +208,9 @@ export default function Post({
         <Tooltip render={({ content }) => content ? <p data-test="tooltip">{content}</p> : null} id="tooltip likes" />
         <AvatarAndActions>
           <img title={name ? name : "Username"} onClick={goToUser} src={avatar_photo_url && validAvatarUrl ? avatar_photo_url : PLACEHOLDER_IMAGE} alt={name} />
-          <PostUserAction onClick={toggleLike} data-test="like-btn">
-            {liked ? <AiFillHeart className="like-btn full" /> : <AiOutlineHeart className="like-btn empty" />}
-            <span data-tooltip-id="tooltip likes" data-tooltip-content={tooltipTextContent()} data-test="counter">
-              {likeCount ? likeCount : 0} likes
-            </span>
-          </PostUserAction>
-          <PostUserAction >
-            <FaRegCommentDots className="comment-btn"/>
-            <span>
-              {"0 comments"} 
-            </span>
-          </PostUserAction>
-          <PostUserAction>
-            <BiRepost className="repost-btn"/>
-            <span>
-              {"0 reposts"} 
-            </span>
-          </PostUserAction>
-         
+          <PostUserAction counter={isNaN(likeCount) ? 0 : likeCount} type={"like"} tootltip_content={tooltipTextContent()} tooltip_id={"tooltip likes"} on_click={toggleLike} data_test_text={"counter"} data_test_button={"like-btn"} fill_logic={true} fill_logic_state={liked} />
+          <PostUserAction counter={isNaN(commentsCount) ? 0 : likeCount} type={"comment"} tootltip_content={null} tooltip_id={"tooltip comment"} on_click={startToComment} data_test_text={"comment-counter"} data_test_button={"comment-btn"} fill_logic={false} fill_logic_state={liked} />
+          <PostUserAction counter={isNaN(repostCount) ? 0 : likeCount} type={"repost"} tootltip_content={null} tooltip_id={"tooltip repost"} on_click={askRepost} data_test_text={"repost-counter"} data_test_button={"repost-btn"} fill_logic={false} fill_logic_state={liked} />
         </AvatarAndActions>
         <PostInfo>
           <h1 className="user-name" onClick={goToUser} data-test="username">
@@ -272,7 +221,7 @@ export default function Post({
             <PostForm onSubmit={(e) => updatePost(e)}>
               <input
                 ref={editRef}
-                onKeyDown={checkForEscapeKeyPress}
+                onKeyDown={(e) => checkForEscapeKeyPress(e, setEditInput, false)}
                 onBlur={endEdit}
                 value={descriptionEditValue}
                 type="text"
@@ -283,94 +232,13 @@ export default function Post({
               />
             </PostForm>
           }
-          <Metadata data-test="link" href={link} target="_blank">
-            <MetadataInfo>
-              <h1 className="metadata-title">{metadataTitle()}</h1>
-              <h2 className="metadata-description">{metadataDescription()}</h2>
-              <span>{link?.trim()}</span>
-            </MetadataInfo>
-            <div className="metadata-image">
-              <img src={metadataImage()} alt="" />
-            </div>
-          </Metadata>
+          <Metadata link={link} />
         </PostInfo>
       </PostContainer>
     </>
   );
 }
 
-const QuestionBox = styled.div`
-  width: 100%;
-  max-width: 597px;
-  height: 100%;
-  max-height: 262px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #333333;
-  flex-direction: column;
-  border-radius: 50px;
-  gap:20px;
-  padding:20px;
-
-  @media (max-width: 597px) {
-    border-radius: 0;
-  }
-
-  h1{
-    color: #FFF;
-    text-align: center;
-    font-family: Lato;
-    font-size: 34px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
-  }
-
-  .actions{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-
-    button{
-      width: 100%;
-      max-width:134px;
-      height: 37px;
-      color: white;
-      border: 0;
-      border-radius: 5px;
-      background: #1877F2;
-
-      &:enabled{
-          &:hover{
-          background: #FFF;
-          color: #1877F2;
-        }
-      }
-      &:disabled{
-        opacity: 50%;
-        cursor: not-allowed;
-      }
-    }
-  }
-
-`;
-
-const ModalAskDelete = styled.main`
-
-  width: 100%;
-  height:100%;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 5;
-  background: rgba(255, 255, 255, 0.90);
-  display: flex;
-  align-items:center;
-  justify-content: center;
-`;
 
 const PostContainer = styled.div`
   width: 100%;
@@ -394,7 +262,6 @@ const PostContainer = styled.div`
     border-radius: 0;
   }
 `;
-
 const PostForm = styled.form`
   width: 100%;
   display: flex;
@@ -412,7 +279,6 @@ const PostForm = styled.form`
     resize: none;
   }
 `;
-
 const Actions = styled.nav`
   position: absolute;
   right: 20px;
@@ -431,7 +297,6 @@ const Actions = styled.nav`
     }
   }
 `;
-
 const AvatarAndActions = styled.div`
   * {
     user-select: none;
@@ -463,42 +328,6 @@ const AvatarAndActions = styled.div`
     line-height: normal;
   }
 `;
-
-const PostUserAction = styled.button`
-  background-color: inherit;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  font-size: 20px;
-  border: none;
-  padding: 0;
-  gap:4px;
-  cursor: default;
-  span{
-    white-space: nowrap;
-  }
-
-  &:first-of-type{
-    margin-top: 3px;
-  }
-
-  * {
-    user-select: none;
-  }
-
-  .full {
-    color: red;
-  }
-
-  .empty,.comment-btn, .repost-btn {
-    color: white;
-  }
-
-  .like-btn, .comment-btn, .repost-btn {
-    cursor: pointer;
-  }
-`;
-
 const PostInfo = styled.div`
   display: flex;
   flex-direction: column;
@@ -539,98 +368,6 @@ const PostInfo = styled.div`
       font-weight: 700;
       line-height: normal;
       text-decoration: none;
-    }
-  }
-`;
-
-const Metadata = styled.a`
-  display: flex;
-  width: 100%;
-  max-width: 503px;
-  min-height: 155px;
-
-  flex-shrink: 0;
-  border-radius: 11px;
-  border: 1px solid #4d4d4d;
-  overflow: hidden;
-  justify-content: space-between;
-  text-decoration: none !important;
-  @media (max-width: 720px) {
-    max-width: 100%;
-  }
-  @media (max-width: 500px) {
-    height: fit-content;
-    max-height: fit-content;
-  }
-
-  .metadata-image {
-    width: 100%;
-    max-width: 153.44px;
-    border-radius: 0px 12px 13px 0px;
-    overflow: hidden;
-    flex-shrink: 0;
-    @media (max-width: 500px) {
-      max-width: 100px;
-    }
-    img {
-      width: 100%;
-      height: 100%;
-      border-radius: 0px 12px 13px 0px;
-      object-fit: cover;
-    }
-  }
-`;
-
-const MetadataInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-  gap: 10px;
-  max-width: 247px;
-
-  @media (max-width: 500px) {
-    padding: 7px;
-    height: fit-content;
-    max-width:calc(100% - 100px);
-  }
-
-
-  span {
-    overflow: hidden;
-    color: #cecece;
-    font-family: Lato;
-    font-size: 11px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    @media (max-width: 500px) {
-      font-size: 9px;
-    }
-  }
-
-  h1 {
-    width: 100%;
-    color: #cecece;
-    font-family: Lato;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    @media (max-width: 500px) {
-      font-size: 11px;
-    }
-  }
-
-  h2 {
-    width: 100%;
-    color: #9b9595;
-    font-family: Lato;
-    font-size: 11px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    @media (max-width: 500px) {
-      font-size: 9px;
     }
   }
 `;
