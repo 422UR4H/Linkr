@@ -35,6 +35,14 @@ const StyledContent = styled.div`
     justify-content: center;
     gap: 25px;
 
+    .infinite-scroll-container{
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 16px;
+    }
+
     .posts {
         display: flex;
         flex-direction: column;

@@ -85,6 +85,7 @@ export default function TimelinePage() {
               pageStart={0}
               loadMore={loadMore}
               hasMore={morePosts}
+              className="infinite-scroll-container"
               loader={<LoadingMessage key={0} />}>
               {loading ? (
                   <LoadingMessage />
