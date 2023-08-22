@@ -32,9 +32,9 @@ export default function Post({
 }) {
   const [descriptionEditValue, setDescriptionEditValue] = useState(description ? description : "");
   const [isToggleLiking, setIsToggleLiking] = useState(false);
-  const [likeCount, setLikeCount] = useState(like_count ? Number(like_count) : undefined);
-  const [repostCount, setRepostCount] = useState(like_count ? Number(repost_count) : undefined);
-  const [commentsCount, setCommentsCount] = useState(comments_count ? Number(comments_count) : undefined);
+  const [likeCount, setLikeCount] = useState(0);
+  const [repostCount, setRepostCount] = useState(0);
+  const [commentsCount, setCommentsCount] = useState(0);
   const [liked, setLiked] = useState(default_liked);
   const [showModalDelete, setShowModalDelete] = useState(false);
   const [showModalRepost, setShowModalRepost] = useState(false);
@@ -51,7 +51,9 @@ export default function Post({
 
   useEffect(() => {
     validateAndSetAvatarImage();
-
+    setRepostCount(repost_count ? Number(repost_count) : 0);
+    setLikeCount(like_count ? Number(like_count) : 0);
+    setCommentsCount(comments_count ? Number(comments_count) : 0);
   }, []);
 
   useEffect(() => {
@@ -240,9 +242,9 @@ export default function Post({
         <Tooltip render={({ content }) => content ? <p data-test="tooltip">{content}</p> : null} id="tooltip likes" />
         <AvatarAndActions>
           <img title={name ? name : "Username"} onClick={goToUser} src={avatar_photo_url && validAvatarUrl ? avatar_photo_url : PLACEHOLDER_IMAGE} alt={name} />
-          <PostUserAction counter={isNaN(likeCount) ? 0 : likeCount} type={"like"} tootltip_content={tooltipTextContent()} tooltip_id={"tooltip likes"} on_click={toggleLike} data_test_text={"counter"} data_test_button={"like-btn"} fill_logic={true} fill_logic_state={liked} />
-          <PostUserAction counter={isNaN(commentsCount) ? 0 : likeCount} type={"comment"} tootltip_content={null} tooltip_id={"tooltip comment"} on_click={startToComment} data_test_text={"comment-counter"} data_test_button={"comment-btn"} fill_logic={false} fill_logic_state={liked} />
-          <PostUserAction counter={isNaN(repostCount) ? 0 : likeCount} type={"repost"} tootltip_content={null} tooltip_id={"tooltip repost"} on_click={askRepost} data_test_text={"repost-counter"} data_test_button={"repost-btn"} fill_logic={false} fill_logic_state={liked} />
+          <PostUserAction counter={likeCount} type={"like"} tootltip_content={tooltipTextContent()} tooltip_id={"tooltip likes"} on_click={toggleLike} data_test_text={"counter"} data_test_button={"like-btn"} fill_logic={true} fill_logic_state={liked} />
+          <PostUserAction counter={commentsCount} type={"comment"} tootltip_content={null} tooltip_id={"tooltip comment"} on_click={startToComment} data_test_text={"comment-counter"} data_test_button={"comment-btn"} fill_logic={false} fill_logic_state={liked} />
+          <PostUserAction counter={repostCount} type={"repost"} tootltip_content={null} tooltip_id={"tooltip repost"} on_click={askRepost} data_test_text={"repost-counter"} data_test_button={"repost-btn"} fill_logic={false} fill_logic_state={liked} />
         </AvatarAndActions>
         <PostInfo>
           <h1 className="user-name" onClick={goToUser} data-test="username">
