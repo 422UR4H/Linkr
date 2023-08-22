@@ -67,8 +67,8 @@ export default function Post({
       .then((res) => {
         const meta = res.data;
 
-        const cleanedMetadataImage = link.includes("discord.com") ? DISCORD_METADATA_IMAGE_URL :
-          link.includes("trello.com") ? TRELLO_METADATA_IMAGE_URL :
+        const cleanedMetadataImage = link?.includes("discord.com") ? DISCORD_METADATA_IMAGE_URL :
+          link?.includes("trello.com") ? TRELLO_METADATA_IMAGE_URL :
             meta.images && meta.images[0] ? meta.images[0] : "";
 
         const metadatas = {
@@ -185,7 +185,7 @@ export default function Post({
   }
 
   function metadataTitle() {
-    return metadata && metadata.title ? metadata.title :  createdLinkTitle(link);
+    return metadata && metadata.title ? metadata.title :  createdLinkTitle(link ? link : "https://www.example");
   }
   function metadataDescription() {
     return metadata ? metadata.description : "";
@@ -273,7 +273,7 @@ export default function Post({
             <MetadataInfo>
               <h1 className="metadata-title">{metadataTitle()}</h1>
               <h2 className="metadata-description">{metadataDescription()}</h2>
-              <span>{link.trim()}</span>
+              <span>{link?.trim()}</span>
             </MetadataInfo>
             <div className="metadata-image">
               <img src={metadataImage()} alt="" />
