@@ -112,6 +112,7 @@ export default function TimelinePage() {
                             default_liked={post.default_liked}
                             first_liker_name={post.first_liker_name}
                             second_liker_name={post.second_liker_name}
+                            repost_count={post.repost_count}
                           />
                           
                           ))
