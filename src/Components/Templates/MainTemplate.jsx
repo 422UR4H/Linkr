@@ -3,9 +3,12 @@ import { styled } from 'styled-components';
 import SearchBar from '../Molecules/SearchBar.jsx';
 import Trending from '../Trending.jsx';
 import Avatar from '../Atoms/Avatar.jsx';
-
-export default function MainTemplate({ textHeader, src, alt, children }) {
+import Button from '../../Styles/Button.js';
+import FollowButton from '../../Styles/Button_Follow.js';
+import {BsFillPersonCheckFill} from "react-icons/bs";
+export default function MainTemplate({ textHeader, src, alt, children ,follow_btn_on_click,follow_btn_text,show_follow_btn}) {
     const size = useWindowSize();
+  
 
     return (
         <StyledMainTemplate>
@@ -13,8 +16,15 @@ export default function MainTemplate({ textHeader, src, alt, children }) {
                 {size.width <= 720 && <SearchBar className="search-bar" />}
 
                 <AvatarAndTitle className='avatar-and-title' $width={!!src && !!alt}>
-                    {src && alt && <Avatar src={src ? src : '/placeholder.jpg'} alt={alt} />}
+                   <div className='info'>
+                   {src && alt && <Avatar src={src ? src : '/placeholder.jpg'} alt={alt} />}
                     <h1 data-test="hashtag-title">{textHeader}</h1>
+                   </div>
+                    {  show_follow_btn && 
+                        <FollowButton data-test="follow-btn" onClick={()=> follow_btn_on_click()} >
+                            {size.width < 720 ? <BsFillPersonCheckFill/> : follow_btn_text}
+                        </FollowButton>
+                    }
                 </AvatarAndTitle>
 
                 <StyledContent>
@@ -122,12 +132,19 @@ export const StyledMainTemplate = styled.main`
 const AvatarAndTitle = styled.div`
     display: flex;
     align-items: center;
+    justify-content:space-between;
     gap: 18px;
     width: 100%;
     max-width: ${({ $width }) => $width ? "935px" : "970px"};
     margin-top: 53px;
     margin-bottom: 40px;
     padding-inline: 20px;
+
+    .info{
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
     
     @media (max-width: 720px) {
         max-width: 100%;
