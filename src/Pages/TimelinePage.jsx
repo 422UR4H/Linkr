@@ -19,10 +19,9 @@ export default function TimelinePage() {
     const { setTrendingHashtags } = useTrending();
     const { token } = useToken();
     const navigate = useNavigate();
-    const [page, setPage] = useState(0);=======
+    const [page, setPage] = useState(0)
     const [userIsFollowing, setUserIsFollowing] = useState(true);
     const [morePosts, setMorePosts] = useState(true);
-    const [hasNewPosts, setHasNewPosts] = useState(false);
 
 
 const loadMore = async () => {
@@ -56,7 +55,7 @@ const loadMore = async () => {
             console.log("Error loading more posts:", err);
         }
     };
-    };
+    
 
     useEffect(() => {
         if (!token) return navigate("/");
