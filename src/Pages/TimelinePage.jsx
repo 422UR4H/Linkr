@@ -19,13 +19,13 @@ export default function TimelinePage() {
     const { setTrendingHashtags } = useTrending();
     const { token } = useToken();
     const navigate = useNavigate();
-    const [userIsFollowing, setUserIsFollowing] = useState(true); 
-    const [page, setPage] = useState(0);
+    const [page, setPage] = useState(0);=======
+    const [userIsFollowing, setUserIsFollowing] = useState(true);
     const [morePosts, setMorePosts] = useState(true);
     const [hasNewPosts, setHasNewPosts] = useState(false);
 
 
-    const loadMore = async () => {
+const loadMore = async () => {
         try {
             console.log("Loading more posts from page:", page + 1);
             
@@ -56,43 +56,41 @@ export default function TimelinePage() {
             console.log("Error loading more posts:", err);
         }
     };
-    
-    
-    
-    
+    };
+
     useEffect(() => {
         if (!token) return navigate("/");
         reload();
     }, []);
 
     async function reload() {
-      setLoading(true);
-  
-      try {
-          const response = await api.getPosts(token, 0);
-          console.log(response);
-              if (response.status === 202 || response.status === 204) {
-              setPosts([]);
-              setMorePosts(false)
-          } 
-          else if (response.status === 200) {
-              const posts = response.data;
-              setPosts(posts);
-          }
-          setTrendingHashtags((await api.getAllHashtags(token)).data);
-          setLoading(false);
-      } catch (err) {
-          console.log(err);
-          alert("An error occurred while trying to fetch the posts, please refresh the page");
-          setError(true);
-      } 
-  }
-  
-    async function checkIfUserIsFollowing() { 
+        setLoading(true);
+
+        try {
+            const response = await api.getPosts(token, 0);
+            console.log(response);
+            if (response.status === 202 || response.status === 204) {
+                setPosts([]);
+                setMorePosts(false)
+            }
+            else if (response.status === 200) {
+                const posts = response.data;
+                setPosts(posts);
+            }
+            setTrendingHashtags((await api.getAllHashtags(token)).data);
+            setLoading(false);
+        } catch (err) {
+            console.log(err);
+            alert("An error occurred while trying to fetch the posts, please refresh the page");
+            setError(true);
+        }
+    }
+
+    async function checkIfUserIsFollowing() {
         try {
             const response = await api.checkIfUserIsFollowing(token);
             console.log(response);
-            if(response.status === 202) return setUserIsFollowing(false)            
+            if (response.status === 202) return setUserIsFollowing(false)
         } catch (err) {
             console.log(err);
         }
@@ -141,6 +139,6 @@ export default function TimelinePage() {
               )}
       </MainTemplate>
   );  
-}  
+}
 
 
