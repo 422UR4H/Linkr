@@ -31,6 +31,7 @@ const loadMore = async () => {
             console.log("Loading more posts from page:", page + 1);
             
             const nextPage = page + 1;
+            console.log("Loaded new page:", nextPage);
             const response = await api.getPosts(token, nextPage); 
     
             if (response.status === 202 || response.status === 204) {
@@ -75,6 +76,7 @@ const loadMore = async () => {
                 setMorePosts(false)
             }
             else if (response.status === 200) {
+                console.log("Loaded new posts:", response.data);
                 const posts = response.data;
                 setPosts(posts);
             }

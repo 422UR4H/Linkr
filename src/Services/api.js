@@ -13,8 +13,8 @@ function createPost(body, token) {
   return axios.post(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/posts`, body, config(token));
 }
 
-function getPosts(token) {
-  return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/timeline`, config(token));
+export function getPosts(token, page) {
+  return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/timeline?page=${page}`, config(token));
 }
 
 function editPost(body, token, id) {
