@@ -9,6 +9,7 @@ import MainTemplate from '../Components/Templates/MainTemplate.jsx';
 import Button from '../Styles/Button.js';
 import UserContext from '../Contexts/UserContext';
 import { sortPostsByDate } from '../Utils/utils';
+import { useLocation } from 'react-router';
 
 export default function UserPage() {
   const [thisUser, setThisUser] = useState(null); // thisUser.user_id O CARA QUE VAI SEGUIR OU DESEGUIR
@@ -18,9 +19,13 @@ export default function UserPage() {
   const { token } = useToken();
   const navigate = useNavigate();
   const { user } = useContext(UserContext);
+  const location = useLocation();
+  const [followingThisUser, setFollowingThisUser] = useState(false);
+
 
   useEffect(() => {
     if (!localStorage.getItem("token")) return navigate('/');
+    checkIfThisUserIsFollowing();
     reload();
   }, []);
 
@@ -44,11 +49,25 @@ export default function UserPage() {
     }
   }
 
+  function checkIfThisUserIsFollowing(){
+    alert("Implement api call to check if this user logged in is following the user from this page!")
+  }
+
+  function follow(){
+    alert(`Follow ${thisUser.id} as user ${id}`);
+  }
+  function unfollow(){
+    alert(`Unfollow ${thisUser.id} as user ${id}`);
+  }
+
   return (
     <MainTemplate
       src={thisUser?.photo || "/placeholder.jpg"}
       alt={thisUser?.name || "Loading.."}
       textHeader={thisUser ? thisUser.user_name + "’s posts" : "Loading..."}
+      follow_btn_on_click={followingThisUser ? unfollow : follow}
+      show_follow_btn={location.pathname.includes('/user')}
+      follow_btn_text={followingThisUser? "Unfollow" : "Follow"}
     >
       {!userNotFound &&
         <>
