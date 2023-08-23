@@ -7,7 +7,7 @@ export default function UserSearchSuggestion({ photo, username, user_id ,followi
 
   function goToUser() {
     if (!user_id) return alert("This suggestions doenst have an owner_id prop");
-    navigate(`/user/${user_id}`);
+    window.open(`/user/${user_id}`,"_self")
   }
   return (
     <StyledUserSearchSuggestion onClick={goToUser} data-test="user-search">
