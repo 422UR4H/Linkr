@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router';
 import useToken from '../Hooks/useToken';
@@ -7,6 +7,8 @@ import Post from '../Components/Post';
 import api from '../Services/api';
 import MainTemplate from '../Components/Templates/MainTemplate.jsx';
 import Button from '../Styles/Button.js';
+import UserContext from '../Contexts/UserContext';
+import { sortPostsByDate } from '../Utils/utils';
 
 export default function UserPage() {
   const [thisUser, setThisUser] = useState(null); // thisUser.user_id O CARA QUE VAI SEGUIR OU DESEGUIR
@@ -15,6 +17,7 @@ export default function UserPage() {
   const { id } = useParams(); // O CARA QUE VAI SER SEGUIDO OU DESEGUIDO
   const { token } = useToken();
   const navigate = useNavigate();
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
     if (!localStorage.getItem("token")) return navigate('/');
@@ -25,7 +28,9 @@ export default function UserPage() {
     api.getUserById(id, token)
       .then(res => {
         console.log(res.data);
-        setThisUser(res.data);
+        const userData = res.data;
+        userData.user_posts = sortPostsByDate(userData.user_posts);
+        setThisUser(userData);
       }).catch((error) => {
         console.log(error);
         setUserNotFound(true);
@@ -68,6 +73,8 @@ export default function UserPage() {
                 repost_count={post?.repost_count}
                 created_at={post.created_at}
                 is_repost={post.is_repost}
+                references_post_id={post.is_repost ? post.id : -69}
+                reposted_by_name={post.is_repost == false ? "" : post.is_repost && post.reposted_by_id === user.id ? "you" :  post.is_repost && post.owner_id !== thisUser.id ?  thisUser.user_name : ""}
               />
             ))
           }
