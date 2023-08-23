@@ -19,113 +19,112 @@ export default function TimelinePage() {
     const { setTrendingHashtags } = useTrending();
     const { token } = useToken();
     const navigate = useNavigate();
-    const [userIsFollowing, setUserIsFollowing] = useState(true); 
+    const [userIsFollowing, setUserIsFollowing] = useState(true);
     const [morePosts, setMorePosts] = useState(true);
 
     const loadMore = async (page) => {
         try {
             console.log('Loading more posts for page:', page);
-            const response = await api.getPosts(token, page); 
+            const response = await api.getPosts(token, page);
             console.log('API response:', response);
             if (response.status === 202 || response.status === 204) {
-                setMorePosts(false); 
+                setMorePosts(false);
             } else if (response.status === 200) {
                 const newPosts = response.data;
                 if (newPosts.length === 0) {
-                    setMorePosts(false); 
+                    setMorePosts(false);
                 } else {
-                    const uniqueNewPosts = newPosts.filter(newPost => 
+                    const uniqueNewPosts = newPosts.filter(newPost =>
                         !posts.some(existingPost => existingPost.id === newPost.id)
-                    );                    
-                    setPosts([...posts, ...uniqueNewPosts]); 
+                    );
+                    setPosts([...posts, ...uniqueNewPosts]);
                 }
             }
         } catch (err) {
             console.log(err);
         }
-    };     
-    
+    };
+
     useEffect(() => {
         if (!token) return navigate("/");
         reload();
     }, []);
 
     async function reload() {
-      setLoading(true);
-  
-      try {
-          const response = await api.getPosts(token, 0);
-          console.log(response);
-              if (response.status === 202 || response.status === 204) {
-              setPosts([]);
-              setMorePosts(false)
-          } 
-          else if (response.status === 200) {
-              const posts = response.data;
-              setPosts(posts);
-          }
-          setTrendingHashtags((await api.getAllHashtags(token)).data);
-          setLoading(false);
-      } catch (err) {
-          console.log(err);
-          alert("An error occurred while trying to fetch the posts, please refresh the page");
-          setError(true);
-      } 
-  }
-  
-    async function checkIfUserIsFollowing() { 
+        setLoading(true);
+
+        try {
+            const response = await api.getPosts(token, 0);
+            console.log(response);
+            if (response.status === 202 || response.status === 204) {
+                setPosts([]);
+                setMorePosts(false)
+            }
+            else if (response.status === 200) {
+                const posts = response.data;
+                setPosts(posts);
+            }
+            setTrendingHashtags((await api.getAllHashtags(token)).data);
+            setLoading(false);
+        } catch (err) {
+            console.log(err);
+            alert("An error occurred while trying to fetch the posts, please refresh the page");
+            setError(true);
+        }
+    }
+
+    async function checkIfUserIsFollowing() {
         try {
             const response = await api.checkIfUserIsFollowing(token);
             console.log(response);
-            if(response.status === 202) return setUserIsFollowing(false)            
+            if (response.status === 202) return setUserIsFollowing(false)
         } catch (err) {
             console.log(err);
         }
     }
 
     return (
-      <MainTemplate textHeader="timeline">
-          <CreatePost reload={reload} />         
-              {loading ? (
-                  <LoadingMessage />
-              ) : error ? (
-                  <ErrorFetchMessage />
-              ) : (                 
-            <InfiniteScroll
-              pageStart={0}
-              loadMore={()=> loadMore(Math.floor(posts.length/10)+1)}
-              hasMore={morePosts}
-              className="infinite-scroll-container"
-              loader={loading ? <LoadingMessage /> : null}
-            >  {posts.length > 0 ? (
-                          posts.map((post) => (
+        <MainTemplate textHeader="timeline">
+            <CreatePost reload={reload} />
+            {loading ? (
+                <LoadingMessage />
+            ) : error ? (
+                <ErrorFetchMessage />
+            ) : (
+                <InfiniteScroll
+                    pageStart={0}
+                    loadMore={() => loadMore(Math.floor(posts.length / 10) + 1)}
+                    hasMore={morePosts}
+                    className="infinite-scroll-container"
+                    loader={loading ? <LoadingMessage /> : null}
+                >
+                    {posts.length > 0 ? (
+                        posts.map((post) => (
                             <Post
-                            reload={reload}
-                            key={post.id}
-                            avatar_photo_url={post.user_photo}
-                            name={post.user_name}
-                            description={post.description}
-                            like_count={post.likes_count}
-                            link={post.link}
-                            owner_id={post.owner_id}
-                            post_id={post.id}
-                            default_liked={post.default_liked}
-                            first_liker_name={post.first_liker_name}
-                            second_liker_name={post.second_liker_name}
-                            repost_count={post.repost_count}
-                          />
-                          
-                          ))
-                          
-                      ) : !userIsFollowing ? (
-                          <YouDontFollowAnyoneYetMessage />
-                      ) : (
-                          <NoPostsYetMessage />
-                      )}
-                       </InfiniteScroll>
-              )}
-      </MainTemplate>
-  );  
-}  
+                                reload={reload}
+                                key={post.id}
+                                avatar_photo_url={post.user_photo}
+                                name={post.user_name}
+                                description={post.description}
+                                like_count={post.likes_count}
+                                link={post.link}
+                                owner_id={post.owner_id}
+                                post_id={post.id}
+                                default_liked={post.default_liked}
+                                first_liker_name={post.first_liker_name}
+                                second_liker_name={post.second_liker_name}
+                                repost_count={post.repost_count}
+                            />
+                        ))
+                    ) : !userIsFollowing ? (
+                        <YouDontFollowAnyoneYetMessage />
+                    ) : (
+                        <NoPostsYetMessage />
+                    )}
+                </InfiniteScroll>
+            )}
+        </MainTemplate>
+    );
+}
 
 
