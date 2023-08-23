@@ -25,6 +25,10 @@ function deletePost(token, id) {
   return axios.delete(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/posts/${id}`, config(token));
 }
 
+function deleteRepost(token, id) {
+  return axios.delete(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/reposts/${id}`, config(token));
+}
+
 function getAllHashtags(token) {
   return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/hashtags`, config(token));
 }
@@ -49,10 +53,10 @@ function getUserById(id, token) {
   return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/users/id/${id}`, config(token));
 }
 function repost(postId, token) {
-  return axios.post(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/repost`,{postId}, config(token));
+  return axios.post(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/repost`, { postId }, config(token));
 }
-function urlMetadata(link){
-    return axios.get(`https://jsonlink.io/api/extract?url=${link}`);
+function urlMetadata(link) {
+  return axios.get(`https://jsonlink.io/api/extract?url=${link}`);
 }
 
 function checkIfUserIsFollowing(token) {
@@ -64,7 +68,7 @@ const api = {
   getUsersByName, getUserById,
   createPost, getPosts, editPost, deletePost,
   getAllHashtags, getPostsByHashtag,
-  setLike, setUnlike,urlMetadata, checkIfUserIsFollowing,repost
+  setLike, setUnlike, urlMetadata, checkIfUserIsFollowing, repost, deleteRepost
 };
 export default api;
 

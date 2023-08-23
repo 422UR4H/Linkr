@@ -34,6 +34,7 @@ const StyledContent = styled.div`
     display: flex;
     justify-content: center;
     gap: 25px;
+    z-index: 1;
 
     .infinite-scroll-container{
         width: 100%;
@@ -49,7 +50,8 @@ const StyledContent = styled.div`
         align-items: center;
         width: 100%;
         max-width: 611px;
-        gap: 16px;
+        gap: 29px;
+        margin-bottom: 20px;
 
         @media (max-width: 720px) {
             max-width: 100%;

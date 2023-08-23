@@ -1,19 +1,19 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { AiFillHeart, AiOutlineHeart, AiFillEdit } from "react-icons/ai";
-import { BiRepost, BiSolidTrashAlt } from "react-icons/bi";
+import { AiFillEdit } from "react-icons/ai";
+import { BiSolidTrashAlt } from "react-icons/bi";
 import { Tooltip } from "react-tooltip";
 import { styled } from "styled-components";
 import "react-tooltip/dist/react-tooltip.css";
-import { DISCORD_METADATA_IMAGE_URL, PLACEHOLDER_IMAGE, TRELLO_METADATA_IMAGE_URL } from "../Utils/constants";
+import { PLACEHOLDER_IMAGE } from "../Utils/constants";
 import api from "../Services/api.js";
 import { useNavigate } from "react-router-dom";
 import UserContext from "../Contexts/UserContext";
 import useToken from "../Hooks/useToken";
-import { checkForEscapeKeyPress, createdLinkTitle, extractTextWithHashtagsSplitedByComa, isImageLink, transformTextWithHashtags, validateImageUrl } from "../Utils/utils";
-import { FaRegCommentDots } from "react-icons/fa"
+import { checkForEscapeKeyPress, extractTextWithHashtagsSplitedByComa, transformTextWithHashtags, validateImageUrl } from "../Utils/utils";
 import PostUserAction from "./PostUserAction";
 import Metadata from "./Metadata";
 import Modal from "./Modal";
+import RepostBanner from "./RepostBanner";
 
 export default function Post({
   post_id,
@@ -29,6 +29,10 @@ export default function Post({
   second_liker_name,
   repost_count,
   comments_count,
+  references_post_id,
+  created_at,
+  is_repost = false,
+  reposted_by_name,
 }) {
   const [descriptionEditValue, setDescriptionEditValue] = useState(description ? description : "");
   const [isToggleLiking, setIsToggleLiking] = useState(false);
@@ -84,6 +88,7 @@ export default function Post({
 
   function startEdit(event) {
     event.stopPropagation();
+    if (is_repost) return;
     setEditInput(!editInput);
   }
 
@@ -94,15 +99,15 @@ export default function Post({
 
   function askRepost() {
     //ask and then
-   setShowModalRepost(true);
+    setShowModalRepost(true);
   }
 
   function repost() {
-   setReposting(true);
-   api.repost(post_id,token)
+    setReposting(true);
+    api.repost(is_repost ? references_post_id : post_id, token)
       .then(res => {
         setShowModalRepost(false);
-        setReposting(true);
+        setReposting(false);
         reload();
       })
       .catch(err => {
@@ -117,18 +122,34 @@ export default function Post({
     if (deleting) return;
     setDeleting(true);
 
-    api.deletePost(token, post_id)
-      .then(res => {
-        setDeleting(false);
-        setShowModalDelete(false);
-        reload();
-      })
-      .catch(err => {
-        setShowModalDelete(false);
-        setDeleting(false);
-        console.log(err);
-        alert("Error deleting post!");
-      })
+    if (is_repost) {
+      api.deleteRepost(token, post_id)
+        .then(res => {
+          setDeleting(false);
+          setShowModalDelete(false);
+          reload();
+        })
+        .catch(err => {
+          setDeleting(false);
+          setShowModalDelete(false);
+          console.log(err);
+          alert("Error deleting!");
+        })
+    }
+    else {
+      api.deletePost(token, post_id)
+        .then(res => {
+          setDeleting(false);
+          setShowModalDelete(false);
+          reload();
+        })
+        .catch(err => {
+          setShowModalDelete(false);
+          setDeleting(false);
+          console.log(err);
+          alert("Error deleting post!");
+        })
+    }
   }
 
   function updatePost(e) {
@@ -155,8 +176,6 @@ export default function Post({
   function startToComment() {
     return alert("Not implemented yet!");
   }
-
-  
 
   function toggleLike() {
     if (isToggleLiking) return;
@@ -201,11 +220,9 @@ export default function Post({
     return user && owner_id && user.id == owner_id;
   }
 
-
-
   return (
     <>
-      { showModalDelete ?
+      {showModalDelete ?
         <Modal
           modal_cancel_click={() => setShowModalDelete(false)}
           modal_confirm_click={deleteThis}
@@ -215,7 +232,7 @@ export default function Post({
           data_test_cancel_btn="cancel"
           data_test_confirm_btn="confirm"
           disable_buttons_text="Wait.."
-          modal_title="Are you sure you want to delete this post?"
+          modal_title={`Are you sure you want to delete this ${is_repost ? "repost" : "post"}?`}
         />
         : showModalRepost ?
           <Modal
@@ -232,13 +249,14 @@ export default function Post({
           :
           <></>
       }
-      <PostContainer data-test="post">
+      <PostContainer $is_repost={is_repost} data-test="post">
         {userLoggedInIsOwnerOfThisPost() && (
           <Actions>
-            <AiFillEdit onClick={(e) => startEdit(e)} className="icon" data-test="edit-btn" />
+            {!is_repost && <AiFillEdit onClick={(e) => startEdit(e)} className="icon" data-test="edit-btn" />}
             <BiSolidTrashAlt onClick={askDelete} className="icon" data-test="delete-btn" />
           </Actions>
         )}
+        {is_repost && <RepostBanner reposted_by_name={reposted_by_name}/>}
         <Tooltip render={({ content }) => content ? <p data-test="tooltip">{content}</p> : null} id="tooltip likes" />
         <AvatarAndActions>
           <img title={name ? name : "Username"} onClick={goToUser} src={avatar_photo_url && validAvatarUrl ? avatar_photo_url : PLACEHOLDER_IMAGE} alt={name} />
@@ -277,11 +295,13 @@ export default function Post({
 const PostContainer = styled.div`
   width: 100%;
   max-width: 611px;
+  position: relative;
   background-color: #171717;
   border-radius: 16px;
   display: flex;
   gap: 18px;
   padding: 20px;
+  margin-top: ${(props) => props.$is_repost ? "29px" : 0};
   position: relative;
   .react-tooltip{
     max-width: fit-content;
