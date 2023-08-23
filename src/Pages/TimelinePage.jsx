@@ -11,7 +11,6 @@ import LoadingMessage from "../Components/Atoms/LoadingMessage.jsx";
 import NoPostsYetMessage from "../Components/Atoms/NoPostsYetMessage.jsx";
 import YouDontFollowAnyoneYetMessage from "../Components/Atoms/YouDontFollowAnyoneYet.jsx";
 import InfiniteScroll from "react-infinite-scroller";
-import useInterval from '@use-it/interval';
 
 export default function TimelinePage() {
     const [posts, setPosts] = useState([]);
@@ -98,24 +97,6 @@ export default function TimelinePage() {
             console.log(err);
         }
     }
-
-    const checkForNewPosts = async () => {
-        try {
-            const response = await api.checkForNewPosts(token); 
-    
-            if (response.status === 200 && response.data.newPosts) {
-                setHasNewPosts(true);
-            } else {
-                setHasNewPosts(false);
-            }
-        } catch (err) {
-            console.log("Error checking for new posts:", err);
-        }
-    };
-    
-    useInterval(() => {
-        checkForNewPosts();
-    }, 15000); 
 
     return (
       <MainTemplate textHeader="timeline">
