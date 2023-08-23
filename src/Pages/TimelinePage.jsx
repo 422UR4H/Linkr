@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useToken from "../Hooks/useToken.js";
 import MainTemplate from "../Components/Templates/MainTemplate.jsx";
@@ -11,6 +11,7 @@ import LoadingMessage from "../Components/Atoms/LoadingMessage.jsx";
 import NoPostsYetMessage from "../Components/Atoms/NoPostsYetMessage.jsx";
 import YouDontFollowAnyoneYetMessage from "../Components/Atoms/YouDontFollowAnyoneYet.jsx";
 import InfiniteScroll from "react-infinite-scroller";
+import UserContext from "../Contexts/UserContext.jsx";
 
 export default function TimelinePage() {
     const [posts, setPosts] = useState([]);
@@ -22,6 +23,7 @@ export default function TimelinePage() {
     const [page, setPage] = useState(0)
     const [userIsFollowing, setUserIsFollowing] = useState(true);
     const [morePosts, setMorePosts] = useState(true);
+    const {user} = useContext(UserContext);
 
 
 const loadMore = async () => {
@@ -113,18 +115,22 @@ const loadMore = async () => {
                           posts.map((post) => (
                             <Post
                             reload={reload}
-                            key={post.id}
+                            key={post.is_repost ?post.repost_id : post.post_id}
                             avatar_photo_url={post.user_photo}
                             name={post.user_name}
                             description={post.description}
                             like_count={post.likes_count}
                             link={post.link}
                             owner_id={post.owner_id}
-                            post_id={post.id}
+                            post_id={post.is_repost ? post.repost_id : post.post_id}
                             default_liked={post.default_liked}
                             first_liker_name={post.first_liker_name}
                             second_liker_name={post.second_liker_name}
-                            repost_count={post.repost_count}
+                            repost_count={post?.repost_count}
+                            created_at={post.is_repost ?post.repost_created_at : post.created_at}
+                            is_repost={post.is_repost}
+                            references_post_id={post.is_repost ? post.id : -69}
+                            reposted_by_name={post.is_repost == false ? "" : post.is_repost && post.reposted_by_id === user.id ? "you" :  post.is_repost && post.owner_id !== user.id ?  user.user_name : ""}
                           />
                           
                           ))
