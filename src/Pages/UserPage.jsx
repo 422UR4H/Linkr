@@ -65,6 +65,7 @@ export default function UserPage() {
                 first_liker_name={post.first_liker_name}
                 second_liker_name={post.second_liker_name}
                 reload={reload}
+                repost_count={post?.repost_count}
               />
             ))
           }
