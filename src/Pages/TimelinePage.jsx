@@ -11,6 +11,7 @@ import LoadingMessage from "../Components/Atoms/LoadingMessage.jsx";
 import NoPostsYetMessage from "../Components/Atoms/NoPostsYetMessage.jsx";
 import YouDontFollowAnyoneYetMessage from "../Components/Atoms/YouDontFollowAnyoneYet.jsx";
 import InfiniteScroll from "react-infinite-scroller";
+import useInterval from '@use-it/interval';
 
 export default function TimelinePage() {
     const [posts, setPosts] = useState([]);
@@ -20,30 +21,45 @@ export default function TimelinePage() {
     const { token } = useToken();
     const navigate = useNavigate();
     const [userIsFollowing, setUserIsFollowing] = useState(true); 
+    const [page, setPage] = useState(0);
     const [morePosts, setMorePosts] = useState(true);
+    const [hasNewPosts, setHasNewPosts] = useState(false);
 
-    const loadMore = async (page) => {
+
+    const loadMore = async () => {
         try {
-            console.log('Loading more posts for page:', page);
-            const response = await api.getPosts(token, page); 
-            console.log('API response:', response);
+            console.log("Loading more posts from page:", page + 1);
+            
+            const nextPage = page + 1;
+            const response = await api.getPosts(token, nextPage); 
+    
             if (response.status === 202 || response.status === 204) {
-                setMorePosts(false); 
+                console.log("No more posts to load.");
+                setMorePosts(false);
             } else if (response.status === 200) {
+                console.log("Loaded new posts:", response.data);
+                
                 const newPosts = response.data;
                 if (newPosts.length === 0) {
-                    setMorePosts(false); 
+                    console.log("No more posts returned.");
+                    setMorePosts(false);
                 } else {
                     const uniqueNewPosts = newPosts.filter(newPost => 
                         !posts.some(existingPost => existingPost.id === newPost.id)
                     );                    
-                    setPosts([...posts, ...uniqueNewPosts]); 
+                    setPosts([...posts, ...uniqueNewPosts]);
+                    setPage(nextPage); 
+                    setMorePosts(true); 
+                    console.log("Posts loaded and added to the list.");
                 }
             }
         } catch (err) {
-            console.log(err);
+            console.log("Error loading more posts:", err);
         }
-    };     
+    };
+    
+    
+    
     
     useEffect(() => {
         if (!token) return navigate("/");
@@ -83,6 +99,24 @@ export default function TimelinePage() {
         }
     }
 
+    const checkForNewPosts = async () => {
+        try {
+            const response = await api.checkForNewPosts(token); 
+    
+            if (response.status === 200 && response.data.newPosts) {
+                setHasNewPosts(true);
+            } else {
+                setHasNewPosts(false);
+            }
+        } catch (err) {
+            console.log("Error checking for new posts:", err);
+        }
+    };
+    
+    useInterval(() => {
+        checkForNewPosts();
+    }, 15000); 
+
     return (
       <MainTemplate textHeader="timeline">
           <CreatePost reload={reload} />         
@@ -93,7 +127,7 @@ export default function TimelinePage() {
               ) : (                 
             <InfiniteScroll
               pageStart={0}
-              loadMore={()=> loadMore(Math.floor(posts.length/10)+1)}
+              loadMore={loadMore}
               hasMore={morePosts}
               className="infinite-scroll-container"
               loader={loading ? <LoadingMessage /> : null}
