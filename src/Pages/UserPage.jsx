@@ -18,13 +18,13 @@ export default function UserPage() {
 
   useEffect(() => {
     if (!localStorage.getItem("token")) return navigate('/');
-    console.log(thisUser);
     reload();
   }, []);
 
   async function reload() {
     api.getUserById(id, token)
       .then(res => {
+        console.log(res.data);
         setThisUser(res.data);
       }).catch((error) => {
         console.log(error);
@@ -53,9 +53,9 @@ export default function UserPage() {
           {thisUser &&
             thisUser.user_posts.map(post => (
               <Post
-                key={post.post_id}
+                key={post.is_repost ?post.repost_id : post.post_id}
                 owner_id={thisUser.user_id}
-                post_id={post.post_id}
+                post_id={post.is_repost ? post.repost_id : post.post_id}
                 description={post.description}
                 like_count={post.likes_count}
                 link={post.link}
@@ -66,6 +66,8 @@ export default function UserPage() {
                 second_liker_name={post.second_liker_name}
                 reload={reload}
                 repost_count={post?.repost_count}
+                created_at={post.created_at}
+                is_repost={post.is_repost}
               />
             ))
           }
