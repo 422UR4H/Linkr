@@ -34,6 +34,7 @@ const StyledContent = styled.div`
     display: flex;
     justify-content: center;
     gap: 25px;
+    z-index: 1;
 
     .infinite-scroll-container{
         width: 100%;

@@ -21,7 +21,7 @@ const SCRepostBanner = styled.div`
     height: 40px;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
-    z-index: 0;
+    z-index: -1;
     padding-left: 13px;
     padding-top: 7px;
 
@@ -35,5 +35,9 @@ const SCRepostBanner = styled.div`
         display: flex;
         align-items: center;
         gap: 10px;
+    }
+
+    @media (max-width: 720px) {
+        border-radius: 0;
     }
 `;
