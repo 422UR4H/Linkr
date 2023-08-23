@@ -27,7 +27,7 @@ export default function UserPage() {
   async function reload() {
     api.getUserById(id, token)
       .then(res => {
-        console.log(res.data);
+        //console.log(res.data);
         const userData = res.data;
         userData.user_posts = sortPostsByDate(userData.user_posts);
         setThisUser(userData);
