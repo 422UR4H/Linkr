@@ -12,7 +12,6 @@ import NoPostsYetMessage from "../Components/Atoms/NoPostsYetMessage.jsx";
 import YouDontFollowAnyoneYetMessage from "../Components/Atoms/YouDontFollowAnyoneYet.jsx";
 import InfiniteScroll from "react-infinite-scroller";
 
-
 export default function TimelinePage() {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -23,21 +22,29 @@ export default function TimelinePage() {
     const [userIsFollowing, setUserIsFollowing] = useState(true); 
     const [morePosts, setMorePosts] = useState(true);
 
-    const loadMore = async () => {
-      try {
-          const response = await api.getPosts(token, posts.length); 
-          if (response.status === 202 || response.status === 204) {
-              setMorePosts(false); 
-          } else if (response.status === 200) {
-              const newPosts = response.data;
-              setPosts([...posts, ...newPosts]); 
-          }
-      } catch (err) {
-          console.log(err);
-          }
-  };
-
-
+    const loadMore = async (page) => {
+        try {
+            console.log('Loading more posts for page:', page);
+            const response = await api.getPosts(token, page); 
+            console.log('API response:', response);
+            if (response.status === 202 || response.status === 204) {
+                setMorePosts(false); 
+            } else if (response.status === 200) {
+                const newPosts = response.data;
+                if (newPosts.length === 0) {
+                    setMorePosts(false); 
+                } else {
+                    const uniqueNewPosts = newPosts.filter(newPost => 
+                        !posts.some(existingPost => existingPost.id === newPost.id)
+                    );                    
+                    setPosts([...posts, ...uniqueNewPosts]); 
+                }
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    };     
+    
     useEffect(() => {
         if (!token) return navigate("/");
         reload();
@@ -63,11 +70,9 @@ export default function TimelinePage() {
           console.log(err);
           alert("An error occurred while trying to fetch the posts, please refresh the page");
           setError(true);
-      }
+      } 
   }
   
-
-
     async function checkIfUserIsFollowing() { 
         try {
             const response = await api.checkIfUserIsFollowing(token);
@@ -80,20 +85,19 @@ export default function TimelinePage() {
 
     return (
       <MainTemplate textHeader="timeline">
-          <CreatePost reload={reload} />
-          <InfiniteScroll
-              pageStart={0}
-              loadMore={loadMore}
-              hasMore={morePosts}
-              className="infinite-scroll-container"
-              loader={<LoadingMessage key={0} />}>
+          <CreatePost reload={reload} />         
               {loading ? (
                   <LoadingMessage />
               ) : error ? (
                   <ErrorFetchMessage />
-              ) : (
-                  <>
-                      {posts.length > 0 ? (
+              ) : (                 
+            <InfiniteScroll
+              pageStart={0}
+              loadMore={()=> loadMore(Math.floor(posts.length/10)+1)}
+              hasMore={morePosts}
+              className="infinite-scroll-container"
+              loader={loading ? <LoadingMessage /> : null}
+            >  {posts.length > 0 ? (
                           posts.map((post) => (
                             <Post
                             reload={reload}
@@ -109,15 +113,16 @@ export default function TimelinePage() {
                             first_liker_name={post.first_liker_name}
                             second_liker_name={post.second_liker_name}
                           />
+                          
                           ))
+                          
                       ) : !userIsFollowing ? (
                           <YouDontFollowAnyoneYetMessage />
                       ) : (
                           <NoPostsYetMessage />
                       )}
-                  </>
+                       </InfiniteScroll>
               )}
-          </InfiniteScroll>
       </MainTemplate>
   );  
 }  
