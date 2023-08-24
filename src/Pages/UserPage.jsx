@@ -21,18 +21,17 @@ export default function UserPage() {
   const { user } = useContext(UserContext);
   const location = useLocation();
   const [followingThisUser, setFollowingThisUser] = useState(false);
-
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!localStorage.getItem("token")) return navigate('/');
-    checkIfThisUserIsFollowing();
     reload();
   }, []);
 
   async function reload() {
+    checkIfThisUserIsFollowing();
     api.getUserById(id, token)
       .then(res => {
-       // console.log(res.data);
         const userData = res.data;
         userData.user_posts = sortPostsByDate(userData.user_posts);
         setThisUser(userData);
@@ -50,20 +49,44 @@ export default function UserPage() {
   }
 
   function checkIfThisUserIsFollowing() {
-    alert("Implement api call to check if this user logged in is following the user from this page!")
+    api.checkFollower(id,token)
+      .then(res => {
+        setFollowingThisUser(res.data);
+      })
+      .catch(err => {
+        console.log(err);
+        alert("Unable to load information");
+      })
   }
 
-  function follow() {
-    alert(`Follow ${thisUser.id} as user ${id}`);
+  function follow(e) {
+    setLoading(true);
+
+    api.setFollow(id,{ like_owner_id: id },token)
+      .then(res => {
+        reload();
+      })
+      .catch(err => {
+        console.log(err);
+        alert("Unable to follow this user.");
+      })
   }
-  function unfollow() {
-    alert(`Unfollow ${thisUser.id} as user ${id}`);
+  function unfollow(e) {
+    setLoading(true);
+
+    api.setUnfollow(id,token)
+      .then(res => {
+        reload();
+      })
+      .catch(err => {
+        console.log(err);
+        alert("Unable to unfollow this user.");
+      })
   }
 
   async function reloadPageInfoAfterRepostLike(postId) {
     let updatedReposts = [];
     let updatedCount = 0;
-    //console.log(postId);
 
     try {
       const response = await api.getUserById(id, token);
@@ -91,8 +114,9 @@ export default function UserPage() {
       alt={thisUser?.name || "Loading.."}
       textHeader={thisUser ? thisUser.user_name + "’s posts" : "Loading..."}
       follow_btn_on_click={followingThisUser ? unfollow : follow}
-      show_follow_btn={location.pathname.includes('/user')}
+      show_follow_btn={location.pathname.includes('/user') && !location.pathname.includes(user.id)}
       follow_btn_text={followingThisUser ? "Unfollow" : "Follow"}
+      disabled={loading}
     >
       {!userNotFound &&
         <>
