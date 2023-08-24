@@ -17,6 +17,10 @@ export function getPosts(token, page) {
   return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/timeline?page=${page}`, config(token));
 }
 
+export function getNewPosts(token) {
+  return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/get-new-posts`, config(token));
+}
+
 function editPost(body, token, id) {
   return axios.put(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/posts/${id}`, body, config(token));
 }
