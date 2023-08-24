@@ -12,6 +12,7 @@ import NoPostsYetMessage from "../Components/Atoms/NoPostsYetMessage.jsx";
 import YouDontFollowAnyoneYetMessage from "../Components/Atoms/YouDontFollowAnyoneYet.jsx";
 import InfiniteScroll from "react-infinite-scroller";
 import UserContext from "../Contexts/UserContext.jsx";
+import { sortPostsByDate } from "../Utils/utils.js";
 
 export default function TimelinePage() {
     const [posts, setPosts] = useState([]);
@@ -89,6 +90,39 @@ const loadMore = async () => {
         }
     }
 
+   async function reloadPageInfoAfterRepostLike(postId) {
+    let updatedReposts = [];
+    let updatedCount =  0;
+    //console.log(postId);
+    
+    try {
+            const response = await api.getPosts(token, 0);
+            if (response.status === 202 || response.status === 204) {
+                setPosts([]);
+                setMorePosts(false)
+            }
+            else if (response.status === 200) {
+                let newPosts = response.data;
+                for (let index = 0; index < newPosts.length; index++) {
+                    const post = newPosts[index];
+                    if (post.is_repost && post.id === postId) {
+                        updatedReposts.push(post);
+                        updatedCount+=1;
+                    }
+                }
+                newPosts = newPosts.slice().filter(p=> p.id !== postId);
+                const finalPosts = sortPostsByDate([...updatedReposts,...newPosts]);
+                setPosts(finalPosts);
+            }
+            
+            setLoading(false);
+        } catch (err) {
+            console.log(err);
+            alert("An error occurred while trying to fetch the posts, please refresh the page");
+            setError(true);
+        }
+      }
+
     async function checkIfUserIsFollowing() {
         try {
             const response = await api.checkIfUserIsFollowing(token);
@@ -98,6 +132,8 @@ const loadMore = async () => {
             console.log(err);
         }
     }
+
+    
 
     return (
       <MainTemplate textHeader="timeline">
@@ -117,7 +153,7 @@ const loadMore = async () => {
                           posts.map((post) => (
                             <Post
                             reload={reload}
-                            key={post.is_repost ?post.repost_id : post.post_id}
+                            key={post.is_repost ? post.repost_id + Date.now() : post.post_id + Date.now()}
                             avatar_photo_url={post.user_photo}
                             name={post.user_name}
                             description={post.description}
@@ -133,6 +169,7 @@ const loadMore = async () => {
                             is_repost={post.is_repost}
                             references_post_id={post.is_repost ? post.id : -69}
                             reposted_by_name={post.is_repost == false ? "" : post.is_repost && post.reposted_by_id === user.id ? "you" :  post.is_repost && post.owner_id !== user.id ?  user.user_name : ""}
+                            reload_reposts={reloadPageInfoAfterRepostLike}
                           />
                           
                           ))

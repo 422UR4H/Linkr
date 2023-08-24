@@ -32,7 +32,7 @@ export default function UserPage() {
   async function reload() {
     api.getUserById(id, token)
       .then(res => {
-        console.log(res.data);
+       // console.log(res.data);
         const userData = res.data;
         userData.user_posts = sortPostsByDate(userData.user_posts);
         setThisUser(userData);
@@ -49,15 +49,40 @@ export default function UserPage() {
     }
   }
 
-  function checkIfThisUserIsFollowing(){
+  function checkIfThisUserIsFollowing() {
     alert("Implement api call to check if this user logged in is following the user from this page!")
   }
 
-  function follow(){
+  function follow() {
     alert(`Follow ${thisUser.id} as user ${id}`);
   }
-  function unfollow(){
+  function unfollow() {
     alert(`Unfollow ${thisUser.id} as user ${id}`);
+  }
+
+  async function reloadPageInfoAfterRepostLike(postId) {
+    let updatedReposts = [];
+    let updatedCount = 0;
+    //console.log(postId);
+
+    try {
+      const response = await api.getUserById(id, token);
+      let newPosts =response.data.user_posts.slice();
+      for (let index = 0; index < newPosts.length; index++) {
+        const post = newPosts[index];
+        if (post.is_repost && post.id === postId) {
+          updatedReposts.push(post);
+          updatedCount += 1;
+        }
+      }
+      newPosts = newPosts.slice().filter(p => p.id !== postId);
+      const finalPosts = sortPostsByDate([...updatedReposts, ...newPosts]);
+      response.user_posts = finalPosts;
+      setThisUser(response);
+    } catch (err) {
+      console.log(err);
+      alert("An error occurred while trying to fetch the posts, please refresh the page");
+    }
   }
 
   return (
@@ -67,7 +92,7 @@ export default function UserPage() {
       textHeader={thisUser ? thisUser.user_name + "’s posts" : "Loading..."}
       follow_btn_on_click={followingThisUser ? unfollow : follow}
       show_follow_btn={location.pathname.includes('/user')}
-      follow_btn_text={followingThisUser? "Unfollow" : "Follow"}
+      follow_btn_text={followingThisUser ? "Unfollow" : "Follow"}
     >
       {!userNotFound &&
         <>
@@ -77,7 +102,7 @@ export default function UserPage() {
           {thisUser &&
             thisUser.user_posts.map(post => (
               <Post
-                key={post.is_repost ?post.repost_id : post.post_id}
+                key={post.is_repost ? post.repost_id + Date.now() : post.post_id + Date.now()}
                 owner_id={thisUser.user_id}
                 post_id={post.is_repost ? post.repost_id : post.post_id}
                 description={post.description}
@@ -93,7 +118,8 @@ export default function UserPage() {
                 created_at={post.created_at}
                 is_repost={post.is_repost}
                 references_post_id={post.is_repost ? post.id : -69}
-                reposted_by_name={post.is_repost == false ? "" : post.is_repost && post.reposted_by_id === user.id ? "you" :  post.is_repost && post.owner_id !== thisUser.id ?  thisUser.user_name : ""}
+                reposted_by_name={post.is_repost == false ? "" : post.is_repost && post.reposted_by_id === user.id ? "you" : post.is_repost && post.owner_id !== thisUser.id ? thisUser.user_name : ""}
+                reload_reposts={reloadPageInfoAfterRepostLike}
               />
             ))
           }
