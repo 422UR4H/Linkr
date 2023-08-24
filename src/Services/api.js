@@ -63,16 +63,16 @@ function checkIfUserIsFollowing(token) {
   return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/timeline`, config(token));
 }
 
-function setFollow(id, token) {
-  return axios.post(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/follow/${id}`, config(token));
+function setFollow(id, body, token) {
+  return axios.post(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/users/follow/${id}`, body, config(token));
 }
 
 function setUnfollow(id, token) {
-  return axios.delete(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/follow/${id}`, config(token));
+  return axios.delete(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/users/follow/${id}`, config(token));
 }
 
 function checkFollower(id, token) {
-  return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/follow/${id}`, config(token));
+  return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/users/follow/${id}`, config(token));
 }
 
 const api = {

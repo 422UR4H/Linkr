@@ -25,14 +25,13 @@ export default function UserPage() {
 
   useEffect(() => {
     if (!localStorage.getItem("token")) return navigate('/');
-    checkIfThisUserIsFollowing();
     reload();
   }, []);
 
   async function reload() {
+    checkIfThisUserIsFollowing();
     api.getUserById(id, token)
       .then(res => {
-       // console.log(res.data);
         const userData = res.data;
         userData.user_posts = sortPostsByDate(userData.user_posts);
         setThisUser(userData);
@@ -50,11 +49,9 @@ export default function UserPage() {
   }
 
   function checkIfThisUserIsFollowing() {
-    console.log(id);
-    console.log(token);
     api.checkFollower(id,token)
       .then(res => {
-        setFollowingThisUser(res);
+        setFollowingThisUser(res.data);
       })
       .catch(err => {
         console.log(err);
@@ -65,9 +62,9 @@ export default function UserPage() {
   function follow(e) {
     setLoading(true);
 
-    api.setFollow(id,token)
+    api.setFollow(id,{ like_owner_id: id },token)
       .then(res => {
-
+        reload();
       })
       .catch(err => {
         console.log(err);
@@ -79,7 +76,7 @@ export default function UserPage() {
 
     api.setUnfollow(id,token)
       .then(res => {
-
+        reload();
       })
       .catch(err => {
         console.log(err);
@@ -90,7 +87,6 @@ export default function UserPage() {
   async function reloadPageInfoAfterRepostLike(postId) {
     let updatedReposts = [];
     let updatedCount = 0;
-    //console.log(postId);
 
     try {
       const response = await api.getUserById(id, token);
