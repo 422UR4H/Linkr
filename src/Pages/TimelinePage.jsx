@@ -29,37 +29,57 @@ export default function TimelinePage() {
 
 const loadMore = async () => {
         try {
-            console.log("Loading more posts from page:", page + 1);
+            //console.log("Loading more posts from page:", page + 1);
             
             const nextPage = page + 1;
-            console.log("Loaded new page:", nextPage);
+            //console.log("Loaded new page:", nextPage);
             const response = await api.getPosts(token, nextPage); 
     
             if (response.status === 202 || response.status === 204) {
-                console.log("No more posts to load.");
                 setMorePosts(false);
             } else if (response.status === 200) {
-                console.log("Loaded new posts:", response.data);
+                //console.log("Loaded new posts:", response.data);
                 
                 const newPosts = response.data;
                 if (newPosts.length === 0) {
-                    console.log("No more posts returned.");
                     setMorePosts(false);
                 } else {
-                    const uniqueNewPosts = newPosts.filter(newPost => 
-                        !posts.some(existingPost => existingPost.id === newPost.id)
-                    );                    
-                    setPosts([...posts, ...uniqueNewPosts]);
+                    const newPostsFiltered = filterDuplicateObjects([...posts, ...newPosts]);
+                    setPosts(newPostsFiltered);
                     setPage(nextPage); 
                     setMorePosts(true); 
-                    console.log("Posts loaded and added to the list.");
+                    //console.log("Posts loaded and added to the list.");
                 }
             }
         } catch (err) {
-            console.log("Error loading more posts:", err);
+            //console.log("Error loading more posts:", err);
         }
     };
     
+    function areObjectsEqual(obj1, obj2) {
+        return JSON.stringify(obj1) === JSON.stringify(obj2);
+    }
+    
+    function hasDuplicateObject(arr, obj) {
+        for (let i = 0; i < arr.length; i++) {
+            if (areObjectsEqual(arr[i], obj)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function filterDuplicateObjects(arr) {
+        const uniqueObjects = [];
+    
+        for (let i = 0; i < arr.length; i++) {
+            if (!hasDuplicateObject(uniqueObjects, arr[i])) {
+                uniqueObjects.push(arr[i]);
+            }
+        }
+    
+        return uniqueObjects;
+    }
 
     useEffect(() => {
         if (!token) return navigate("/");
@@ -71,20 +91,20 @@ const loadMore = async () => {
 
         try {
             const response = await api.getPosts(token, 0);
-            console.log(response);
+            //console.log(response);
             if (response.status === 202 || response.status === 204) {
                 setPosts([]);
                 setMorePosts(false)
             }
             else if (response.status === 200) {
-                console.log("Loaded new posts:", response.data);
+                //console.log("Loaded new posts:", response.data);
                 const posts = response.data;
                 setPosts(posts);
             }
             setTrendingHashtags((await api.getAllHashtags(token)).data);
             setLoading(false);
         } catch (err) {
-            console.log(err);
+            //console.log(err);
             alert("An error occurred while trying to fetch the posts, please refresh the page");
             setError(true);
         }
