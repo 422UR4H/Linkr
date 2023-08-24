@@ -17,7 +17,7 @@ export default function HashtagsPage() {
   const [loading, setLoading] = useState(true);
   const { hashtag } = useParams();
   const { token } = useToken();
-  const {user} = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -46,6 +46,33 @@ export default function HashtagsPage() {
     }
   }
 
+  async function reloadPageInfoAfterRepostLike(postId) {
+    let updatedReposts = [];
+    let updatedCount = 0;
+    //console.log(postId);
+
+    try {
+      const response = await api.getPosts(token, 0);
+
+      let newPosts = response.data;
+      for (let index = 0; index < newPosts.length; index++) {
+        const post = newPosts[index];
+        if (post.is_repost && post.id === postId) {
+          updatedReposts.push(post);
+          updatedCount += 1;
+        }
+      }
+      newPosts = newPosts.slice().filter(p => p.id !== postId);
+      const finalPosts = sortPostsByDate([...updatedReposts, ...newPosts]);
+      setPosts(finalPosts);
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      alert("An error occurred while trying to fetch the posts, please refresh the page");
+      setError(true);
+    }
+  }
+
   return (
     <MainTemplate textHeader={`#${hashtag}`}>
       {loading ?
@@ -56,14 +83,14 @@ export default function HashtagsPage() {
             posts.map((post) => (
               <Post
                 reload={reload}
-                key={post.is_repost ? post.repost_id : post.id}
+                key={post.is_repost ? post.repost_id + Date.now() : post.id + Date.now()}
                 avatar_photo_url={post.user_photo}
                 name={post.user_name}
                 description={post.description}
                 like_count={post.likes_count}
                 link={post.link}
                 owner_id={post.is_repost ? post.reposted_by_id : post.owner_id}
-                post_id={post.is_repost ? post.repost_id : post.post_id}
+                post_id={post.is_repost ? post.repost_id : post.id}
                 default_liked={post.default_liked}
                 first_liker_name={post.first_liker_name}
                 second_liker_name={post.second_liker_name}
@@ -71,7 +98,8 @@ export default function HashtagsPage() {
                 created_at={post.created_at}
                 is_repost={post.is_repost}
                 references_post_id={post.is_repost ? post.id : -69}
-                reposted_by_name={post.is_repost == false ? "" : post.is_repost && post.reposted_by_id === user.id ? "you" :  post.is_repost && post.owner_id !== user.id ?  user.user_name : ""}
+                reposted_by_name={post.is_repost == false ? "" : post.is_repost && post.reposted_by_id === user.id ? "you" : post.is_repost && post.owner_id !== user.id ? user.user_name : ""}
+                reload_reposts={reloadPageInfoAfterRepostLike}
               />
             ))
           )}

@@ -33,6 +33,7 @@ export default function Post({
   created_at,
   is_repost = false,
   reposted_by_name,
+  reload_reposts
 }) {
   const [descriptionEditValue, setDescriptionEditValue] = useState(description ? description : "");
   const [isToggleLiking, setIsToggleLiking] = useState(false);
@@ -181,27 +182,38 @@ export default function Post({
     if (isToggleLiking) return;
     setIsToggleLiking(true);
     setLiked(!liked);
+    const postIdToLike = is_repost ? references_post_id : post_id;
 
     if (!liked) {
       setLikeCount(likeCount + 1);
 
-      api.setLike(post_id, { like_owner_id: user.id }, token)
+      api.setLike(postIdToLike, { like_owner_id: user.id }, token)
         .catch((err) => {
           setLikeCount(likeCount - 1);
           setLiked(false);
           console.log(err);
         })
-        .finally(() => setIsToggleLiking(false));
+        .finally(() => {
+          setIsToggleLiking(false);
+          if(is_repost){
+            reload_reposts(postIdToLike);
+          }
+        });
     } else {
       setLikeCount(likeCount - 1);
 
-      api.setUnlike(post_id, token)
+      api.setUnlike(postIdToLike, token)
         .catch((err) => {
           setLikeCount(likeCount + 1);
           setLiked(true);
           console.log(err);
         })
-        .finally(() => setIsToggleLiking(false));
+        .finally(() => {
+          setIsToggleLiking(false);
+          if(is_repost){
+            reload_reposts(postIdToLike);
+          }
+        });
     }
   }
 
