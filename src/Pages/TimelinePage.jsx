@@ -13,6 +13,7 @@ import YouDontFollowAnyoneYetMessage from "../Components/Atoms/YouDontFollowAnyo
 import InfiniteScroll from "react-infinite-scroller";
 import UserContext from "../Contexts/UserContext.jsx";
 import { sortPostsByDate } from "../Utils/utils.js";
+import PostHolder from "../Components/PostHolder.jsx";
 
 export default function TimelinePage() {
     const [posts, setPosts] = useState([]);
@@ -151,7 +152,7 @@ const loadMore = async () => {
               loader={loading ? <LoadingMessage /> : null}
             >  {posts.length > 0 ? (
                           posts.map((post) => (
-                            <Post
+                            <PostHolder
                             reload={reload}
                             key={post.is_repost ? post.repost_id + Date.now() : post.id + Date.now()}
                             avatar_photo_url={post.user_photo}
@@ -165,7 +166,6 @@ const loadMore = async () => {
                             first_liker_name={post.first_liker_name}
                             second_liker_name={post.second_liker_name}
                             repost_count={post?.repost_count}
-                            created_at={post.is_repost ?post.repost_created_at : post.created_at}
                             is_repost={post.is_repost}
                             references_post_id={post.is_repost ? post.id : -69}
                             reposted_by_name={post.is_repost == false ? "" : post.is_repost && post.reposted_by_id === user.id ? "you" :  post.is_repost && post.owner_id !== user.id ?  user.user_name : ""}
