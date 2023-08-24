@@ -105,7 +105,9 @@ export default function Post({
 
   function repost() {
     setReposting(true);
-    api.repost(is_repost ? references_post_id : post_id, token)
+   
+    const idRepost = is_repost ? references_post_id : post_id;
+    api.repost(idRepost, token)
       .then(res => {
         setShowModalRepost(false);
         setReposting(false);

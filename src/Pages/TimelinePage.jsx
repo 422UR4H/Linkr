@@ -153,14 +153,14 @@ const loadMore = async () => {
                           posts.map((post) => (
                             <Post
                             reload={reload}
-                            key={post.is_repost ? post.repost_id + Date.now() : post.post_id + Date.now()}
+                            key={post.is_repost ? post.repost_id + Date.now() : post.id + Date.now()}
                             avatar_photo_url={post.user_photo}
                             name={post.user_name}
                             description={post.description}
                             like_count={post.likes_count}
                             link={post.link}
                             owner_id={post.owner_id}
-                            post_id={post.is_repost ? post.repost_id : post.post_id}
+                            post_id={post.is_repost ? post.repost_id : post.id}
                             default_liked={post.default_liked}
                             first_liker_name={post.first_liker_name}
                             second_liker_name={post.second_liker_name}
