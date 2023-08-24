@@ -91,7 +91,7 @@ const loadMore = async () => {
 
         try {
             const response = await api.getPosts(token, 0);
-            //console.log(response);
+            console.log(response);
             if (response.status === 202 || response.status === 204) {
                 setPosts([]);
                 setMorePosts(false)
@@ -188,7 +188,7 @@ const loadMore = async () => {
                             created_at={post.is_repost ?post.repost_created_at : post.created_at}
                             is_repost={post.is_repost}
                             references_post_id={post.is_repost ? post.id : -69}
-                            reposted_by_name={post.is_repost == false ? "" : post.is_repost && post.reposted_by_id === user.id ? "you" :  post.is_repost && post.owner_id !== user.id ?  user.user_name : ""}
+                            reposted_by_name={post.is_repost == false ? post.user_name : post.is_repost && post.reposted_by_id === user.id ? "you" :  post.is_repost && post.owner_id !== user.id ?  post.user_name : ""}
                             reload_reposts={reloadPageInfoAfterRepostLike}
                           />
                           
