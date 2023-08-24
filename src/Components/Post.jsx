@@ -14,6 +14,7 @@ import PostUserAction from "./PostUserAction";
 import Metadata from "./Metadata";
 import Modal from "./Modal";
 import RepostBanner from "./RepostBanner";
+import ContainerComments from "./Molecules/ContainerComments.jsx";
 
 export default function Post({
   post_id,
@@ -44,6 +45,8 @@ export default function Post({
   const [showModalDelete, setShowModalDelete] = useState(false);
   const [showModalRepost, setShowModalRepost] = useState(false);
   const [editInput, setEditInput] = useState(false);
+  const [comments, setComments] = useState(undefined);
+  const [showComments, setShowComments] = useState(false);
 
   const [deleting, setDeleting] = useState(false);
   const [reposting, setReposting] = useState(false);
@@ -176,8 +179,9 @@ export default function Post({
       })
   }
 
-  function startToComment() {
-    return alert("Not implemented yet!");
+  function toggleShowComments() {
+    setShowComments(!showComments);
+    
   }
 
   function toggleLike() {
@@ -275,7 +279,7 @@ export default function Post({
         <AvatarAndActions>
           <img title={name ? name : "Username"} onClick={goToUser} src={avatar_photo_url && validAvatarUrl ? avatar_photo_url : PLACEHOLDER_IMAGE} alt={name} />
           <PostUserAction counter={likeCount} type={"like"} tootltip_content={tooltipTextContent()} tooltip_id={"tooltip likes"} on_click={toggleLike} data_test_text={"counter"} data_test_button={"like-btn"} fill_logic={true} fill_logic_state={liked} />
-          <PostUserAction counter={commentsCount} type={"comment"} tootltip_content={null} tooltip_id={"tooltip comment"} on_click={startToComment} data_test_text={"comment-counter"} data_test_button={"comment-btn"} fill_logic={false} fill_logic_state={liked} />
+          <PostUserAction counter={commentsCount} type={"comment"} tootltip_content={null} tooltip_id={"tooltip comment"} on_click={toggleShowComments} data_test_text={"comment-counter"} data_test_button={"comment-btn"} fill_logic={false} fill_logic_state={liked} />
           <PostUserAction counter={repostCount} type={"repost"} tootltip_content={null} tooltip_id={"tooltip repost"} on_click={askRepost} data_test_text={"repost-counter"} data_test_button={"repost-btn"} fill_logic={false} fill_logic_state={liked} />
         </AvatarAndActions>
         <PostInfo>
@@ -300,6 +304,8 @@ export default function Post({
           }
           <Metadata link={link} />
         </PostInfo>
+        <ContainerComments comments={comments} />
+        {/* {showComments && <ContainerComments comments={comments} />} */}
       </PostContainer>
     </>
   );

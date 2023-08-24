@@ -67,6 +67,10 @@ function checkIfUserIsFollowing(token) {
   return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/timeline`, config(token));
 }
 
+function getCommentsByPost(postId, token) {
+  return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/comments/${postId}`, config(token));
+}
+
 function setFollow(id, body, token) {
   return axios.post(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/users/follow/${id}`, body, config(token));
 }
@@ -85,7 +89,7 @@ const api = {
   createPost, getPosts, editPost, deletePost,
   getAllHashtags, getPostsByHashtag,
   setLike, setUnlike, urlMetadata, checkIfUserIsFollowing, repost, deleteRepost,
+  getCommentsByPost,
   setFollow, setUnfollow, checkFollower
 };
 export default api;
-
