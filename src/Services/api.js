@@ -63,12 +63,17 @@ function checkIfUserIsFollowing(token) {
   return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/timeline`, config(token));
 }
 
+function getCommentsByPost(postId, token) {
+  return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/comments/${postId}`, config(token));
+}
+
 const api = {
   signin, signup,
   getUsersByName, getUserById,
   createPost, getPosts, editPost, deletePost,
   getAllHashtags, getPostsByHashtag,
-  setLike, setUnlike, urlMetadata, checkIfUserIsFollowing, repost, deleteRepost
+  setLike, setUnlike, urlMetadata, checkIfUserIsFollowing, repost, deleteRepost,
+  getCommentsByPost
 };
 export default api;
 
