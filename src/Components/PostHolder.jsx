@@ -15,15 +15,24 @@ export default function PostHolder(props) {
     }
 
     function toggleShowComments() {
-      setMarginBottom(showComments ? 0 : 83);
-      setShowComments(!showComments);
+        setMarginBottom(showComments ? 0 : 83);
+        setShowComments(!showComments);
     }
 
     return (
         <StyledPostHolder $is_repost={props.is_repost} $marginBottom={marginBottom}>
             {/* bring RepostBanner here */}
-            <Post {...props} toggleShowComments={toggleShowComments} updateHeight={updateHeight} />
-            {showComments && <ContainerComments heightPost={heightPost} post_id={props.post_id} setMarginBottom={setMarginBottom} />}
+            <Post {...props}
+                toggleShowComments={toggleShowComments}
+                updateHeight={updateHeight}
+            />
+            {showComments &&
+                <ContainerComments
+                    heightPost={heightPost}
+                    post_id={props.post_id}
+                    setMarginBottom={setMarginBottom}
+                />
+            }
         </StyledPostHolder>
     );
 }
