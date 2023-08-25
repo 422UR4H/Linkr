@@ -1,33 +1,25 @@
-import { styled } from "styled-components";
-import Comment from "../Atoms/Comment.jsx";
-import Avatar from "../Atoms/Avatar.jsx";
 import { useEffect, useRef, useState } from "react";
 import { IoPaperPlaneOutline } from "react-icons/io5";
-import api from "../../Services/api.js";
+import { styled } from "styled-components";
 import useToken from "../../Hooks/useToken.js";
+import Comment from "../Atoms/Comment.jsx";
+import Avatar from "../Atoms/Avatar.jsx";
+import api from "../../Services/api.js";
 
 
 export default function ContainerComments({ post_id, setMarginBottom, heightPost }) {
     const { token } = useToken();
     const commentsRef = useRef(null);
-    const [height, setHeight] = useState(0);
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState("");
 
     useEffect(() => {
-        // console.log("ContainetComments useEffect (api) ")
         api.getCommentsByPost(post_id, token)
-            .then(({ data }) => {
-                setComments(data);
-                // setMarginBottom(commentsRef.current.getBoundingClientRect().height);
-            })
-            .catch(err => console.log(err));
+            .then(({ data }) => setComments(data))
+            .catch((err) => console.log(err));
     }, []);
 
     useEffect(() => {
-        console.log("ContainetComments useEffect [comments]")
-        console.log(commentsRef.current.getBoundingClientRect())
-        // setHeight(commentsRef.current.getBoundingClientRect().height);
         setMarginBottom(commentsRef.current.getBoundingClientRect().height);
     }, [comments]);
 
@@ -114,7 +106,6 @@ const StyledContainerComments = styled.div`
             border-radius: 8px;
             margin-left: 14px;
             padding-inline: 15px 35px;
-            /* padding-bottom: 5px; */
     
             &::placeholder {
                 color: #575757;
