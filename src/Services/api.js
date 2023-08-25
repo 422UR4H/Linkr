@@ -17,6 +17,10 @@ export function getPosts(token, page) {
   return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/timeline?page=${page}`, config(token));
 }
 
+export function getNewPosts(token) {
+  return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/get-new-posts`, config(token));
+}
+
 function editPost(body, token, id) {
   return axios.put(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/posts/${id}`, body, config(token));
 }
@@ -67,13 +71,25 @@ function getCommentsByPost(postId, token) {
   return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/comments/${postId}`, config(token));
 }
 
+function setFollow(id, body, token) {
+  return axios.post(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/users/follow/${id}`, body, config(token));
+}
+
+function setUnfollow(id, token) {
+  return axios.delete(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/users/follow/${id}`, config(token));
+}
+
+function checkFollower(id, token) {
+  return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/users/follow/${id}`, config(token));
+}
+
 const api = {
   signin, signup,
   getUsersByName, getUserById,
   createPost, getPosts, editPost, deletePost,
   getAllHashtags, getPostsByHashtag,
   setLike, setUnlike, urlMetadata, checkIfUserIsFollowing, repost, deleteRepost,
-  getCommentsByPost
+  getCommentsByPost,
+  setFollow, setUnfollow, checkFollower
 };
 export default api;
-
