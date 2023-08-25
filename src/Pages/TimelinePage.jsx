@@ -32,6 +32,8 @@ export default function TimelinePage() {
   const [newPostsAvailable, setNewPostsAvailable] = useState(false);
   const [initialPosts, setInitialPosts] = useState([]);
   const [newPostsCount, setNewPostsCount] = useState(0);
+  const [loadingMorePosts, setLoadingMorePosts] = useState(false);
+
 
 
   const loadMore = async () => {
@@ -40,7 +42,7 @@ export default function TimelinePage() {
       const nextPage = page + 1;
       //console.log("Loaded new page:", nextPage);
       const response = await api.getPosts(token, nextPage);
-
+      setLoadingMorePosts(true);
       if (response.status === 202 || response.status === 204) {
         setMorePosts(false);
       } else if (response.status === 200) {
@@ -49,6 +51,7 @@ export default function TimelinePage() {
 
         if (newPosts.length === 0) {
           setMorePosts(false);
+          setLoadingMorePosts(false);
         } else {
           const newPostsFiltered = filterDuplicateObjects([
             ...posts,
@@ -57,6 +60,7 @@ export default function TimelinePage() {
           setPosts(newPostsFiltered);
           setPage(nextPage);
           setMorePosts(true);
+          setLoadingMorePosts(false);
           //console.log("Posts loaded and added to the list.");
         }
       }
@@ -91,13 +95,14 @@ export default function TimelinePage() {
   }
 
   useEffect(() => {
+    setMorePosts(true);
     if (!token) return navigate("/");
     reload();
   }, []);
 
   async function reload() {
     setLoading(true);
-setPage(0);
+    setPage(0);
     try {
       const response = await api.getPosts(token, 0);
       if (response.status === 202 || response.status === 204) {
@@ -112,6 +117,7 @@ setPage(0);
       setTrendingHashtags((await api.getAllHashtags(token)).data);
       setLoading(false);
       setNewPostsAvailable(false);
+      
     } catch (err) {
       //console.log(err);
       alert(
@@ -192,7 +198,8 @@ setPage(0);
       console.error("Error checking for new posts:", error);
     }
   }, 5000);
-
+  //morePosts ? <LoadingMessage /> : null
+  //morePosts
   return (
     <MainTemplate textHeader="timeline">
       <CreatePost reload={reload} />
@@ -209,7 +216,7 @@ setPage(0);
           loadMore={loadMore}
           hasMore={morePosts}
           className="infinite-scroll-container"
-          loader={loading ? <LoadingMessage /> : null}
+          loader={morePosts ? <LoadingMessage /> : null }
         >
           {" "}
           {posts.length > 0 ? (
