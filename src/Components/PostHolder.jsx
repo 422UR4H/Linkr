@@ -1,5 +1,5 @@
 import { DEFAULT_HEIGHT_POST } from '../Utils/constants.js';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import ContainerComments from './Molecules/ContainerComments.jsx';
 import Post from './Post.jsx';
@@ -7,6 +7,7 @@ import Post from './Post.jsx';
 
 export default function PostHolder(props) {
     const [marginBottom, setMarginBottom] = useState(0);
+    const [commentsCount, setCommentsCount] = useState(Number(props.comments_count));
     const [showComments, setShowComments] = useState(false);
     const [heightPost, setHeightPost] = useState(DEFAULT_HEIGHT_POST);
 
@@ -23,6 +24,8 @@ export default function PostHolder(props) {
         <StyledPostHolder $is_repost={props.is_repost} $marginBottom={marginBottom}>
             {/* bring RepostBanner here */}
             <Post {...props}
+                commentsCount={commentsCount}
+                setCommentsCount={setCommentsCount}
                 toggleShowComments={toggleShowComments}
                 updateHeight={updateHeight}
             />
@@ -31,6 +34,8 @@ export default function PostHolder(props) {
                     heightPost={heightPost}
                     post_id={props.is_repost ? props.references_post_id : props.post_id}
                     setMarginBottom={setMarginBottom}
+                    commentsCount={commentsCount}
+                    setCommentsCount={setCommentsCount}
                 />
             }
         </StyledPostHolder>

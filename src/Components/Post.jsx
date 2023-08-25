@@ -34,7 +34,8 @@ export default function Post({
   first_liker_name,
   second_liker_name,
   repost_count,
-  comments_count,
+  commentsCount,
+  setCommentsCount,
   references_post_id,
   is_repost = false,
   reposted_by_name,
@@ -46,7 +47,6 @@ export default function Post({
   const [isToggleLiking, setIsToggleLiking] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [repostCount, setRepostCount] = useState(0);
-  const [commentsCount, setCommentsCount] = useState(0);
   const [liked, setLiked] = useState(default_liked);
   const [showModalDelete, setShowModalDelete] = useState(false);
   const [showModalRepost, setShowModalRepost] = useState(false);
@@ -66,7 +66,9 @@ export default function Post({
     validateAndSetAvatarImage();
     setRepostCount(repost_count ? Number(repost_count) : 0);
     setLikeCount(like_count ? Number(like_count) : 0);
-    setCommentsCount(comments_count ? Number(comments_count) : 0);
+    setCommentsCount(commentsCount ? Number(commentsCount) : 0);
+    console.log(commentsCount)
+    // setCommentsCount(comments_count ? Number(comments_count) : 0);
   }, []);
 
   useEffect(() => {
