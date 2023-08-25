@@ -67,7 +67,7 @@ export default function Post({
     setRepostCount(repost_count ? Number(repost_count) : 0);
     setLikeCount(like_count ? Number(like_count) : 0);
     setCommentsCount(commentsCount ? Number(commentsCount) : 0);
-    console.log(commentsCount)
+    //console.log(commentsCount)
     // setCommentsCount(comments_count ? Number(comments_count) : 0);
   }, []);
 
