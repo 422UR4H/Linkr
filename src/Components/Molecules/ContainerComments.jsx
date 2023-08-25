@@ -16,6 +16,14 @@ export default function ContainerComments({ post_id, setMarginBottom, heightPost
     const [newComment, setNewComment] = useState("");
 
     useEffect(() => {
+        setMarginBottom(commentsRef.current.getBoundingClientRect().height);
+    }, [comments]);
+
+    useEffect(() => {
+        loadComments();
+    }, []);
+
+    function loadComments() {
         api.getCommentsByPost(post_id, token)
             .then(({ data }) => {
                 data.forEach(d => {
@@ -24,19 +32,17 @@ export default function ContainerComments({ post_id, setMarginBottom, heightPost
                 setComments(data);
             })
             .catch((err) => console.log(err));
-    }, []);
-
-    useEffect(() => {
-        console.log(comments)
-        setMarginBottom(commentsRef.current.getBoundingClientRect().height);
-    }, [comments]);
+    }
 
     function handleSubmit(e) {
         e.preventDefault();
 
-        // apagar isto e adicionar função que envia o comment
-        setMarginBottom(commentsRef.current.getBoundingClientRect().height);
-        console.log(commentsRef.current.getBoundingClientRect().height);
+        api.createComment(post_id, { comment: newComment }, token)
+            .then(() => {
+                setNewComment("");
+                loadComments();
+            })
+            .catch((err) => console.log(err));
     }
 
     return (

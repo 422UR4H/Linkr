@@ -71,6 +71,10 @@ function getCommentsByPost(postId, token) {
   return axios.get(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/comments/${postId}`, config(token));
 }
 
+function createComment(postId, body, token) {
+  return axios.post(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/comments/${postId}`, body, config(token));
+}
+
 function setFollow(id, body, token) {
   return axios.post(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/users/follow/${id}`, body, config(token));
 }
@@ -89,7 +93,7 @@ const api = {
   createPost, getPosts, editPost, deletePost,
   getAllHashtags, getPostsByHashtag,
   setLike, setUnlike, urlMetadata, checkIfUserIsFollowing, repost, deleteRepost,
-  getCommentsByPost,
+  getCommentsByPost, createComment,
   setFollow, setUnfollow, checkFollower
 };
 export default api;
