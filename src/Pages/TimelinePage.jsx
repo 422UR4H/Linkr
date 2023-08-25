@@ -13,6 +13,7 @@ import YouDontFollowAnyoneYetMessage from "../Components/Atoms/YouDontFollowAnyo
 import InfiniteScroll from "react-infinite-scroller";
 import UserContext from "../Contexts/UserContext.jsx";
 import { sortPostsByDate } from "../Utils/utils.js";
+import PostHolder from "../Components/PostHolder.jsx";
 import useInterval from "use-interval";
 import Button from "../Styles/Button.js";
 import { styled } from "styled-components";
@@ -192,6 +193,7 @@ export default function TimelinePage() {
       console.error("Error checking for new posts:", error);
     }
   }, 5000);
+
   return (
     <MainTemplate textHeader="timeline">
       <CreatePost reload={reload} />
@@ -213,13 +215,9 @@ export default function TimelinePage() {
           {" "}
           {posts.length > 0 ? (
             posts.map((post) => (
-              <Post
+              <PostHolder
                 reload={reload}
-                key={
-                  post.is_repost
-                    ? post.repost_id + Date.now()
-                    : post.id + Date.now()
-                }
+                key={post.is_repost ? post.repost_id + Date.now() : post.id + Date.now()}
                 avatar_photo_url={post.user_photo}
                 name={post.user_name}
                 description={post.description}
@@ -240,10 +238,10 @@ export default function TimelinePage() {
                   post.is_repost == false
                     ? post.user_name
                     : post.is_repost && post.reposted_by_id === user.id
-                    ? "you"
-                    : post.is_repost && post.owner_id !== user.id
-                    ? post.user_name
-                    : ""
+                      ? "you"
+                      : post.is_repost && post.owner_id !== user.id
+                        ? post.user_name
+                        : ""
                 }
                 reload_reposts={reloadPageInfoAfterRepostLike}
               />
@@ -259,10 +257,8 @@ export default function TimelinePage() {
   );
 }
 
-
 const ButtonNewPosts = styled(Button)`
   width: 100%;
   max-width: 611px;
-box-shadow: 0px 4px 4px 0px #00000040;
-
-`
+  box-shadow: 0px 4px 4px 0px #00000040;
+`;

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AiFillEdit } from "react-icons/ai";
 import { BiSolidTrashAlt } from "react-icons/bi";
 import { Tooltip } from "react-tooltip";
@@ -31,10 +31,11 @@ export default function Post({
   repost_count,
   comments_count,
   references_post_id,
-  created_at,
   is_repost = false,
   reposted_by_name,
-  reload_reposts
+  reload_reposts,
+  toggleShowComments,
+  updateHeight
 }) {
   const [descriptionEditValue, setDescriptionEditValue] = useState(description ? description : "");
   const [isToggleLiking, setIsToggleLiking] = useState(false);
@@ -45,13 +46,12 @@ export default function Post({
   const [showModalDelete, setShowModalDelete] = useState(false);
   const [showModalRepost, setShowModalRepost] = useState(false);
   const [editInput, setEditInput] = useState(false);
-  const [comments, setComments] = useState(undefined);
-  const [showComments, setShowComments] = useState(false);
 
   const [deleting, setDeleting] = useState(false);
   const [reposting, setReposting] = useState(false);
   const [validAvatarUrl, setValidAvatarUrl] = useState(false);
 
+  const postRef = useRef(null);
   const editRef = useRef();
   const navigate = useNavigate();
   const { user } = useContext(UserContext);
@@ -68,6 +68,12 @@ export default function Post({
     window.addEventListener("click", endEdit);
     if (editRef.current) editRef.current.focus();
   }, [editInput]);
+
+  useLayoutEffect(() => {
+    // console.log("POST useLayoutEffect => updateHeight")
+    console.log(postRef.current?.getBoundingClientRect().height)
+    if (postRef.current) updateHeight(postRef.current.getBoundingClientRect().height);
+  }, [name, description, link]);
 
   function validateAndSetAvatarImage() {
     if (avatar_photo_url) {
@@ -179,11 +185,6 @@ export default function Post({
       })
   }
 
-  function toggleShowComments() {
-    setShowComments(!showComments);
-    
-  }
-
   function toggleLike() {
     if (isToggleLiking) return;
     setIsToggleLiking(true);
@@ -267,7 +268,7 @@ export default function Post({
           :
           <></>
       }
-      <PostContainer $is_repost={is_repost} data-test="post">
+      <StyledPost ref={postRef} /*$is_repost={is_repost} $marginBottom={marginBottom}*/ data-test="post">
         {userLoggedInIsOwnerOfThisPost() && (
           <Actions>
             {!is_repost && <AiFillEdit onClick={(e) => startEdit(e)} className="icon" data-test="edit-btn" />}
@@ -304,25 +305,26 @@ export default function Post({
           }
           <Metadata link={link} />
         </PostInfo>
-        <ContainerComments comments={comments} />
-        {/* {showComments && <ContainerComments comments={comments} />} */}
-      </PostContainer>
+      </StyledPost>
     </>
   );
 }
 
 
-const PostContainer = styled.div`
+const StyledPost = styled.div`
   width: 100%;
   max-width: 611px;
-  position: relative;
   background-color: #171717;
   border-radius: 16px;
   display: flex;
   gap: 18px;
   padding: 20px;
-  margin-top: ${(props) => props.$is_repost ? "29px" : 0};
+  /* margin-top: ${(props) => props.$is_repost ? "29px" : 0}; */
+  /* margin-bottom: ${({$marginBottom}) => $marginBottom}px; */
   position: relative;
+  z-index: 2;
+  opacity: 0.5;
+
   .react-tooltip{
     max-width: fit-content;
     p{

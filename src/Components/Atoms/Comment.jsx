@@ -20,7 +20,30 @@ export default function Comment({ comment, urlPhoto, userName, status }) {
 const StyledComment = styled.div`
     display: flex;
     align-items: center;
+    padding-block: 16px;
+    border-bottom: 1px solid #353535;
+    
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+    line-height: 17px;
 
+    h1 {
+        font-weight: 700;
+        color: #F3F3F3;
+    }
+    p {
+        font-family: 'Lato', sans-serif;
+        font-size: 14px;
+        font-weight: 400;
+        color: #ACACAC;
+
+        margin-top: 3px;
+    }
+    img {
+        width: 39px;
+        height: 39px;
+        margin-right: 18px;
+    }
     &>div {
         flex-direction: column;
     }
