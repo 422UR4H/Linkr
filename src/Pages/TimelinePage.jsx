@@ -97,7 +97,7 @@ export default function TimelinePage() {
 
   async function reload() {
     setLoading(true);
-
+setPage(0);
     try {
       const response = await api.getPosts(token, 0);
       if (response.status === 202 || response.status === 204) {
@@ -166,7 +166,7 @@ export default function TimelinePage() {
   }
 
   useInterval(async () => {
-    console.log("Checking for new posts...");
+    //console.log("Checking for new posts...");
     try {
       const response = await api.getPosts(token);
       const newPosts = response.data;
@@ -178,14 +178,14 @@ export default function TimelinePage() {
       });
 
       if (diffPosts.length > 0) {
-        console.log(`${diffPosts.length} new posts available.`);
+        //console.log(`${diffPosts.length} new posts available.`);
 
         setNewPostsCount(diffPosts.length);
         setNewPostsAvailable(true);
 
         setInitialPosts(newPosts);
       } else {
-        console.log("No new posts available.");
+        //console.log("No new posts available.");
         setNewPostsAvailable(false);
       }
     } catch (error) {
