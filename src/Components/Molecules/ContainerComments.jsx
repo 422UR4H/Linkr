@@ -8,7 +8,7 @@ import api from "../../Services/api.js";
 import useUser from "../../Hooks/useUser.js";
 
 
-export default function ContainerComments({ post_id, setMarginBottom, heightPost }) {
+export default function ContainerComments({ post_id, setMarginBottom, heightPost, commentsCount, setCommentsCount }) {
     const { user } = useUser();
     const { token } = useToken();
     const commentsRef = useRef(null);
@@ -41,6 +41,7 @@ export default function ContainerComments({ post_id, setMarginBottom, heightPost
             .then(() => {
                 setNewComment("");
                 loadComments();
+                setCommentsCount(Number(commentsCount) + 1);
             })
             .catch((err) => console.log(err));
     }
