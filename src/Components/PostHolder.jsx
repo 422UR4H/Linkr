@@ -29,7 +29,7 @@ export default function PostHolder(props) {
             {showComments &&
                 <ContainerComments
                     heightPost={heightPost}
-                    post_id={props.post_id}
+                    post_id={props.is_repost ? props.references_post_id : props.post_id}
                     setMarginBottom={setMarginBottom}
                 />
             }

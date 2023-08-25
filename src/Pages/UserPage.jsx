@@ -10,6 +10,7 @@ import Button from '../Styles/Button.js';
 import UserContext from '../Contexts/UserContext';
 import { sortPostsByDate } from '../Utils/utils';
 import { useLocation } from 'react-router';
+import PostHolder from '../Components/PostHolder';
 
 export default function UserPage() {
   const [thisUser, setThisUser] = useState(null); // thisUser.user_id O CARA QUE VAI SEGUIR OU DESEGUIR
@@ -29,26 +30,32 @@ export default function UserPage() {
   }, []);
 
   async function reload() {
-    checkIfThisUserIsFollowing();
+    //checkIfThisUserIsFollowing();
     api.getUserById(id, token)
       .then(res => {
         const userData = res.data;
+        //console.log(userData);
         userData.user_posts = sortPostsByDate(userData.user_posts);
+        setFollowingThisUser(res.data.following);
         setThisUser(userData);
+        setLoading(false);
       }).catch((error) => {
         console.log(error);
         setUserNotFound(true);
+        setLoading(false);
       });
 
     try {
       const responseHashtags = (await api.getAllHashtags(token)).data;
       setTrendingHashtags(responseHashtags);
+      setLoading(false);
     } catch (err) {
       console.log(err);
     }
   }
 
   function checkIfThisUserIsFollowing() {
+    if(id == user.id) return;
     api.checkFollower(id,token)
       .then(res => {
         setFollowingThisUser(res.data);
@@ -64,10 +71,12 @@ export default function UserPage() {
 
     api.setFollow(id,{ like_owner_id: id },token)
       .then(res => {
-        reload();
+        setFollowingThisUser(true);
+        setLoading(false);
       })
       .catch(err => {
         console.log(err);
+        setLoading(false);
         alert("Unable to follow this user.");
       })
   }
@@ -76,10 +85,12 @@ export default function UserPage() {
 
     api.setUnfollow(id,token)
       .then(res => {
-        reload();
+        setFollowingThisUser(false);
+        setLoading(false);
       })
       .catch(err => {
         console.log(err);
+        setLoading(false);
         alert("Unable to unfollow this user.");
       })
   }
@@ -114,9 +125,9 @@ export default function UserPage() {
       alt={thisUser?.name || "Loading.."}
       textHeader={thisUser ? thisUser.user_name + "’s posts" : "Loading..."}
       follow_btn_on_click={followingThisUser ? unfollow : follow}
-      show_follow_btn={location.pathname.includes('/user') && !location.pathname.includes(user.id)}
+      show_follow_btn={location.pathname.includes('/user') && id !== user.id}
       follow_btn_text={followingThisUser ? "Unfollow" : "Follow"}
-      disabled={loading}
+      follow_btn_disabled={loading}
     >
       {!userNotFound &&
         <>
@@ -125,7 +136,7 @@ export default function UserPage() {
           }
           {thisUser &&
             thisUser.user_posts.map(post => (
-              <Post
+              <PostHolder
                 key={post.is_repost ? post.repost_id + Date.now() : post.post_id + Date.now()}
                 owner_id={thisUser.user_id}
                 post_id={post.is_repost ? post.repost_id : post.post_id}

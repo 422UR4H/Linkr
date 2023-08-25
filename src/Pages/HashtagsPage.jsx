@@ -9,6 +9,7 @@ import ErrorFetchMessage from "../Components/Atoms/ErrorFetchMessage.jsx";
 import useTrending from "../Hooks/useTrending";
 import UserContext from "../Contexts/UserContext";
 import { sortPostsByDate } from "../Utils/utils";
+import PostHolder from "../Components/PostHolder";
 
 export default function HashtagsPage() {
   const [posts, setPosts] = useState([]);
@@ -81,7 +82,7 @@ export default function HashtagsPage() {
             <p>There are no posts yet</p>
           ) : (
             posts.map((post) => (
-              <Post
+              <PostHolder
                 reload={reload}
                 key={post.is_repost ? post.repost_id + Date.now() : post.id + Date.now()}
                 avatar_photo_url={post.user_photo}
