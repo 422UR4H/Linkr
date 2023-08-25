@@ -3,18 +3,23 @@ import { AiFillEdit } from "react-icons/ai";
 import { BiSolidTrashAlt } from "react-icons/bi";
 import { Tooltip } from "react-tooltip";
 import { styled } from "styled-components";
-import "react-tooltip/dist/react-tooltip.css";
 import { PLACEHOLDER_IMAGE } from "../Utils/constants";
-import api from "../Services/api.js";
 import { useNavigate } from "react-router-dom";
+import api from "../Services/api.js";
 import UserContext from "../Contexts/UserContext";
 import useToken from "../Hooks/useToken";
-import { checkForEscapeKeyPress, extractTextWithHashtagsSplitedByComa, transformTextWithHashtags, validateImageUrl } from "../Utils/utils";
 import PostUserAction from "./PostUserAction";
 import Metadata from "./Metadata";
 import Modal from "./Modal";
 import RepostBanner from "./RepostBanner";
-import ContainerComments from "./Molecules/ContainerComments.jsx";
+import "react-tooltip/dist/react-tooltip.css";
+import {
+  checkForEscapeKeyPress,
+  extractTextWithHashtagsSplitedByComa,
+  transformTextWithHashtags,
+  validateImageUrl
+} from "../Utils/utils";
+
 
 export default function Post({
   post_id,
@@ -114,7 +119,7 @@ export default function Post({
 
   function repost() {
     setReposting(true);
-   
+
     const idRepost = is_repost ? references_post_id : post_id;
     api.repost(idRepost, token)
       .then(res => {
@@ -202,7 +207,7 @@ export default function Post({
         })
         .finally(() => {
           setIsToggleLiking(false);
-          if(is_repost){
+          if (is_repost) {
             reload_reposts(postIdToLike);
           }
         });
@@ -217,7 +222,7 @@ export default function Post({
         })
         .finally(() => {
           setIsToggleLiking(false);
-          if(is_repost){
+          if (is_repost) {
             reload_reposts(postIdToLike);
           }
         });
@@ -268,14 +273,14 @@ export default function Post({
           :
           <></>
       }
-      <StyledPost ref={postRef} /*$is_repost={is_repost} $marginBottom={marginBottom}*/ data-test="post">
+      <StyledPost ref={postRef} data-test="post">
         {userLoggedInIsOwnerOfThisPost() && (
           <Actions>
             {!is_repost && <AiFillEdit onClick={(e) => startEdit(e)} className="icon" data-test="edit-btn" />}
             <BiSolidTrashAlt onClick={askDelete} className="icon" data-test="delete-btn" />
           </Actions>
         )}
-        {is_repost && <RepostBanner reposted_by_name={reposted_by_name}/>}
+        {is_repost && <RepostBanner reposted_by_name={reposted_by_name} />}
         <Tooltip render={({ content }) => content ? <p data-test="tooltip">{content}</p> : null} id="tooltip likes" />
         <AvatarAndActions>
           <img title={name ? name : "Username"} onClick={goToUser} src={avatar_photo_url && validAvatarUrl ? avatar_photo_url : PLACEHOLDER_IMAGE} alt={name} />
@@ -319,11 +324,8 @@ const StyledPost = styled.div`
   display: flex;
   gap: 18px;
   padding: 20px;
-  /* margin-top: ${(props) => props.$is_repost ? "29px" : 0}; */
-  /* margin-bottom: ${({$marginBottom}) => $marginBottom}px; */
   position: relative;
   z-index: 2;
-  opacity: 0.5;
 
   .react-tooltip{
     max-width: fit-content;
