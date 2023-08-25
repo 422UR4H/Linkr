@@ -1,10 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { sortPostsByDate } from "../Utils/utils.js";
+import { styled } from "styled-components";
+import api from "../Services/api.js";
 import useToken from "../Hooks/useToken.js";
 import MainTemplate from "../Components/Templates/MainTemplate.jsx";
 import CreatePost from "../Components/CreatePost";
-import Post from "../Components/Post";
-import api, { getNewPosts, getPosts } from "../Services/api.js";
 import useTrending from "../Hooks/useTrending.js";
 import ErrorFetchMessage from "../Components/Atoms/ErrorFetchMessage.jsx";
 import LoadingMessage from "../Components/Atoms/LoadingMessage.jsx";
@@ -12,11 +13,10 @@ import NoPostsYetMessage from "../Components/Atoms/NoPostsYetMessage.jsx";
 import YouDontFollowAnyoneYetMessage from "../Components/Atoms/YouDontFollowAnyoneYet.jsx";
 import InfiniteScroll from "react-infinite-scroller";
 import UserContext from "../Contexts/UserContext.jsx";
-import { sortPostsByDate } from "../Utils/utils.js";
 import PostHolder from "../Components/PostHolder.jsx";
 import useInterval from "use-interval";
 import Button from "../Styles/Button.js";
-import { styled } from "styled-components";
+
 
 export default function TimelinePage() {
   const [posts, setPosts] = useState([]);
@@ -37,7 +37,6 @@ export default function TimelinePage() {
   const loadMore = async () => {
     try {
       //console.log("Loading more posts from page:", page + 1);
-
       const nextPage = page + 1;
       //console.log("Loaded new page:", nextPage);
       const response = await api.getPosts(token, nextPage);
@@ -46,8 +45,8 @@ export default function TimelinePage() {
         setMorePosts(false);
       } else if (response.status === 200) {
         //console.log("Loaded new posts:", response.data);
-
         const newPosts = response.data;
+
         if (newPosts.length === 0) {
           setMorePosts(false);
         } else {
@@ -169,7 +168,7 @@ export default function TimelinePage() {
   useInterval(async () => {
     console.log("Checking for new posts...");
     try {
-      const response = await getPosts(token);
+      const response = await api.getPosts(token);
       const newPosts = response.data;
 
       const diffPosts = newPosts.filter((newPost) => {

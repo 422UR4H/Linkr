@@ -49,9 +49,7 @@ export default function ContainerComments({ post_id, setMarginBottom, heightPost
                     userName={c.user_name}
                     status={null}
                 />
-            ))
-                //  || <span>No comments yet</span>
-            }
+            ))}
             <form onSubmit={handleSubmit}>
                 <Avatar />
                 <input
@@ -73,29 +71,21 @@ export default function ContainerComments({ post_id, setMarginBottom, heightPost
 }
 
 const StyledContainerComments = styled.div`
-    /* background-color: blue; */
-    opacity: 0.5;
     background-color: #1E1E1E;
     width: inherit;
     padding: 25px;
     border-radius: 0 0 16px 16px;
-    /* box-shadow: 0 0px 8px 2px rgba(255, 0, 0, 0.4); */
 
     display: flex;
     flex-direction: column;
 
     position: absolute;
-    /* top: 230px; */
     top: ${({ $height }) => $height - 20}px;
-    /* bottom: ${({ $height }) => -$height -200}px;
-    transform: translateY(-100%); */
-    
     left: 0;
     z-index: 1;
 
     form {
         height: 39px;
-        width: fit-content;
         margin-top: 19px;
 
         display: flex;
@@ -114,10 +104,11 @@ const StyledContainerComments = styled.div`
             font-weight: 400;
             line-height: 17px;
             letter-spacing: 0.05em;
-            color: #ACACAC;
+            /* color: #ACACAC; */
+            color: #F3F3F3;
     
             background-color: #252525;
-            width: 510px;
+            width: 100%;
             height: inherit;
             border: none;
             border-radius: 8px;
