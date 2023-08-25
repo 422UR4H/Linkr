@@ -19,11 +19,14 @@ const FollowButton = styled.button`
         outline: none;
     }
     &:hover{
-        background-color: white;
-        color: #1877F2;
+        &:enabled{
+            background-color: white;
+            color: #1877F2;
+        }
     }
     &:disabled {
-        background-color: #83b4ef;
+       cursor: not-allowed;
+       opacity: 50%;
         display: flex;
         justify-content: center;
         align-items: center;

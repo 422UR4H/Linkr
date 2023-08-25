@@ -32,7 +32,9 @@ export default function Metadata({ link }) {
                 metadatas.image = PLACEHOLDER_IMAGE;
                 setMetadata(metadatas);
               })
-          }).catch(error => console.log(error))
+          }).catch(error => {
+
+          });
       }
 
     function metadataTitle() {

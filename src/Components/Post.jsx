@@ -76,7 +76,7 @@ export default function Post({
 
   useLayoutEffect(() => {
     // console.log("POST useLayoutEffect => updateHeight")
-    console.log(postRef.current?.getBoundingClientRect().height)
+    //console.log(postRef.current?.getBoundingClientRect().height)
     if (postRef.current) updateHeight(postRef.current.getBoundingClientRect().height);
   }, [name, description, link]);
 
