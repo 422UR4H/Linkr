@@ -143,7 +143,7 @@ const AvatarAndTitle = styled.div`
     .info{
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 20px;
     }
     
     @media (max-width: 720px) {

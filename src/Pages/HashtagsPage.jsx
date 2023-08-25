@@ -90,6 +90,7 @@ export default function HashtagsPage() {
                 description={post.description}
                 like_count={post.likes_count}
                 link={post.link}
+                comments_count={post.comment_count}
                 owner_id={post.is_repost ? post.reposted_by_id : post.owner_id}
                 post_id={post.is_repost ? post.repost_id : post.id}
                 default_liked={post.default_liked}

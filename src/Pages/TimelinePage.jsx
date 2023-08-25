@@ -228,6 +228,7 @@ export default function TimelinePage() {
                 first_liker_name={post.first_liker_name}
                 second_liker_name={post.second_liker_name}
                 repost_count={post?.repost_count}
+                comments_count={post.comment_count}
                 created_at={
                   post.is_repost ? post.repost_created_at : post.created_at
                 }
