@@ -5,9 +5,11 @@ import useToken from "../../Hooks/useToken.js";
 import Comment from "../Atoms/Comment.jsx";
 import Avatar from "../Atoms/Avatar.jsx";
 import api from "../../Services/api.js";
+import useUser from "../../Hooks/useUser.js";
 
 
 export default function ContainerComments({ post_id, setMarginBottom, heightPost }) {
+    const { user } = useUser();
     const { token } = useToken();
     const commentsRef = useRef(null);
     const [comments, setComments] = useState([]);
@@ -15,11 +17,17 @@ export default function ContainerComments({ post_id, setMarginBottom, heightPost
 
     useEffect(() => {
         api.getCommentsByPost(post_id, token)
-            .then(({ data }) => setComments(data))
+            .then(({ data }) => {
+                data.forEach(d => {
+                    d.status = d.writer_id === user.id ? "• post’s author" : d.is_follower ? "• following" : "";
+                });
+                setComments(data);
+            })
             .catch((err) => console.log(err));
     }, []);
 
     useEffect(() => {
+        console.log(comments)
         setMarginBottom(commentsRef.current.getBoundingClientRect().height);
     }, [comments]);
 
@@ -39,7 +47,7 @@ export default function ContainerComments({ post_id, setMarginBottom, heightPost
                     comment={c.comment}
                     urlPhoto={c.photo}
                     userName={c.user_name}
-                    status={null}
+                    status={c.status}
                 />
             ))}
             <form onSubmit={handleSubmit}>

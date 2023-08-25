@@ -26,17 +26,14 @@ const StyledComment = styled.div`
     font-family: 'Lato', sans-serif;
     font-size: 14px;
     line-height: 17px;
+    font-weight: 400;
 
     h1 {
-        font-weight: 700;
         color: #F3F3F3;
+        font-weight: 700;
     }
     p {
-        font-family: 'Lato', sans-serif;
-        font-size: 14px;
-        font-weight: 400;
         color: #ACACAC;
-
         margin-top: 3px;
     }
     img {
@@ -46,5 +43,14 @@ const StyledComment = styled.div`
     }
     &>div {
         flex-direction: column;
+
+        &>div {
+            display: flex;
+
+            span {
+                color: #565656;
+                margin-left: 4px;
+            }
+        }
     }
 `;
