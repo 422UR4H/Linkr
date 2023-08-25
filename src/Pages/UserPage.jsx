@@ -155,6 +155,7 @@ export default function UserPage() {
                 references_post_id={post.is_repost ? post.id : -69}
                 reposted_by_name={post.is_repost == false ? thisUser.user_name : post.is_repost && post.reposted_by_id === user.id ? "you" : post.is_repost && post.owner_id !== thisUser.id ? thisUser.user_name : ""}
                 reload_reposts={reloadPageInfoAfterRepostLike}
+                comments_count={post.comment_count}
               />
             ))
           }
