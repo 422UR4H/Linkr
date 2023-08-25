@@ -21,7 +21,7 @@ export default function MainTemplate({ textHeader, src, alt, children ,follow_bt
                     <h1 data-test="hashtag-title">{textHeader}</h1>
                    </div>
                     {  show_follow_btn && 
-                        <FollowButton disabled={follow_btn_disabled} data-test="follow-btn" onClick={()=> follow_btn_on_click()} >
+                        <FollowButton disabled={follow_btn_disabled} data-test="user-search" onClick={()=> follow_btn_on_click()} >
                             {size.width < 720 ? <BsFillPersonCheckFill/> : follow_btn_text}
                         </FollowButton>
                     }
